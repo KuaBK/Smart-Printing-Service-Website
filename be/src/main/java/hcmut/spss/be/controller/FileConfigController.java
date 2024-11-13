@@ -22,7 +22,7 @@ public class FileConfigController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<?> createFileConfig(@RequestParam Long fileId, @RequestBody FileConfigRequest request) {
+    public ResponseEntity<?> createFileConfig(@RequestBody FileConfigRequest request, @RequestParam Long fileId) {
         try {
             return ResponseEntity.ok(fileConfigService.createFileConfig(request, fileId));
         }catch (Exception e) {

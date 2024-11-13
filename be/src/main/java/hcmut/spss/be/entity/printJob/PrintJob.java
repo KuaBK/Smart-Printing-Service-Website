@@ -31,9 +31,6 @@ public class PrintJob {
     @Column(name = "job_start_time", updatable = false)
     LocalDateTime jobStartTime;
 
-    @Column(name = "job_end_time")
-    LocalDateTime jobEndTime;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status_print")
     StatusPrint statusPrint;
