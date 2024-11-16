@@ -319,8 +319,6 @@ const CustomProgressBar = ({
 };
 
 
-
-
 /////////////////////////////////// MAIN CODE /////////////////////////////////////////////////////////////////////////////////////////
 export const ConfigPrint = () => {
   const [printers, setPrinters] = useState([
@@ -391,6 +389,67 @@ export const ConfigPrint = () => {
     setPrinters((prevPrinters) => prevPrinters.filter((printer) => printer.id !== id));
   }, []);
 
+  const [showAddPrinterPopup, setShowAddPrinterPopup] = useState(false); // Toggle popup visibility
+  const [formData, setFormData] = useState({
+    name: '',
+    status: 'active',
+    paperUsage: '',
+    inkUsage: '',
+  });
+
+  const handleAddPrinter = () => setShowAddPrinterPopup(true);
+
+  const handleClosePopup = () => {
+    setShowAddPrinterPopup(false);
+    setFormData({ name: '', status: 'active', paperUsage: '', inkUsage: '' }); // Reset form
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  const handleSave = (event) => {
+    event.preventDefault();
+
+    // Kiểm tra dữ liệu đầu vào
+    if (!formData.name.trim()) {
+      alert('Tên máy in không được để trống.');
+      return;
+    }
+
+    if (
+      isNaN(formData.paperUsage) ||
+      isNaN(formData.inkUsage) ||
+      formData.paperUsage < 0 ||
+      formData.paperUsage > 100 ||
+      formData.inkUsage < 0 ||
+      formData.inkUsage > 100
+    ) {
+      alert('Số giấy in và số mực in phải nằm trong khoảng [0, 100].');
+      return;
+    }
+
+    // Tạo máy in mới
+    const newPrinter = {
+      id: Date.now(), // Unique ID
+      title: formData.name.trim(),
+      processingPages: 0, // Giá trị mặc định
+      pageProgress: Number(formData.paperUsage), // % số giấy in
+      inkProgress: Number(formData.inkUsage), // % số mực in
+      status: formData.status,
+    };
+
+    // Cập nhật danh sách máy in
+    setPrinters((prevPrinters) => [...prevPrinters, newPrinter]);
+
+    // Đóng popup và reset form
+    handleClosePopup();
+  };
+
 
 
 
@@ -417,8 +476,77 @@ export const ConfigPrint = () => {
               onChange={handleSearchChange}
             />
           </div>
+          {/* Add printer button */}
+          <div className={classes.AddPrinterSection}>
+            <button className={classes.AddPrinterButton} onClick={handleAddPrinter}>New Printer</button>
+          </div>
         </div>
       </header>
+
+      {/* Pop-up Add printer Overlay */}
+      {showAddPrinterPopup && (
+        <div className={classes.overlay1}>
+          <div className={classes.overlayContent1}>
+            <form className={classes.printerForm} onSubmit={handleSave}>
+              <label htmlFor="name">Tên:</label>
+              <input
+                className={classes.printerInput}
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+              />
+
+              <label htmlFor="status">Trạng thái:</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+                className={classes.printerInput}
+              >
+                <option value="active">Hoạt động</option>
+                <option value="inactive">Không hoạt động</option>
+              </select>
+
+              <label htmlFor="paperUsage">Số giấy in (%):</label>
+              <input
+                className={classes.printerInput}
+                type="number"
+                name="paperUsage"
+                value={formData.paperUsage}
+                onChange={handleInputChange}
+                required
+              />
+
+              <label htmlFor="inkUsage">Số mực in (%):</label>
+              <input
+                className={classes.printerInput}
+                type="number"
+                name="inkUsage"
+                value={formData.inkUsage}
+                onChange={handleInputChange}
+                required
+              />
+
+              <div className={classes.popupButtons}>
+                <button
+                  type="button"
+                  className={classes.cancelButton}
+                  onClick={handleClosePopup}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className={classes.printerSubmit1}>
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+
 
       {/* Main content section (grid of printer cards) */}
       <main className={classes.printerDashboard}>
