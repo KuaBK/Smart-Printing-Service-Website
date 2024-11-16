@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import classes from './style.module.css';
+import {ManagePrint} from '../../components/ManagePrint'
 
 export const PrintService = () => {
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
@@ -15,6 +16,7 @@ export const PrintService = () => {
   ]);
 
   const overlayRef = useRef(null);
+  const [showConfig, setShowConfig] = useState(true);
 
   const handleOptionsClick = (index) => {
     setActiveFileIndex(index);
@@ -80,11 +82,6 @@ export const PrintService = () => {
     setFiles([...files, ...uploadedFiles]);
     setIsUploadMode(false); // Return to recent view after upload
   };
-
-
-
-
-
 
   return (
     <div className={classes.all}>
@@ -163,7 +160,8 @@ export const PrintService = () => {
         {/* Right Frame */}
         <div className={classes.rightFrame}>
           <div className={classes.placeholderBox}></div>
-          <button className={classes.printConfigButton}>Cấu hình in</button>
+          <button className={classes.printConfigButton} onClick={() => {setShowConfig(false)}}>Cấu hình in</button>
+          <ManagePrint isHidden={showConfig} setIsHidden={setShowConfig}/>
         </div>
       </div>
 

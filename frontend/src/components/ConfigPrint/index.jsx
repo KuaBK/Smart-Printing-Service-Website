@@ -208,7 +208,7 @@ const PrinterCard = ({ title, onDelete, processingPages, pageProgress, inkProgre
           <div className={classes.printerPages}>
             <p className={classes.NumberOfPages}>Số giấy in:</p>
             <CustomProgressBar
-              className={`${classes.PagesProgressBar} ${classes.ProgressBar}`}
+              className={`${classes.PagesProgressBar} ${classes.ProgressBar} w-[90%]`}
               completed={formData.paperUsage}
               bgColor="#5CFF66"
               label={`${formData.paperUsage}%`}
@@ -218,7 +218,7 @@ const PrinterCard = ({ title, onDelete, processingPages, pageProgress, inkProgre
           <div className={classes.printerInk}>
             <p className={classes.AmountOfInk}>Số mực in:</p>
             <CustomProgressBar
-              className={`${classes.InkProgressBar} ${classes.ProgressBar}`}
+              className={`${classes.InkProgressBar} ${classes.ProgressBar} w-[90%]`}
               completed={formData.inkUsage}
               bgColor="#FF665C"
               label={`${formData.inkUsage}%`}

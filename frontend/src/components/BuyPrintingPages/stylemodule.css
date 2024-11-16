@@ -46,6 +46,11 @@ input[type="number"], input[type="text"] #so-trang{
     position: relative;
     left: 50%;
     transform: translateX(-50%);
+    outline: none;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    color: #5c5c5c;
 }
 .have-section {
     width: 667px;
@@ -86,9 +91,9 @@ input[type="number"], input[type="text"] #so-trang{
     cursor: pointer;
 }
 .option-btn:hover {
-    background-color: #007bff;
+    background-color: #0f6cbf;
     color: white;
-    border: 1px solid #007bff;
+    border: 1px solid #0f6cbf;
 }
 p.ma-giam-gia {
     margin-bottom: 5px;
@@ -102,6 +107,7 @@ input#ma-giam-gia{
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    outline: none;
 }
 .summary {
     border-top: 1px solid #ddd;
@@ -117,7 +123,7 @@ span {
   
   .btn-thanh-toan {
     padding: 15px 30px;
-    background-color: #007bff;
+    background-color: #0f6cbf;
     color: white;
     border: none;
     border-radius: 5px;
@@ -154,7 +160,8 @@ span {
     text-align: center;
     position: relative;
     animation: slideUp 0.4s ease;
-    min-width: 300px;
+    width: 500px;
+    height: 330px;
     left: 7%;
   }
   
@@ -164,8 +171,8 @@ span {
   }
   
   .payment-option {
-    display: block;
-    width: 100%;
+    display: flex;
+    width: 80%;
     background-color: #f3f3f3;
     border: none;
     padding: 10px;
@@ -176,11 +183,15 @@ span {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 20px;
+    font-weight: 500;
   }
 
   .payment-option:hover {
     scale: 105%;
-    background-color: #828282;
+    background-color: #0f6dbf18;
     transition: 0.4s;
   }
   
