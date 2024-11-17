@@ -146,7 +146,7 @@ public class PrintJobServiceImpl implements PrintJobService {
     public MessageResponse createPrintJob(PrintJob printJob) {
         Long currentUserId = authUtil.loggedInUserId();
         printJob.setStudent(authUtil.loggedInUser());
-        printJob.setStatusPrint(StatusPrint.WAITING);
+        printJob.setStatusPrint(StatusPrint.PRINTING);
         printJobRepository.save(printJob);
         return new MessageResponse("Print job created successfully");
     }
@@ -180,6 +180,7 @@ public class PrintJobServiceImpl implements PrintJobService {
         );
     }
 
+    @Override
     public PrintJobResponse getPrintJobById(Long jobId) {
         PrintJob printJob = printJobRepository.findById(jobId)
                 .orElseThrow(() -> new RuntimeException("Print job not found"));

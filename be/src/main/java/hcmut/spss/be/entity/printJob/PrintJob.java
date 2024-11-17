@@ -3,7 +3,6 @@ package hcmut.spss.be.entity.printJob;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.fileConfig.FileConfig;
-import hcmut.spss.be.entity.printLog.PrintLog;
 import hcmut.spss.be.entity.printer.Printer;
 import hcmut.spss.be.entity.user.User;
 import jakarta.persistence.*;
@@ -51,9 +50,4 @@ public class PrintJob {
     @ManyToOne
     @JoinColumn(name = "document_id")
     Document document;
-
-    @ManyToOne
-    @JoinColumn(name = "log_id")
-    @JsonBackReference
-    PrintLog printLog;
 }

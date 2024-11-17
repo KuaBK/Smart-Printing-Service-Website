@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/print-jobs")
 public class PrintJobController {
@@ -41,18 +43,17 @@ public class PrintJobController {
         this.documentRepository = documentRepository;
     }
 
-    // Tạo PrintJob
     @PostMapping("/create")
     public ResponseEntity<?> createPrintJob(@RequestBody PrintJobRequest request) {
         try {
             PrintJob printJob = convertToPrintJob(request);
-            return ResponseEntity.ok(printJobService.createPrintJob(printJob));
+            MessageResponse response = printJobService.createPrintJob(printJob);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
 
-    // Lấy thông tin PrintJob theo ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getPrintJobById(@PathVariable Long id) {
         try {
@@ -63,14 +64,34 @@ public class PrintJobController {
         }
     }
 
-    // Cập nhật trạng thái PrintJob
-    @PutMapping("/{id}/status")
+    @GetMapping("/current-user")
+    public ResponseEntity<?> getAllPrintJobsOfCurrentUser() {
+        try {
+            List<PrintJobResponse> responses = printJobService.getAllPrintJobsOfCurrentUser();
+            return ResponseEntity.ok(responses);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
+    }
+
+    @PutMapping("/status/{id}")
     public ResponseEntity<?> updatePrintJobStatus(@PathVariable Long id, @RequestParam String status) {
         try {
-            StatusPrint statusPrint = StatusPrint.valueOf(status.toUpperCase()); // Chuyển đổi từ String thành StatusPrint enum
-            return ResponseEntity.ok(printJobService.updatePrintJobStatus(id, statusPrint));
+            StatusPrint statusPrint = StatusPrint.valueOf(status.toUpperCase());
+            MessageResponse response = printJobService.updatePrintJobStatus(id, statusPrint);
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Invalid status value"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePrintJob(@PathVariable Long id) {
+        try {
+            MessageResponse response = printJobService.deletePrintJob(id);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
@@ -88,7 +109,7 @@ public class PrintJobController {
                 .orElseThrow(() -> new RuntimeException("Document not found"));
 
         return PrintJob.builder()
-                .statusPrint(StatusPrint.WAITING)
+                .statusPrint(StatusPrint.PRINTING)
                 .printer(printer)
                 .student(student)
                 .fileConfig(fileConfig)
