@@ -1,12 +1,43 @@
-import React , {useEffect, useState} from 'react';
+import React , {useContext, useEffect, useState} from 'react';
 import classes from './style.module.css';
 import logo from '../../assets/logo.png'
 import api from '../../Services/api.jsx'
-import axios from 'axios';
+import toast from "react-hot-toast";
+import { GlobalContext } from '../../Context/index.jsx';
+import { jwtDecode } from "jwt-decode";
+import {useNavigate} from 'react-router-dom'
 
 
 export const Signup = () => {
   const [user, setUser] = useState(true);
+  const [jwtToken, setJwtToken] = useState("");
+  const {token, setToken} = useContext(GlobalContext)
+  const [selectRole, setSelectRole] = useState("user")
+  const navigate = useNavigate();
+
+  const handleSuccessfulLogin = (token, decodedToken) => {
+    const user = {
+      username: decodedToken.sub,
+      roles: decodedToken.roles ? decodedToken.roles.split(",") : [],
+    };
+    localStorage.setItem("JWT_TOKEN", token);
+    localStorage.setItem("ROLE", selectRole)
+    localStorage.setItem("USER", JSON.stringify(user));
+
+    //store the token on the context state  so that it can be shared any where in our application by context provider
+    const rolene = JSON.parse(localStorage.getItem("USER"))
+    if (rolene.roles.includes('ADMIN')) {
+      navigate('/admin')
+    } else if (selectRole == 'user' && rolene.roles.includes('STUDENT')) {
+      navigate('/user')
+    } else if (selectRole == 'spso'  && rolene.roles.includes('SPSO')) {
+      navigate('/spso')
+    }
+    setToken(token);
+
+    
+    // navigate("/user");
+  };
 
   const handleSubmit = async (e) => {
       e.preventDefault();
@@ -19,23 +50,46 @@ export const Signup = () => {
 
       console.log('Form Data:', data);
 
+      try {
+        const response = await api.post('/auth/public/signin', data);
+        console.log(response.data)
+        toast.success("Login Successful");
+        const decodedToken = jwtDecode(response.data.jwtToken);
+        console.log(decodedToken)
+        if (response.status === 200 && response.data.jwtToken) {
+          setJwtToken(response.data.jwtToken);
+          handleSuccessfulLogin(response.data.jwtToken, decodedToken);
+        } else {
+          toast.error(
+            "Login failed. Please check your credentials and try again."
+          );
+        }
+      }
+      catch(error){
+        console.log(error)
+        toast.error(
+          "Login failed. Please check your credentials and try again."
+        );
+      }
+      
+
       // try {
-      //     const response = await api.post('/auth/public/signup', data);
-      //     console.log('Response:', response);
+      //     // const response = await api.post('/auth/public/signup', data);
+      //     // console.log('Response:', response);
+      //     api.post('/auth/public/signup', data)
+      //     .then(res)
       // }
       // catch (error) {
       //     console.error('Failed to login:', error);
       // }
 
-      axios.get('http://localhost:8080/api/csrf-token', {
-        withCredentials: true  // This is necessary for handling cookies
-      })
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching CSRF token:', error);
-      });
+      // api.post('/auth/public/signup', data)
+      // .then(response => {
+      //   console.log(response.data);
+      // })
+      // .catch(error => {
+      //   console.error('Error fetching CSRF token:', error);
+      // });
       // Call API to login
 
   };
@@ -66,15 +120,15 @@ export const Signup = () => {
     <div className='flex flex-col w-[360px] mt-[90px] mx-auto mb-[190px]'>
       <div className='flex flex-row mb-[20px] w-[356px] bg-[#f2f2f2] rounded-[25px] p-[5px]'>
         <div>
-          <button className={`w-[173px] h-[40px]  ${user ? `bg-[#0f6cbf] text-[#fff]` : ``} rounded-[25px] font-semibold py-[3px]`} onClick={() => setUser(true)}>HCMUT Account</button>
+          <button className={`w-[173px] h-[40px]  ${user ? `bg-[#0f6cbf] text-[#fff]` : ``} rounded-[25px] font-semibold py-[3px]`} onClick={() => {setUser(true); setSelectRole('user')}}>HCMUT Account</button>
         </div>
         <div>
-          <button className={`w-[173px] h-[40px] ${!user ? `bg-[#0f6cbf] text-[#fff]` : ``} rounded-[25px] font-semibold py-[3px]`} onClick={() => setUser(false)}>SPSO Account</button>
+          <button className={`w-[173px] h-[40px] ${!user ? `bg-[#0f6cbf] text-[#fff]` : ``} rounded-[25px] font-semibold py-[3px]`} onClick={() => {setUser(false); setSelectRole('spso');}}>SPSO Account</button>
         </div>
       </div>
       <form id='login' className='flex flex-col mt-[35px]' onSubmit={handleSubmit}>
           <label for='name'className='h-[35px] font-semibold'>User's name</label>
-          <input name="name" type='text' id='name' className='h-[35px] w-full rounded-[5px] bg-[#f1f1f1cd] mb-[10px] outline-none px-[15px] py-[20px]' required/>
+          <input name='username' type='text' id='name' className='h-[35px] w-full rounded-[5px] bg-[#f1f1f1cd] mb-[10px] outline-none px-[15px] py-[20px]' required/>
 
           <label for='password' className='h-[35px] font-semibold items-center'>Password</label>
           <input name="password" type='password' id='password' className='h-[35px] w-full rounded-[5px] bg-[#f1f1f1cd] mb-[10px] outline-none  px-[15px] py-[20px]' required/>

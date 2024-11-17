@@ -8,12 +8,22 @@ import test from '../../assets/test.svg'
 import arrowdown from '../../assets/arrowdown.svg'
 import filterimage from '../../assets/filterimage.svg'
 import { GlobalContext } from '../../Context'
+import {useNavigate} from 'react-router-dom'
+
 
 export const Navbar = () => {
   const { noti, setNoti } = useContext(GlobalContext);
   const {selecInput, setSelecInput} = useContext(GlobalContext)
   const [showProfile, setShowProfile] = useState(false)
   const [showNotification, setShowNotification] = useState(false)
+  const navigate = useNavigate();
+  const logout = () => {
+    localStorage.removeItem('JWT_TOKEN')
+    // localStorage.setItem('ROLE', 'user')
+    localStorage.removeItem('USER')
+    localStorage.removeItem('CSRF_TOKEN')
+    navigate('/login')
+  }
   return (
     <div className='relative'>
       <div className={classes.header_border}></div>
@@ -58,7 +68,7 @@ export const Navbar = () => {
                   <li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]'>Cài đặt</li>
                   <li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]' onClick={() => setSelecInput('BuyPrintingPages')}>Mua trang in</li>
                   <li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]' onClick={() => setSelecInput('HistoryTransaction')}>Lịch sử giao dịch</li>
-                  <li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]'>Đăng xuất</li>
+                  <li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]' onClick={logout}>Đăng xuất</li>
                 </ul>
               </div>}
             </div>

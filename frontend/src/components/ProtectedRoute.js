@@ -2,13 +2,14 @@ import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from '../Context';
 
-const ProtectedRoute = ({children}) => {
+const ProtectedRoute = (props) => {
     const { token } = useContext(GlobalContext);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!token) {
+        const user = JSON.parse(localStorage.getItem('USER'))
+        if (!token || !user.roles.includes(props.name)) {
             navigate("/login", { replace: true });
         }
     }, [token, navigate]);
@@ -17,7 +18,7 @@ const ProtectedRoute = ({children}) => {
         return null;
     }
 
-    return children;
+    return props.children;
 };
 
 export default ProtectedRoute;

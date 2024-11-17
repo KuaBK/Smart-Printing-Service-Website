@@ -16,14 +16,13 @@ api.interceptors.request.use(
             config.headers.Authorization = `Bearer ${token}`;
         }
         let csrfToken = localStorage.getItem('CSRF_TOKEN');
-        if (!csrfToken){
+        if (!token){
             try{
-                console.log("CSRF_TOKEN" + csrfToken);
                 const {data} = await axios.get(
-                    `http://localhost:8080/api/csrf-token`,
-                    {withCredentials: true}
-                );
-                csrfToken = data.csrfToken;
+                    `http://localhost:8080/api/csrf-token`,{
+                        withCredentials: true
+                    });
+                csrfToken = data.token;
                 localStorage.setItem('CSRF_TOKEN', csrfToken);
             }
             catch (error){

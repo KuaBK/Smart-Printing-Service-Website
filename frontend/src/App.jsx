@@ -16,33 +16,24 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute >
-              <Admin />
-            </ProtectedRoute>
+            <ProtectedRoute name="ADMIN" children = {<Admin />} />
           }
         />
         <Route
           path="/spso"
           element={
-            <ProtectedRoute>
-              <Spso />
-            </ProtectedRoute>
+            <ProtectedRoute name="SPSO" children = {<Spso />} />
           }
         />
         <Route
           path="/user"
           element={
-            <ProtectedRoute>
-              <User />
-            </ProtectedRoute>
+            <ProtectedRoute name="STUDENT" children = {<User />} />
           }
         />
         <Route path="*" element={<HomePage />} />
       </Routes>
     </Router>
-    // <div>
-    //   <HomePage />
-    // </div>
   )
 }
 
