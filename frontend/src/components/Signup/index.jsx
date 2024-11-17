@@ -1,10 +1,44 @@
 import React , {useEffect, useState} from 'react';
 import classes from './style.module.css';
 import logo from '../../assets/logo.png'
+import api from '../../Services/api.jsx'
+import axios from 'axios';
 
 
 export const Signup = () => {
   const [user, setUser] = useState(true);
+
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+      const data = {};
+      formData.forEach((value, key) => {
+          data[key] = value;
+      });
+
+      console.log('Form Data:', data);
+
+      // try {
+      //     const response = await api.post('/auth/public/signup', data);
+      //     console.log('Response:', response);
+      // }
+      // catch (error) {
+      //     console.error('Failed to login:', error);
+      // }
+
+      axios.get('http://localhost:8080/api/csrf-token', {
+        withCredentials: true  // This is necessary for handling cookies
+      })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching CSRF token:', error);
+      });
+      // Call API to login
+
+  };
   return (
     <div>
     <div className={classes.header_border}>
@@ -29,7 +63,6 @@ export const Signup = () => {
       </div>
     </div>
     </div>
-
     <div className='flex flex-col w-[360px] mt-[90px] mx-auto mb-[190px]'>
       <div className='flex flex-row mb-[20px] w-[356px] bg-[#f2f2f2] rounded-[25px] p-[5px]'>
         <div>
@@ -39,19 +72,19 @@ export const Signup = () => {
           <button className={`w-[173px] h-[40px] ${!user ? `bg-[#0f6cbf] text-[#fff]` : ``} rounded-[25px] font-semibold py-[3px]`} onClick={() => setUser(false)}>SPSO Account</button>
         </div>
       </div>
-      <form className='flex flex-col mt-[35px]'>
+      <form id='login' className='flex flex-col mt-[35px]' onSubmit={handleSubmit}>
           <label for='name'className='h-[35px] font-semibold'>User's name</label>
-          <input type='text' id='name' className='h-[35px] w-full rounded-[5px] bg-[#f1f1f1cd] mb-[10px] outline-none px-[15px] py-[20px]'/>
+          <input name="name" type='text' id='name' className='h-[35px] w-full rounded-[5px] bg-[#f1f1f1cd] mb-[10px] outline-none px-[15px] py-[20px]' required/>
 
           <label for='password' className='h-[35px] font-semibold items-center'>Password</label>
-          <input type='password' id='password' className='h-[35px] w-full rounded-[5px] bg-[#f1f1f1cd] mb-[10px] outline-none  px-[15px] py-[20px]'/>
+          <input name="password" type='password' id='password' className='h-[35px] w-full rounded-[5px] bg-[#f1f1f1cd] mb-[10px] outline-none  px-[15px] py-[20px]' required/>
       </form>
       <div className='w-full text-[#0f6cbf] text-right mb-[15px]'>
         <a href='#'className='font-semibold hover:opacity-90'>Quên mật khẩu ?</a>
       </div>
 
       <div>
-        <button className='w-full h-[54px] bg-[#0f6cbf] hover:opacity-90 rounded-[60px] text-[#fff] font-semibold py-[3px]'>Login</button>
+        <button className='w-full h-[54px] bg-[#0f6cbf] hover:opacity-90 rounded-[60px] text-[#fff] font-semibold py-[3px]' type='submit' form='login'>Login</button>
       </div>
     </div>
 

@@ -1,32 +1,30 @@
 import axios from 'axios';
-import { applescript } from 'globals';
-
-console.log('API_URL', process.env.REACT_APP_API_URL);
 
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: "http://localhost:8080/api",
     headers: {
         'Content-Type': 'application/json',
-        Accept: 'application/json',
+        'Accept': 'application/json',
     },
     withCredentials: true,
 });
 
 api.interceptors.request.use(
     async (config) => {
-        const token = localStorange.getItem('JWT_TOKEN');
+        const token = localStorage.getItem('JWT_TOKEN');
         if (token){
             config.headers.Authorization = `Bearer ${token}`;
         }
-        let csrfToken = localStorange.getItem('CSRF_TOKEN');
+        let csrfToken = localStorage.getItem('CSRF_TOKEN');
         if (!csrfToken){
             try{
+                console.log("CSRF_TOKEN" + csrfToken);
                 const {data} = await axios.get(
-                    `${process.env.REACT_APP_API_URL}/api/csrf-token`,
+                    `http://localhost:8080/api/csrf-token`,
                     {withCredentials: true}
                 );
                 csrfToken = data.csrfToken;
-                localStorange.setItem('CSRF_TOKEN', csrfToken);
+                localStorage.setItem('CSRF_TOKEN', csrfToken);
             }
             catch (error){
                 console.error('Failed to fetch CSRF token', error);
@@ -46,3 +44,4 @@ api.interceptors.request.use(
 )
 
 export default api;
+

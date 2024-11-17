@@ -1,4 +1,6 @@
-import { createContext, useRef, useState } from "react"
+import React, {createContext, useState, useContext, useEffect} from "react"
+import toast from 'react-hot-toast';
+import api from '../Services/api.jsx'
 
 export const GlobalContext = createContext(null)
 
@@ -35,6 +37,31 @@ export default function GlobalState({ children }) {
       title: "#245532"
     }
   ]);
+  const getToken = localStorage.getItem("JWT_TOKEN") 
+    ? localStorage.getItem("JWT_TOKEN") 
+    : null;
+    // : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0cmxvYzEyIiwiZW1haWwiOiJ0cmxvY25lQGdtYWlsLmNvbSIsInJvbGVzIjoiU1RVREVOVCIsImlhdCI6MTczMTc3MDI3MiwiZXhwIjoxNzMxOTQzMDcyfQ.1AKZy5_90FIcNnpX_yvXQ4V3ElCdpRLpugI2GY9aYIk";
+  const [token, setToken] = useState(getToken);
+
+  const [currentUser, setCurrentUser] = useState(null);
+
+  const fetchUser = async () => {
+      const user = JSON.parse(localStorage.getItem('USER'));
+      console.log("USER:", user);
+      if (user?.username){
+          try {
+              const {data} = await api.get(`/auth/user`);
+              setCurrentUser(data);
+          }
+          catch (error){
+              console.error("Failed to fetch user", error);
+              toast.error("Failed to fetch current user");
+          }
+      }
+  }
+  useEffect(() => {
+      fetchUser();
+  }, [token]);
   return (
     <GlobalContext.Provider
       value={{
@@ -43,7 +70,11 @@ export default function GlobalState({ children }) {
         noti, 
         setNoti,
         bill, 
-        setBill
+        setBill,
+        token, 
+        setToken,
+        currentUser,
+        setCurrentUser
       }}
     >
       {children}
