@@ -1,5 +1,6 @@
 package hcmut.spss.be.service;
 
+import hcmut.spss.be.dtos.response.PrintJobResponse;
 import hcmut.spss.be.entity.user.User;
 
 import java.util.List;
@@ -9,7 +10,6 @@ public interface UserService {
     void updateUserRole(Long userId, String roleName);
 
     List<User> getAllUsers();
-
 
     User findByUsername(String username);
 
