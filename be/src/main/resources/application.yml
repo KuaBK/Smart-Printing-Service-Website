@@ -30,6 +30,14 @@ cloudinary:
   api-key: 233677167656433
   api-secret: 8kfFxYc6xPzaMM25boKVCESDpaE
 
+# vnpay
+payment:
+  vnPay:
+    url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    tmnCode: M1K8IF92
+    secretKey: BW8ZE1YP4ZAKCE1QAHEWS9INRYAE7Z71
+    returnUrl: http://localhost:8080/api/payment/vnpay-callback
+
 logging:
   level.org:
     springframework:

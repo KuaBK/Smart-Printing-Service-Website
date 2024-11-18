@@ -6,6 +6,7 @@ import hcmut.spss.be.entity.discount.Discount;
 import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.notification.Notification;
 import hcmut.spss.be.entity.payment.Payment;
+import hcmut.spss.be.entity.payment.PrintingPage;
 import hcmut.spss.be.entity.printJob.PrintJob;
 import hcmut.spss.be.entity.report.Report;
 import jakarta.persistence.*;
@@ -74,6 +75,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private int numOfPrintingPages;
 
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     @JsonManagedReference
