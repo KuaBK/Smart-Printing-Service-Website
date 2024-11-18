@@ -11,7 +11,7 @@ import {useNavigate} from 'react-router-dom'
 export const Signup = () => {
   const [user, setUser] = useState(true);
   const [jwtToken, setJwtToken] = useState("");
-  const {token, setToken} = useContext(GlobalContext)
+  const {token, setToken,profile, setProfile} = useContext(GlobalContext)
   const [selectRole, setSelectRole] = useState("user")
   const navigate = useNavigate();
 
@@ -23,6 +23,14 @@ export const Signup = () => {
     localStorage.setItem("JWT_TOKEN", token);
     localStorage.setItem("ROLE", selectRole)
     localStorage.setItem("USER", JSON.stringify(user));
+
+    try{
+      const rs = api.get('/auth/user')
+      setProfile(rs.data)
+    }
+    catch(error){
+      console.log(error)
+    }
 
     //store the token on the context state  so that it can be shared any where in our application by context provider
     const rolene = JSON.parse(localStorage.getItem("USER"))
