@@ -10,12 +10,12 @@ import filterimage from '../../assets/filterimage.svg'
 import { GlobalContext } from '../../Context'
 import {useNavigate} from 'react-router-dom'
 
-
 export const Navbar = () => {
   const { noti, setNoti } = useContext(GlobalContext);
   const {selecInput, setSelecInput} = useContext(GlobalContext)
   const [showProfile, setShowProfile] = useState(false)
   const [showNotification, setShowNotification] = useState(false)
+  const {profile} = useContext(GlobalContext);
   const navigate = useNavigate();
   const logout = () => {
     localStorage.removeItem('JWT_TOKEN')
@@ -56,8 +56,8 @@ export const Navbar = () => {
           </ul>
           <div className='flex flex-row justify-items-center items-center h-[100%] cursor-pointer mr-5'>
             <div className='min-w-[150px] items-end flex flex-col px-[10px]'>
-              <p className='font-bold text-[16px] leading-[16px]'>Nguyen Van A</p>
-              <p className='font-normal text-[14px] leading-[16px] text-[#787486] mt-[5px]'>Student</p>
+              <p className='font-bold text-[16px] leading-[16px]'>{profile.name}</p>
+              <p className='font-normal text-[14px] leading-[16px] text-[#787486] mt-[5px]'>{profile.role.charAt(0).toUpperCase() + profile.role.slice(1).toLowerCase()}</p>
             </div>
             <div className='flex flex-row justify-items-center items-center h-[100%] w-[60px] justify-between relative' onClick={() => setShowProfile(!showProfile)}>
               <img src={test} className='rounded-[50%] w-[38px] h-[38px]'/>

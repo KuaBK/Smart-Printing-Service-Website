@@ -15,7 +15,7 @@ export const Signup = () => {
   const [selectRole, setSelectRole] = useState("user")
   const navigate = useNavigate();
 
-  const handleSuccessfulLogin = (token, decodedToken) => {
+  const handleSuccessfulLogin = async (token, decodedToken) => {
     const user = {
       username: decodedToken.sub,
       roles: decodedToken.roles ? decodedToken.roles.split(",") : [],
@@ -25,11 +25,11 @@ export const Signup = () => {
     localStorage.setItem("USER", JSON.stringify(user));
 
     try{
-      const rs = api.get('/auth/user')
-      setProfile(rs.data)
+      const rs = await api.get('/auth/user')
+      setProfile(rs.data);
     }
     catch(error){
-      console.log(error)
+      console.log(error);
     }
 
     //store the token on the context state  so that it can be shared any where in our application by context provider
@@ -56,14 +56,11 @@ export const Signup = () => {
           data[key] = value;
       });
 
-      console.log('Form Data:', data);
 
       try {
         const response = await api.post('/auth/public/signin', data);
-        console.log(response.data)
         toast.success("Login Successful");
         const decodedToken = jwtDecode(response.data.jwtToken);
-        console.log(decodedToken)
         if (response.status === 200 && response.data.jwtToken) {
           setJwtToken(response.data.jwtToken);
           handleSuccessfulLogin(response.data.jwtToken, decodedToken);
