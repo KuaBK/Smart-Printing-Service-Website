@@ -6,6 +6,7 @@ export const GlobalContext = createContext(null)
 
 export default function GlobalState({ children }) {
   const [selecInput, setSelecInput] = useState('HomePageUser')
+  const [fileChoice, setFileChoice] = useState();
   const [noti, setNoti] = useState([
     {
       time: "10:00 AM - 22/11/2022",
@@ -74,7 +75,9 @@ export default function GlobalState({ children }) {
         token, 
         setToken,
         currentUser,
-        setCurrentUser
+        setCurrentUser,
+        fileChoice, 
+        setFileChoice
       }}
     >
       {children}

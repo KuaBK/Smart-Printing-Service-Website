@@ -144,7 +144,7 @@ export const ManagePrint = (props) => {
                 <div className={`${classes.section} ${classes.borderit}`}>
                   <div className={classes.item_box1}>
                     <label>Tiêu đề: </label>
-                    <input type="text" className={`${classes.inputField} ${classes.longInput1}`} required/>
+                    <input defaultValue={props.file?.name} type="text" className={`${classes.inputField} ${classes.longInput1}`} required/>
                   </div>
                   <div className={`${classes.section2} ${classes.format}`}>
                     <div className={classes.item_box1}>
@@ -178,7 +178,7 @@ export const ManagePrint = (props) => {
             <p className={classes.page_rm}><div className='px-[20px] bg-[#0f6cbf] rounded-[15px] text-[12px] font-bold text-[#fff] align-center items-center text-center h-fit py-[3px]'>Số trang hiện có: </div>  <b className={classes.numberpage}>10</b></p>
           </div>
           <iframe
-            src="about:blank"
+            src={props.file?.link}
             title="file preview"
             className={classes.preview}
           ></iframe>

@@ -121,6 +121,9 @@
   gap: 10px;
   cursor: pointer;
 }
+.fileItemAct{
+  background-color: #0f6dbf0f;
+}
 
 .fileItem:hover {
   background-color: #3131340c;
