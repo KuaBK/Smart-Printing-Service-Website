@@ -173,7 +173,7 @@
   }
   .borderit {
     border-radius: 20px;
-    border: 2px #787486 solid;
+    border: 1px #787486 solid;
     padding: 15px;
     width: 470px;
     margin: 3px;
@@ -188,6 +188,8 @@
     left: 20px;
     background-color: #fff;
     padding-top: -5px;
+    padding-left: 5px;
+    padding-right: 5px;
   }
   .format {
     display: grid;

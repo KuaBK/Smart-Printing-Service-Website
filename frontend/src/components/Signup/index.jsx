@@ -15,7 +15,7 @@ export const Signup = () => {
   const [selectRole, setSelectRole] = useState("user")
   const navigate = useNavigate();
 
-  const handleSuccessfulLogin = (token, decodedToken) => {
+  const handleSuccessfulLogin = async (token, decodedToken) => {
     const user = {
       username: decodedToken.sub,
       roles: decodedToken.roles ? decodedToken.roles.split(",") : [],
@@ -24,12 +24,11 @@ export const Signup = () => {
     localStorage.setItem("ROLE", selectRole)
     localStorage.setItem("USER", JSON.stringify(user));
 
-    try{
-      const rs = api.get('/auth/user')
-      setProfile(rs.data)
-    }
-    catch(error){
-      console.log(error)
+    try {
+      const rs = await api.get('/auth/user');
+      setProfile(rs.data);
+    } catch (error) {
+      console.log(error);
     }
 
     //store the token on the context state  so that it can be shared any where in our application by context provider

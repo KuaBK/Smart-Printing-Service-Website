@@ -1,37 +1,108 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import classes from './style.module.css';
+import api from '../../Services/api.jsx';
+import axios from 'axios';
 export const ManagePrint = (props) => {
   // const inputRefs = useRef([]);
-
-  const submitConfig = (e) => {
+  const [sbi, setSbi] = useState(1);
+  // const submitConfig = async (e) => {
+  //   console.log('submitting config');
+  //   e.preventDefault();
+  //   // const newPrint = {
+  //   //   place: e.target[0].value,
+  //   //   printinfo: e.target[1].value,
+  //   //   noprint: e.target[2].value,
+  //   //   layout: e.target[3].value,
+  //   //   color: e.target[4].selectedOptions[0].value,
+  //   //   papersize: e.target[5].value,
+  //   //   scale: e.target[6].value,
+  //   //   nosided: e.target[7].selectedOptions[0].value,
+  //   //   qr: e.target[8].checked ? e.target[8].value : null,
+  //   //   page: (() => {
+  //   //     const selectedOption = e.target.querySelector('input[name="pageOption"]:checked');
+  //   //     if (selectedOption.nextElementSibling && selectedOption.nextElementSibling.type === 'text') {
+  //   //       return selectedOption.nextElementSibling.value;
+  //   //     }
+  //   //     return selectedOption.value;
+  //   //   })()
+  //   // };
+  //   try {
+  //     const response = await api.post(`/file-configs/post?fileId=${props.file.documentId}`, {
+  //       "paperSize": "A3",
+  //       "paperRange": "1-10",
+  //       "sides": "SINGLE",
+  //       "numberOfCopies": 2,
+  //       "layout": "PORTRAIT",
+  //       "color": true
+  //   });
+  //     console.log(response.data);
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Chọn in thành công",
+  //       showConfirmButton: false,
+  //       timer: 3000
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Đã xảy ra lỗi",
+  //       showConfirmButton: false,
+  //       timer: 3000
+  //     });
+  //   }
+  // };
+  const submitConfig = async (e) => {
+    console.log("Submitting config");
     e.preventDefault();
-    const newPrint = {
-      place: e.target[0].value,
-      printinfo: e.target[1].value,
-      noprint: e.target[2].value,
-      layout: e.target[3].value,
-      color: e.target[4].selectedOptions[0].value,
-      papersize: e.target[5].value,
-      scale: e.target[6].value,
-      nosided: e.target[7].selectedOptions[0].value,
-      qr: e.target[8].checked ? e.target[8].value : null,
-      page: (() => {
-        const selectedOption = e.target.querySelector('input[name="pageOption"]:checked');
-        if (selectedOption.nextElementSibling && selectedOption.nextElementSibling.type === 'text') {
-          return selectedOption.nextElementSibling.value;
-        }
-        return selectedOption.value;
-      })()
-    }
-    setListUser([...listUser, newAccount]);
-    Swal.fire({
-      icon: "success",
-      title: "Chọn in thành công",
-      showConfirmButton: false,
-      timer: 3000
-    });
-    inputRefs.current.forEach(ref => ref.value = '');
+  
+    // Collect form data
+    const formData = new FormData(e.target);
+    const title = formData.get("pageOption");
+    const place = formData.get("dd");
+    const printer = formData.get("tsi");
+    const noprint = formData.get("sbi");
+    const layout = formData.get("ly");
+    const colors = formData.get("cl");
+    const paper_size = formData.get("ps");
+    const scale = formData.get("sc");
+    const nopageprint = formData.get("smi");
+    const qr = formData.get("qr");
+    const pageOption = formData.get("pageOption");
+    const margin = formData.get("mar");
+    const pageOfSize = formData.get("pos");
+
+    const pageOption1 = document.querySelector('input[name="pageOption"]:checked').value;
+    const customRange = document.querySelector('input[name="customPageRange"]').value;
+
+    const pageRange =
+      pageOption1 === "All"
+        ? "ALL"
+        : pageOption === "Old page only"
+        ? "OLD"
+        : pageOption === "Even page only"
+        ? "EVEN"
+        : pageOption === "Custom"
+        ? customRange
+        : "ALL";
+    api.post(`/file-configs/post?fileId=${props.file.documentId}`, {
+      "paperSize": paper_size == "Letter" ? "LETTER" : paper_size == "A4" ? "A4" : "A3",
+      "paperRange": pageRange,
+      "sides": nopageprint == "Single sided" ? "SINGLE" : "DOUBLE",
+      "numberOfCopies": noprint,
+      "layout": layout == "Landscape" ? "LANDSCAPE" : "PORTRAIT",
+      "color": colors == "Color" ? true : false
+    })
+    .then(response => {
+      console.log(response.data)
+    })
+    .catch(error => {
+      console.log(response.data)
+    })
   };
+  const onChangeSbi = (e) => {
+    setSbi(e.target.value);
+  }
   useEffect(() => {
     console.log(props);
   }, [props]);
@@ -51,11 +122,11 @@ export const ManagePrint = (props) => {
                 <div className={classes.section2}>
                   <div className={classes.item_box}>
                     <label>Địa điểm</label>
-                    <input type="text" className={classes.inputField} required/>
+                    <input type="text" name='dd' className={classes.inputField} required/>
                   </div>
                   <div className={classes.item_box}>
                     <label>Thông số máy in</label>
-                    <input type="text" className={`${classes.inputField} ${classes.longInput}`} required/>
+                    <input type="text" name='tsi' className={`${classes.inputField} ${classes.longInput}`} required/>
                   </div>
                 </div>
 
@@ -63,18 +134,18 @@ export const ManagePrint = (props) => {
                 <div className={classes.section3}>
                   <div className={classes.item_box}>
                     <label>Số bản in:</label>
-                    <input type="text" className={classes.inputField} required/>
+                    <input type="text" name='sbi' className={classes.inputField} defaultValue={1} onChange={onChangeSbi} required/>
                   </div>
                   <div className={classes.item_box}>
                     <label>Layout:</label>
-                    <select className={classes.inputField} required>
-                      <option><p>Landscape</p></option>
+                    <select name='ly' className={classes.inputField} required>
+                      <option>Landscape</option>
                       <option>Portrait</option>
                     </select>
                   </div>
                   <div className={classes.item_box} >
                     <label>Colors:</label>
-                    <select className={classes.inputField} required>
+                    <select name='cl' className={classes.inputField} required>
                       <option>Black and white</option>
                       <option>Color</option>
                     </select>
@@ -85,7 +156,7 @@ export const ManagePrint = (props) => {
                 <div className={classes.section3}>
                   <div className={classes.item_box}>
                     <label>Paper Size</label>
-                    <select className={classes.inputField} required>
+                    <select name='ps' className={classes.inputField} required>
                       <option>Letter</option>
                       <option>A4</option>
                       <option>A3</option>
@@ -93,11 +164,11 @@ export const ManagePrint = (props) => {
                   </div>
                   <div className={classes.item_box}>
                     <label>Scale (%)</label>
-                    <input type="text" className={classes.inputField} required/>
+                    <input name='sc' type="text" className={classes.inputField} required/>
                   </div>
                   <div className={classes.item_box}>
                     <label>Số mặt in:</label>
-                    <select className={classes.inputField} required>
+                    <select name='smi' className={classes.inputField} required>
                       <option>Single sided</option>
                       <option>Double sided</option>
                     </select>
@@ -106,7 +177,7 @@ export const ManagePrint = (props) => {
               
                 {/* QR Code */}
                 <div className={classes.section1}>
-                  <input type="checkbox" />
+                  <input name='qr' type="checkbox" />
                   <label> Tạo mã QR nhận</label>
                 </div>
 
@@ -115,21 +186,55 @@ export const ManagePrint = (props) => {
                   <label className={classes.page_label}>Page</label>
                   <div className={`${classes.section2} ${classes.borderit}`}>
                     <div className={`${classes.leftside} `}>
-                      <ul className={classes.select_op} >
+                      {/* <ul className={classes.select_op} >
                         <li><input type="radio" name="pageOption" /> All</li>
                         <li><input type="radio" name="pageOption" /> Old page only</li>
                         <li><input type="radio" name="pageOption" /> Even page only</li>
                         <li><input type="radio" name="pageOption" /> <input type="text" className={classes.inputField} placeholder =" eg 2-7, 8-10"/></li>
-                      </ul>
+                      </ul> */}
+                      <fieldset className={`${classes.leftside} select_op`}>
+                        <div>
+                          <label>
+                            <input type="radio" name="pageOption" value="All" />
+                            All
+                          </label>
+                        </div>
+                        <div>
+                          <label>
+                            <input type="radio" name="pageOption" value="Old page only" />
+                            Old pages only
+                          </label>
+                        </div>
+                        <div>
+                          <label>
+                            <input type="radio" name="pageOption" value="Even page only" />
+                            Even pages only
+                          </label>
+                        </div>
+                        <div>
+                          <label>
+                            <input type="radio" name="pageOption" value="Custom" />
+                          </label>
+                          <input
+                            type="text"
+                            name="customPageRange"
+                            className={classes.inputField}
+                            placeholder="e.g., 2-7, 8-10"
+                            // disabled
+                            onfocus="this.previousElementSibling.checked = true; this.disabled = false;"
+                            onblur="if (!this.previousElementSibling.checked) this.disabled = true;"
+                          />
+                        </div>
+                      </fieldset>
                     </div>
                     <div className={`${classes.rightside}`}>
                       <div className={classes.item_box1}>
                         <label>Page of sheet:</label>
-                        <input type="text" className={classes.inputField} required/>
+                        <input name='pos' type="text" className={classes.inputField} required/>
                       </div>
                       <div className={classes.item_box1}>
                         <label>Margin:</label>
-                        <input type="text" className={classes.inputField} required/>
+                        <input name='mar' type="text" className={classes.inputField} required/>
                       </div>
                     </div>
                   </div>
@@ -174,11 +279,12 @@ export const ManagePrint = (props) => {
         </div>
 
         <div className={`${classes.rightside} ${classes.rightsize}`}>
-          <div className={classes.page_remain}>
+          <div className={`${classes.page_remain} flex flex-row items-center justify-between`}>
             <p className={classes.page_rm}><div className='px-[20px] bg-[#0f6cbf] rounded-[15px] text-[12px] font-bold text-[#fff] align-center items-center text-center h-fit py-[3px]'>Số trang hiện có: </div>  <b className={classes.numberpage}>10</b></p>
+            {<p className="text-[13px] text-red-500 font-bold"> Số trang in: {props.file?.numOfPage * sbi} </p>}
           </div>
           <iframe
-            src={props.file?.link}
+            src={props.file?.url}
             title="file preview"
             className={classes.preview}
           ></iframe>
