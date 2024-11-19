@@ -55,14 +55,11 @@ export const Signup = () => {
           data[key] = value;
       });
 
-      console.log('Form Data:', data);
 
       try {
         const response = await api.post('/auth/public/signin', data);
-        console.log(response.data)
         toast.success("Login Successful");
         const decodedToken = jwtDecode(response.data.jwtToken);
-        console.log(decodedToken)
         if (response.status === 200 && response.data.jwtToken) {
           setJwtToken(response.data.jwtToken);
           handleSuccessfulLogin(response.data.jwtToken, decodedToken);
