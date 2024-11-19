@@ -31,13 +31,13 @@
 
 Thành viên phát triển dự án:
 
-- Trần Văn Lộc- 2211937
-- Trần Duy Phương- 2212703
-- Trần Thanh Phong- 2212571
-- Nguyễn Lê Hoàng Phúc- 2212629
-- Nguyễn Khắc Duy- 2210517
-- Nguyễn Thành Đạt- 2210700
-- Nguyễn Tuấn Phong- 2212561
+- Trần Văn Lộc - 2211937
+- Trần Duy Phương - 2212703
+- Trần Thanh Phong - 2212571
+- Nguyễn Lê Hoàng Phúc - 2212629
+- Nguyễn Khắc Duy - 2210517
+- Nguyễn Thành Đạt - 2210700
+- Nguyễn Tuấn Phong - 2212561
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -69,7 +69,7 @@ Trước khi sử dụng ứng dụng, bạn cần cài đặt trước một s�
 - [Node.js](https://nodejs.org/en)
 - [Java](https://www.oracle.com/java/technologies/downloads/)
 - [Docker](https://dev.mysql.com/downloads/installer/)
-- [Dbeaver]((https://dbeaver.io/))
+- [Dbeaver](https://dbeaver.io/))
 
 <a id="installation"></a>
 ### Cài đặt
@@ -101,16 +101,20 @@ Lệnh này sẽ chạy file `docker-compose` tạo 1 container và tạo schema
 
 8. Build và Chạy ứng dụng
 Mở `terminal` trong thư mục `be`:
-#### 8.1 Build
+
+- 8.1 Build
+  
 ```bash
 ./mvnw clean install
 ```
-#### 8.2 Run
+
+- 8.2 Run
+  
 ```bash
 ./mvnw spring-boot:run
 ```
 
-### 9. Kiểm tra API
+9. Kiểm tra API
 Ứng dụng sẽ chạy trên `http://localhost:8080`. Bạn có thể kiểm tra các API bằng cách sử dụng [Postman](https://www.postman.com/).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
