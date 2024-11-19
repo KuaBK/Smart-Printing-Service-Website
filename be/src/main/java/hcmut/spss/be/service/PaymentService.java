@@ -1,12 +1,20 @@
 package hcmut.spss.be.service;
 
+import hcmut.spss.be.dtos.request.BuyPrintingPageRequest;
 import hcmut.spss.be.dtos.response.PaymentResponse;
-import hcmut.spss.be.entity.payment.Payment;
+import hcmut.spss.be.dtos.response.TransactionResponse;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 public interface PaymentService {
 
-    PaymentResponse createPaymentURL(long numberPages);
 
-    PaymentResponse handleResponse(HttpServletRequest request);
+    PaymentResponse buyPrintingPage(BuyPrintingPageRequest request);
+
+    PaymentResponse handleResponse(long codeId, HttpServletRequest request);
+
+    List<TransactionResponse> getTransactionsOfCurrentUser(); //user
+
+    List<TransactionResponse> getAllTransactions(); //admin
 }

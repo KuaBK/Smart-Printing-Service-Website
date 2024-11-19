@@ -38,7 +38,7 @@ public class Payment {
     @Column(name = "payment_date", updatable = false)
     LocalDateTime paymentDate;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "discount_id")
     Discount discount;
 

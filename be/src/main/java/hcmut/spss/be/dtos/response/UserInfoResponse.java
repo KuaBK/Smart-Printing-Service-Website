@@ -18,6 +18,7 @@ public class UserInfoResponse {
     private String email;
     private String name;
     private String mssv;
+    private int numOfPrintingPages;
     private String phone;
     private String avtUrl;
     private String role;
@@ -29,6 +30,7 @@ public class UserInfoResponse {
                 .name(user.getName())
                 .email(user.getEmail())
                 .mssv(user.getMssv())
+                .numOfPrintingPages(user.getNumOfPrintingPages())
                 .phone(user.getPhoneNumber())
                 .avtUrl(user.getAvatarUrl())
                 .role(user.getRole().name())
