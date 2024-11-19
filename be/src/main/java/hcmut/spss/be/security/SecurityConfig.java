@@ -44,13 +44,12 @@ public class SecurityConfig {
                                 .ignoringRequestMatchers("/api/auth/public/**"));
         http.authorizeHttpRequests((requests)
                         -> requests
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/csrf-token/**").permitAll()
                         .requestMatchers("/api/auth/public/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/**").permitAll()
-                        //.requestMatchers("/api/payment/vnpay-callback/**").permitAll()
-                        .requestMatchers("/trigger/**").permitAll()
+                        .requestMatchers("/api/spso/**").hasAuthority("SPSO")
                         .anyRequest().authenticated());
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

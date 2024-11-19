@@ -6,7 +6,6 @@ import hcmut.spss.be.entity.discount.Discount;
 import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.notification.Notification;
 import hcmut.spss.be.entity.payment.Payment;
-import hcmut.spss.be.entity.payment.PrintingPage;
 import hcmut.spss.be.entity.printJob.PrintJob;
 import hcmut.spss.be.entity.printLog.PrintLog;
 import hcmut.spss.be.entity.report.Report;
@@ -19,7 +18,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -77,7 +78,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private int numOfPrintingPages;
+    private int numOfPrintingPages=100; //default 100page for student
 
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     @JsonManagedReference
@@ -97,13 +98,17 @@ public class User {
 
     @OneToMany(mappedBy = "spso")
     @JsonManagedReference
-    private List<Discount> discountList;
-
-    @OneToMany(mappedBy = "spso")
-    @JsonManagedReference
     private List<Notification> notificationList;
 
     @OneToMany(mappedBy = "spso")
     @JsonManagedReference
     private List<Report> reportList;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_discount",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "discount_id")
+    )
+    private Set<Discount> discounts = new HashSet<>();
 }

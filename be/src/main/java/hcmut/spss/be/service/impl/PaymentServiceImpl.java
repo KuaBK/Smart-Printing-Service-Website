@@ -1,9 +1,13 @@
 package hcmut.spss.be.service.impl;
 
+import hcmut.spss.be.dtos.request.BuyPrintingPageRequest;
 import hcmut.spss.be.dtos.response.PaymentResponse;
+import hcmut.spss.be.dtos.response.TransactionResponse;
+import hcmut.spss.be.entity.discount.Discount;
 import hcmut.spss.be.entity.payment.Payment;
 import hcmut.spss.be.entity.payment.PaymentMethod;
 import hcmut.spss.be.entity.user.User;
+import hcmut.spss.be.repository.DiscountRepository;
 import hcmut.spss.be.repository.PaymentRepository;
 import hcmut.spss.be.repository.UserRepository;
 import hcmut.spss.be.service.PaymentService;
@@ -12,17 +16,13 @@ import hcmut.spss.be.utils.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,11 +48,12 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private UserRepository userRepository;
 
-    @Override
-    public PaymentResponse createPaymentURL(long numberPages) {
+    @Autowired
+    private DiscountRepository discountRepository;
+
+    public PaymentResponse createPaymentURL(int numberPages, long codeId) {
         try {
             // calc amount
-            //String studentId = String.valueOf(authUtil.loggedInUserId());
             String amount = String.valueOf(numberPages*500); // hardcode price
             String vnp_Version = "2.1.0";
             String vnp_Command = "pay";
@@ -76,7 +77,7 @@ public class PaymentServiceImpl implements PaymentService {
             vnp_Params.put("vnp_OrderInfo", vnp_OrderInfo);
             vnp_Params.put("vnp_OrderType", orderType);
             vnp_Params.put("vnp_Locale", vnp_Locale);
-            vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl);
+            vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl+"/"+codeId);
             vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -105,8 +106,31 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
+
     @Override
-    public PaymentResponse handleResponse(HttpServletRequest request) {
+    public PaymentResponse buyPrintingPage(BuyPrintingPageRequest request) {
+        if(request.getDiscountCode().isEmpty()){
+            return createPaymentURL(request.getPage(), 0);
+        }
+        Discount discount = discountRepository.findByDiscountCode(request.getDiscountCode()).orElseThrow(() -> new RuntimeException("Discount Code Not Found"));
+        User student = authUtil.loggedInUser();
+        // check used
+        if(student.getDiscounts().contains(discount)){
+            throw new RuntimeException("Discount Code Already Used");
+        }
+        // check expiry
+        if (discount.getExpirationDate().isBefore(LocalDate.now())){
+            throw new RuntimeException("Discount Code Expired");
+        }
+        int numberPages = request.getPage();
+        numberPages -= discount.getPagesFree();
+        student.getDiscounts().add(discount);
+        userRepository.save(student);
+        return  createPaymentURL(numberPages, discount.getDiscountId());
+    }
+
+    @Override
+    public PaymentResponse handleResponse(long codeId, HttpServletRequest request) {
         try {
             // Lấy các tham số từ request callback
             Map<String, String> params = new HashMap<>();
@@ -132,18 +156,21 @@ public class PaymentServiceImpl implements PaymentService {
                 // Xử lý khi thanh toán thành công
                 //thay doi so giay in cua sinh vien
                 User student = authUtil.loggedInUser();
-                //User student = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found!"));
                 String amount = params.get("vnp_Amount");
                 int numberPages = Integer.parseInt(amount)/500/100;
                 student.setNumOfPrintingPages(student.getNumOfPrintingPages()+numberPages);
                 userRepository.save(student);
 
+                Discount discount = discountRepository.findById(codeId).orElse(null);
+
+
                 // save log
                 Payment payment = Payment.builder()
                         .amountPaid(Double.parseDouble(amount)/100)
                         .paymentMethod(PaymentMethod.BANK)
-                        .numberOfPagesBought(numberPages)
-                        .student(student).build();
+                        .numberOfPagesBought(numberPages+(discount==null? 0:discount.getPagesFree()))
+                        .student(student)
+                        .discount(discount).build();
                 paymentRepository.save(payment);
 
                 return PaymentResponse.builder().status(200).message("Thanh toán thành công!").build();
@@ -154,5 +181,16 @@ public class PaymentServiceImpl implements PaymentService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<TransactionResponse> getTransactionsOfCurrentUser() {
+        List<Payment> payments = paymentRepository.findAllByStudent(authUtil.loggedInUser());
+        return payments.stream().map(TransactionResponse::toTransactionResponse).toList();
+    }
+
+    @Override
+    public List<TransactionResponse> getAllTransactions() {
+        return paymentRepository.findAll().stream().map(TransactionResponse::toTransactionResponse).toList();
     }
 }
