@@ -1,5 +1,6 @@
 package hcmut.spss.be.dtos.request;
 
+import hcmut.spss.be.entity.fileConfig.PagesPrint;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,4 +13,10 @@ public class FileConfigRequest {
     private int numberOfCopies;
     private String layout;
     private boolean color;
+    private boolean QRCode;
+    private String location;
+    private int pageOfSheet;
+    private String margin;
+    private int scale;
+    private PagesPrint pagesPrint;
 }

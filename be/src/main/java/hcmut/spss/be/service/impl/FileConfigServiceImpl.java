@@ -43,13 +43,20 @@ public class FileConfigServiceImpl implements FileConfigService {
 
         // create instance file config from request
         FileConfig fileConfig = FileConfig.builder()
-                        .paperSize(PaperSize.valueOf(request.getPaperSize()))
-                                .paperRange(request.getPaperRange())
-                                        .sides(Sides.valueOf(request.getSides()))
-                                                .numberOfCopies(request.getNumberOfCopies())
-                                                        .layout(Layout.valueOf(request.getLayout()))
-                                                                .color(request.isColor())
-                                                                        .document(document).build();
+                .paperSize(PaperSize.valueOf(request.getPaperSize()))
+                .paperRange(request.getPaperRange())
+                .sides(Sides.valueOf(request.getSides()))
+                .numberOfCopies(request.getNumberOfCopies())
+                .layout(Layout.valueOf(request.getLayout()))
+                .color(request.isColor())
+                .QRCode(request.isQRCode())
+                .location(request.getLocation())
+                .pageOfSheet(request.getPageOfSheet())
+                .margin(request.getMargin())
+                .scale(request.getScale())
+                .pagesPrint(request.getPagesPrint())
+                .document(document)
+                .build();
         fileConfigRepository.save(fileConfig);
         return new MessageResponse("FileConfiguration created successfully");
     }
