@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchDocumentResponse {
-    private Long documentId;
-    private String documentName;
-    private String category;
-    private Boolean isShared;
+    private Long documentId;     // ID của tài liệu
+    private String documentName; // Tên của tài liệu
+    private Boolean isShared;    // Trạng thái đã chia sẻ hay chưa
 }

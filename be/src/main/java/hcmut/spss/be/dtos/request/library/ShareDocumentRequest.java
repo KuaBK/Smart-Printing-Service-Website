@@ -10,6 +10,4 @@ import lombok.NoArgsConstructor;
 
 public class ShareDocumentRequest {
     private Long documentId;
-    private Long libraryId;
-    private String category;
 }

@@ -62,19 +62,14 @@ public class Document {
     private FileConfig fileConfig;
 
     @ManyToOne
-    @JoinColumn(name = "share_library")
-    @JsonBackReference
+    @JoinColumn(name = "library_id")
     private SharedLibrary sharedLibrary;
 
-    public void shareWithLibrary(SharedLibrary library, String category) {
-        this.shared = true;
+    public void shareWithLibrary(SharedLibrary library) {
         this.sharedLibrary = library;
-        this.category = category;
     }
 
     public void unshareFromLibrary() {
-        this.shared = false;
         this.sharedLibrary = null;
-        this.category = null;
     }
 }
