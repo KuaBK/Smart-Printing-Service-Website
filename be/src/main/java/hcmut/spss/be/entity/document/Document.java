@@ -65,4 +65,16 @@ public class Document {
     @JoinColumn(name = "share_library")
     @JsonBackReference
     private SharedLibrary sharedLibrary;
+
+    public void shareWithLibrary(SharedLibrary library, String category) {
+        this.shared = true;
+        this.sharedLibrary = library;
+        this.category = category;
+    }
+
+    public void unshareFromLibrary() {
+        this.shared = false;
+        this.sharedLibrary = null;
+        this.category = null;
+    }
 }

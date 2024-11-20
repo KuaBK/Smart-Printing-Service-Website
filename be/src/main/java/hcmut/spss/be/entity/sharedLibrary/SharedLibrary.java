@@ -30,11 +30,8 @@ public class SharedLibrary {
     @Column(name = "shared_date", updatable = false)
     LocalDateTime sharedDate;
 
-    @Column(name = "is_shared")
-    boolean isShared = false;
-
-    @Column(name = "doc_name")
-    String docName;
+    @Column(name = "libraryName")
+    String libraryName;
 
     @OneToOne
     @JoinColumn(name = "studen_id", referencedColumnName = "user_id")
@@ -43,4 +40,14 @@ public class SharedLibrary {
     @OneToMany(mappedBy = "sharedLibrary")
     @JsonManagedReference
     List<Document> documents;
+
+    public void addDocument(Document document) {
+        documents.add(document);
+        document.setSharedLibrary(this);
+    }
+
+    public void removeDocument(Document document) {
+        documents.remove(document);
+        document.setSharedLibrary(null);
+    }
 }
