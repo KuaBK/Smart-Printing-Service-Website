@@ -27,7 +27,6 @@ public class DiscountServiceImpl implements DiscountService {
                 .startDate(request.getStartDate())
                 .expirationDate(request.getExpirationDate())
                 .build();
-
         discountRepository.save(discount);
         return new MessageResponse("created discount");
     }

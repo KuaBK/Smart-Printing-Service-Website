@@ -1,6 +1,5 @@
 package hcmut.spss.be.entity.codePrint;
 
-import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.printJob.PrintJob;
 import hcmut.spss.be.entity.user.User;
 import jakarta.persistence.*;
