@@ -49,6 +49,18 @@ public class Document {
     @Column(name = "upload_time", updatable = false)
     private Date uploadTime;
 
+    @Column(name = "headline")
+    private String headline;
+
+    @Column(name = "faculty_name")
+    private String facultyName;
+
+    @Column(name = "subject")
+    private String subject;
+
+    @Column(name = "semester")
+    private String semester;
+
     @Column(name = "category")
     private String category;
 
