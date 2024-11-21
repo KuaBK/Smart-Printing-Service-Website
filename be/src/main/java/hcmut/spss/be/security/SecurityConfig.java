@@ -26,9 +26,9 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    @Value("${frontend-url}")
-    private String frontendUrl;
+//
+//    @Value("${frontend-url}")
+//    private String frontendUrl;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
