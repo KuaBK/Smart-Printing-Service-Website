@@ -22,9 +22,6 @@ public class FileConfig {
     @Column(name = "id")
     Long id;
 
-    @Column(name = "location")
-    String location;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "paper_size")
     PaperSize paperSize;

@@ -4,10 +4,7 @@ import hcmut.spss.be.dtos.request.FileConfigRequest;
 import hcmut.spss.be.dtos.response.MessageResponse;
 import hcmut.spss.be.dtos.response.FileConfigResponse;
 import hcmut.spss.be.entity.document.Document;
-import hcmut.spss.be.entity.fileConfig.FileConfig;
-import hcmut.spss.be.entity.fileConfig.Layout;
-import hcmut.spss.be.entity.fileConfig.PaperSize;
-import hcmut.spss.be.entity.fileConfig.Sides;
+import hcmut.spss.be.entity.fileConfig.*;
 import hcmut.spss.be.repository.DocumentRepository;
 import hcmut.spss.be.repository.FileConfigRepository;
 import hcmut.spss.be.service.FileConfigService;
@@ -50,11 +47,10 @@ public class FileConfigServiceImpl implements FileConfigService {
                 .layout(Layout.valueOf(request.getLayout()))
                 .color(request.isColor())
                 .QRCode(request.isQRCode())
-                .location(request.getLocation())
                 .pageOfSheet(request.getPageOfSheet())
                 .margin(request.getMargin())
                 .scale(request.getScale())
-                .pagesPrint(request.getPagesPrint())
+                .pagesPrint(PagesPrint.valueOf(request.getPagesPrint()))
                 .document(document)
                 .build();
         fileConfigRepository.save(fileConfig);
