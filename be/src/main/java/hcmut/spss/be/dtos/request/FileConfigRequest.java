@@ -12,4 +12,8 @@ public class FileConfigRequest {
     private int numberOfCopies;
     private String layout;
     private boolean color;
+    private boolean qrCode;
+    private int pageOfSheet;
+    private String margin;
+    private int scale;
 }

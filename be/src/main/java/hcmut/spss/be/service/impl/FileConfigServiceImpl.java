@@ -1,21 +1,28 @@
 package hcmut.spss.be.service.impl;
 
 import hcmut.spss.be.dtos.request.FileConfigRequest;
+import hcmut.spss.be.dtos.response.ApiResponse;
 import hcmut.spss.be.dtos.response.MessageResponse;
 import hcmut.spss.be.dtos.response.FileConfigResponse;
+import hcmut.spss.be.dtos.response.PrinterResponse;
+import hcmut.spss.be.entity.codePrint.CodePrint;
 import hcmut.spss.be.entity.document.Document;
-import hcmut.spss.be.entity.fileConfig.FileConfig;
-import hcmut.spss.be.entity.fileConfig.Layout;
-import hcmut.spss.be.entity.fileConfig.PaperSize;
-import hcmut.spss.be.entity.fileConfig.Sides;
+import hcmut.spss.be.entity.fileConfig.*;
+import hcmut.spss.be.entity.printer.Printer;
+import hcmut.spss.be.entity.printer.Status;
+import hcmut.spss.be.repository.CodePrintRepository;
 import hcmut.spss.be.repository.DocumentRepository;
 import hcmut.spss.be.repository.FileConfigRepository;
+import hcmut.spss.be.repository.PrinterRepository;
 import hcmut.spss.be.service.FileConfigService;
 import hcmut.spss.be.utils.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.security.Key;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class FileConfigServiceImpl implements FileConfigService {
@@ -29,29 +36,60 @@ public class FileConfigServiceImpl implements FileConfigService {
     private AuthUtil authUtil;
 
     @Autowired
+    private CodePrintRepository codePrintRepository;
+
+    @Autowired
+    private PrinterRepository printerRepository;
+
+    @Autowired
     public FileConfigServiceImpl(FileConfigRepository fileConfigRepository) {
         this.fileConfigRepository = fileConfigRepository;
     }
 
     @Override
-    public MessageResponse createFileConfig(FileConfigRequest request, Long id) {
+    public ApiResponse<?> createFileConfig(FileConfigRequest request, Long id) {
         // find document to config
         Document document = documentRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found"));
-        if(document.getFileConfig()!=null){
-            throw new RuntimeException("Document already exists");
-        }
+
+
+        // check generateCode;
+        CodePrint codePrint =  request.isQrCode()? CodePrint.builder()
+                .generatedCode(generateCode())
+                .codeStartDate(LocalDateTime.now())
+                .codeEndDate(LocalDateTime.now().plusDays(1)).build() : null;
 
         // create instance file config from request
         FileConfig fileConfig = FileConfig.builder()
-                        .paperSize(PaperSize.valueOf(request.getPaperSize()))
-                                .paperRange(request.getPaperRange())
-                                        .sides(Sides.valueOf(request.getSides()))
-                                                .numberOfCopies(request.getNumberOfCopies())
-                                                        .layout(Layout.valueOf(request.getLayout()))
-                                                                .color(request.isColor())
-                                                                        .document(document).build();
+                .paperSize(PaperSize.valueOf(request.getPaperSize()))
+                .paperRange(request.getPaperRange())
+                .sides(Sides.valueOf(request.getSides()))
+                .numberOfCopies(request.getNumberOfCopies())
+                .layout(Layout.valueOf(request.getLayout()))
+                .color(request.isColor())
+                .QRCode(request.isQrCode())
+                .pageOfSheet(request.getPageOfSheet())
+                .margin(request.getMargin())
+                .scale(request.getScale())
+                .document(document)
+                .build();
+
         fileConfigRepository.save(fileConfig);
-        return new MessageResponse("FileConfiguration created successfully");
+        if (codePrint != null) {
+            codePrint.setFileConfig(fileConfig);
+            codePrintRepository.save(codePrint);
+            Map<String, String> data = new HashMap<>();
+            data.put("CodePrint", codePrint.getGeneratedCode());
+            document.getFileConfigs().add(fileConfig);
+            documentRepository.save(document);
+            return new ApiResponse<>(200, "Successfully created file config", data);
+        }else {
+            fileConfigRepository.save(fileConfig);
+            document.getFileConfigs().add(fileConfig);
+            documentRepository.save(document);
+
+            return new ApiResponse<>(200, "Successfully created file config", null);
+        }
+
     }
 
     @Override
@@ -85,5 +123,20 @@ public class FileConfigServiceImpl implements FileConfigService {
         FileConfig fileConfig = fileConfigRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found"));
         fileConfigRepository.deleteById(id);
         return new MessageResponse("FileConfiguration deleted successfully");
+    }
+
+    @Override
+    public ApiResponse<?> getFileConfigByCode(String code) {
+        CodePrint codePrint = codePrintRepository.findByGeneratedCode(code).orElseThrow(() -> new RuntimeException("Code print not found"));
+        List<Printer> printers = printerRepository.findAll().stream().filter(printer -> printer.getStatusPrinter().equals(Status.ENABLE)).toList();
+        FileConfig fileConfig = codePrint.getFileConfig();
+        Map<String, Object> data = new HashMap<>();
+        data.put("fileConfig", FileConfigResponse.toFileConfigResponse(fileConfig));
+        data.put("printers", printers.stream().map(PrinterResponse::toPrinterResponse));
+        return new ApiResponse<>(200, "Successful", data);
+    }
+
+    public String generateCode() {
+        return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 }

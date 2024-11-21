@@ -1,10 +1,10 @@
 package hcmut.spss.be.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import hcmut.spss.be.entity.discount.Discount;
 import hcmut.spss.be.entity.document.Document;
-import hcmut.spss.be.entity.notification.Notification;
 import hcmut.spss.be.entity.payment.Payment;
 import hcmut.spss.be.entity.printJob.PrintJob;
 import hcmut.spss.be.entity.report.Report;
@@ -77,10 +77,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private int numOfPrintingPages=100; //default 100page for student
+    private int numOfPrintingPages=100; //default 100 page for student
 
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonBackReference
     private List<Document> documents;
 
     @OneToMany(mappedBy = "student")
@@ -91,10 +91,6 @@ public class User {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<PrintJob> printJobList;
-
-    @OneToMany(mappedBy = "spso")
-    @JsonManagedReference
-    private List<Notification> notificationList;
 
     @OneToMany(mappedBy = "spso")
     @JsonManagedReference

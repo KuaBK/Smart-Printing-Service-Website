@@ -12,5 +12,5 @@ public class DiscountRequest {
     private int pagesFree;
     private LocalDate startDate;
     private LocalDate expirationDate;
-    boolean isAll;
+    private boolean all;
 }

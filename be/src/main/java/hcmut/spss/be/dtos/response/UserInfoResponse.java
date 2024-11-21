@@ -19,6 +19,7 @@ public class UserInfoResponse {
     private String name;
     private String mssv;
     private int numOfPrintingPages;
+    private int numberPageUsed;
     private String phone;
     private String avtUrl;
     private String role;

@@ -1,12 +1,18 @@
 package hcmut.spss.be.entity.fileConfig;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import hcmut.spss.be.entity.codePrint.CodePrint;
 import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.printer.Printer;
 import hcmut.spss.be.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,6 +32,9 @@ public class FileConfig {
     @Column(name = "paper_size")
     PaperSize paperSize;
 
+    @Column(name = "scale")
+    int scale;
+
     @Column(name = "paper_range")
     String paperRange;
 
@@ -36,15 +45,27 @@ public class FileConfig {
     @Column(name = "number_of_copies")
     int numberOfCopies;
 
+    @Column(name = "page_of_sheet")
+    int pageOfSheet;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "layout")
     Layout layout;
 
+    @Column(name = "margin")
+    String margin;
+
     @Column(name = "color")
     Boolean color;
 
-    @OneToOne
+    @Column(name = "qr_code")
+    Boolean QRCode;
+
+    @ManyToOne
     @JoinColumn(name = "document_id")
-    @JsonBackReference
+    @JsonManagedReference
     Document document;
+
+    @OneToOne(mappedBy = "fileConfig")
+    CodePrint codePrint;
 }

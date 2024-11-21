@@ -1,5 +1,6 @@
 package hcmut.spss.be.controller;
 
+import hcmut.spss.be.dtos.response.DocumentResponse;
 import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.service.CloudinaryService;
 import hcmut.spss.be.service.DocumentService;
@@ -27,7 +28,7 @@ public class FileController {
     public ResponseEntity<?> uploadFile(@RequestBody MultipartFile file) {
         try {
             // Upload file và lưu thông tin vào DB
-            Document uploadedFile = cloudinaryService.uploadFile(file);
+            DocumentResponse uploadedFile = cloudinaryService.uploadFile(file);
 
             // Trả về thông tin file đã lưu trong DB
             return ResponseEntity.ok(uploadedFile);
@@ -37,16 +38,20 @@ public class FileController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Document>> getAllFiles() {
-        List<Document> files = documentService.getAllDocuments();
-        return ResponseEntity.ok(files);
+    public ResponseEntity<?> getAllFiles() {
+        try {
+            List<DocumentResponse> files = documentService.getAllDocuments();
+            return ResponseEntity.ok(files);
+        }catch (Exception e) {
+            return ResponseEntity.status(500).body("Error retrieving files: " + e.getMessage());
+        }
     }
 
     // API để lấy file theo ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getFileById(@PathVariable Long id) {
         try {
-            Document document = documentService.getDocument(id);
+            DocumentResponse document = documentService.getDocument(id);
             return ResponseEntity.ok(document);
         }catch (Exception e){
             return ResponseEntity.status(500).body("Error retrieving file: " + e.getMessage());

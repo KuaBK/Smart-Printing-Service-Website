@@ -70,4 +70,13 @@ public class PrinterController {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
+
+    @GetMapping("/enable")
+    public ResponseEntity<?> getPrinterEnabled() {
+        try {
+            return ResponseEntity.ok(printerService.getPrintersEnable());
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
+    }
 }
