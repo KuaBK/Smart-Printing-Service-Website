@@ -5,8 +5,10 @@ import hcmut.spss.be.dtos.request.SignupRequest;
 import hcmut.spss.be.dtos.response.LoginResponse;
 import hcmut.spss.be.dtos.response.MessageResponse;
 import hcmut.spss.be.dtos.response.UserInfoResponse;
+import hcmut.spss.be.entity.printJob.PrintJob;
 import hcmut.spss.be.entity.user.Role;
 import hcmut.spss.be.entity.user.User;
+import hcmut.spss.be.repository.PrintJobRepository;
 import hcmut.spss.be.repository.UserRepository;
 import hcmut.spss.be.security.jwt.JwtUtils;
 import hcmut.spss.be.service.AuthService;
@@ -23,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +45,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PrintJobRepository printJobRepository;
 
     @Autowired
     private AuthUtil authUtil;
@@ -104,6 +110,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserInfoResponse getUserInfo() {
         User user = authUtil.loggedInUser();
-        return UserInfoResponse.fromUser(user);
+        List<PrintJob> printJobs = printJobRepository.findAllByStudent_UserIdAndJobStartTimeMonth(user.getUserId(), LocalDate.now().getMonthValue());
+        int numberPage = 0;
+        for(PrintJob printJob : printJobs){
+            numberPage+=printJob.getNumberPagePrint();
+        }
+        UserInfoResponse response = UserInfoResponse.fromUser(user);
+        response.setNumberPageUsed(numberPage);
+        return response;
     }
 }
