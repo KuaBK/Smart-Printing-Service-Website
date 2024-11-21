@@ -3,6 +3,7 @@ package hcmut.spss.be.controller;
 import hcmut.spss.be.dtos.request.DiscountRequest;
 import hcmut.spss.be.service.DiscountService;
 import hcmut.spss.be.service.PaymentService;
+import hcmut.spss.be.service.PrintJobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,9 @@ public class SpsoController {
 
     @Autowired
     private DiscountService discountService;
+
+    @Autowired
+    private PrintJobService printJobService;
 
     @GetMapping("/transactions")
     public ResponseEntity<?> getTransactions() {
@@ -39,6 +43,15 @@ public class SpsoController {
     public ResponseEntity<?> getDiscounts() {
         try {
             return ResponseEntity.ok(discountService.getAllDiscounts());
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body("Something went wrong");
+        }
+    }
+
+    @GetMapping("/print-logs")
+    public ResponseEntity<?> getAllPrintLogs() {
+        try {
+            return ResponseEntity.ok(printJobService.getAllPrintJobs());
         }catch (Exception e) {
             return ResponseEntity.badRequest().body("Something went wrong");
         }

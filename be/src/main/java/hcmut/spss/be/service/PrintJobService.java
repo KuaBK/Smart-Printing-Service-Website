@@ -19,4 +19,6 @@ public interface PrintJobService {
     PrintJobResponse getPrintJobById(Long jobId);
 
     ApiResponse<?> makeLog(Long fileId, Long printerId);
+
+    List<PrintJobResponse> getAllPrintJobs();
 }

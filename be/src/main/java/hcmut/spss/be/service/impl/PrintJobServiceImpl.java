@@ -210,5 +210,10 @@ public class PrintJobServiceImpl implements PrintJobService {
         printJobRepository.save(printJob);
         return new ApiResponse<>(200, "Success", null);
     }
+
+    @Override
+    public List<PrintJobResponse> getAllPrintJobs() {
+        return printJobRepository.findAll().stream().map(PrintJobResponse::toPrintJobResponse).toList();
+    }
 }
 
