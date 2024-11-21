@@ -1,5 +1,7 @@
 package hcmut.spss.be.service.impl;
 
+import hcmut.spss.be.dtos.request.UpdateUserRequest;
+import hcmut.spss.be.dtos.response.UpdateUserResponse;
 import hcmut.spss.be.entity.user.Role;
 import hcmut.spss.be.entity.user.User;
 import hcmut.spss.be.repository.UserRepository;
@@ -42,5 +44,42 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findByEmail(String email) {
         return Optional.ofNullable(userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found with email: " + email)));
+    }
+
+    @Override
+    public UpdateUserResponse deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        userRepository.delete(user);
+        return new UpdateUserResponse(
+                userId,
+                user.getUsername(),
+                false,
+                "User with id " + userId + " has been deleted successfully."
+        );
+    }
+
+
+    @Override
+    public UpdateUserResponse updateUserStatus(UpdateUserRequest request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getUserId()));
+
+        if (request.isEnable() == user.isEnabled()) {
+            String currentStatus = user.isEnabled() ? "enabled" : "disabled";
+            throw new IllegalStateException("User is already " + currentStatus + ".");
+        }
+
+        user.setEnabled(request.isEnable());
+        userRepository.save(user);
+
+        String status = user.isEnabled() ? "enabled" : "disabled";
+        return UpdateUserResponse.builder()
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .enabled(user.isEnabled())
+                .message("User with id " + user.getUserId() + " has been " + status + " successfully.")
+                .build();
     }
 }
