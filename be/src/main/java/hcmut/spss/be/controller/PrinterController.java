@@ -6,6 +6,7 @@ import hcmut.spss.be.dtos.response.PrinterResponse;
 import hcmut.spss.be.service.PrinterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class PrinterController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('SPSO')")
     public ResponseEntity<?> createPrinter(@RequestBody PrinterRequest request) {
         try {
             return ResponseEntity.ok(printerService.createPrinter(request));
@@ -45,6 +47,7 @@ public class PrinterController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('SPSO')")
     public ResponseEntity<?> updatePrinter(@PathVariable Long id, @RequestBody PrinterRequest request) {
         try {
             return ResponseEntity.ok(printerService.updatePrinter(id, request));
@@ -54,6 +57,7 @@ public class PrinterController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('SPSO')")
     public ResponseEntity<?> deletePrinter(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(printerService.deletePrinter(id));
@@ -63,6 +67,7 @@ public class PrinterController {
     }
 
     @PutMapping("/{id}/toggle-status")
+    @PreAuthorize("hasAuthority('SPSO')")
     public ResponseEntity<?> togglePrinterStatus(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(printerService.togglePrinterStatus(id));

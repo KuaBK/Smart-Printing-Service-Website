@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import hcmut.spss.be.entity.discount.Discount;
 import hcmut.spss.be.entity.document.Document;
+import hcmut.spss.be.entity.fileConfig.FileConfig;
 import hcmut.spss.be.entity.payment.Payment;
 import hcmut.spss.be.entity.printJob.PrintJob;
 import hcmut.spss.be.entity.report.Report;
@@ -103,4 +104,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "discount_id")
     )
     private Set<Discount> discounts = new HashSet<>();
+
+    @OneToMany(mappedBy = "student")
+    private List<FileConfig> fileConfigs;
 }

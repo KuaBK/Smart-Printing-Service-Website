@@ -68,4 +68,8 @@ public class FileConfig {
 
     @OneToOne(mappedBy = "fileConfig")
     CodePrint codePrint;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    User student;
 }

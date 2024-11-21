@@ -17,6 +17,8 @@ public class PrinterResponse {
     private String status;
     private String description;
     private String location;
+    private Integer numOfPaper;
+    private Integer amountOfInk;
 
     public static PrinterResponse toPrinterResponse(Printer printer) {
         return PrinterResponse.builder()
@@ -26,6 +28,8 @@ public class PrinterResponse {
                 .status(printer.getStatusPrinter().name())
                 .description(printer.getDescription())
                 .location(printer.getLocation())
+                .numOfPaper(printer.getNumOfPaper())
+                .amountOfInk(printer.getAmountOfInk())
                 .build();
     }
 }

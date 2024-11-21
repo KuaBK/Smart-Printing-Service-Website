@@ -194,7 +194,7 @@ public class PrintJobServiceImpl implements PrintJobService {
             numberOfPages *= 2;
         }
         // get student make log
-        User student = fileConfig.getDocument().getStudent();
+        User student = fileConfig.getStudent();
         if (student.getNumOfPrintingPages() < numberOfPages) {
             throw new RuntimeException("Student not enough printing pages");
         }

@@ -41,6 +41,12 @@ public class Printer {
     @Column(name = "location")
     String location;
 
+    @Column(name = "num_of_paper")
+    Integer numOfPaper;
+
+    @Column(name = "amount_of_ink")
+    Integer amountOfInk;
+
     @OneToMany(mappedBy = "printer")
     @JsonManagedReference
     List<PrintJob> printJob;
