@@ -13,5 +13,5 @@ public interface FileConfigService {
     List<FileConfigResponse> getAllFileConfigsOfCurrentUser();
     MessageResponse updateFileConfig(Long id, FileConfigRequest request);
     MessageResponse deleteFileConfig(Long id);
-
+    ApiResponse<?> getFileConfigByCode(String code);
 }

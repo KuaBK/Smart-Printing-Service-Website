@@ -110,11 +110,19 @@
 
 package hcmut.spss.be.service.impl;
 
+import hcmut.spss.be.dtos.response.ApiResponse;
 import hcmut.spss.be.dtos.response.PrintJobResponse;
 import hcmut.spss.be.dtos.response.MessageResponse;
+import hcmut.spss.be.entity.fileConfig.FileConfig;
+import hcmut.spss.be.entity.fileConfig.PaperSize;
 import hcmut.spss.be.entity.printJob.PrintJob;
 import hcmut.spss.be.entity.printJob.StatusPrint;
+import hcmut.spss.be.entity.printer.Printer;
+import hcmut.spss.be.entity.user.User;
+import hcmut.spss.be.repository.FileConfigRepository;
 import hcmut.spss.be.repository.PrintJobRepository;
+import hcmut.spss.be.repository.PrinterRepository;
+import hcmut.spss.be.repository.UserRepository;
 import hcmut.spss.be.service.PrintJobService;
 import hcmut.spss.be.utils.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,23 +140,22 @@ public class PrintJobServiceImpl implements PrintJobService {
     @Autowired
     private AuthUtil authUtil;
 
+    @Autowired
+    private FileConfigRepository fileConfigRepository;
+    @Autowired
+    private PrinterRepository printerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public List<PrintJobResponse> getAllPrintJobsOfCurrentUser() {
         Long currentUserId = authUtil.loggedInUserId();
         List<PrintJob> printJobs = printJobRepository.findAllByStudent_UserId(currentUserId);
 
         return printJobs.stream()
-                .map(this::toPrintJobResponse)
+                .map(PrintJobResponse::toPrintJobResponse)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public MessageResponse createPrintJob(PrintJob printJob) {
-        Long currentUserId = authUtil.loggedInUserId();
-        printJob.setStudent(authUtil.loggedInUser());
-        printJob.setStatusPrint(StatusPrint.PRINTING);
-        printJobRepository.save(printJob);
-        return new MessageResponse("Print job created successfully");
     }
 
     @Override
@@ -170,21 +177,38 @@ public class PrintJobServiceImpl implements PrintJobService {
         return new MessageResponse("Print job deleted successfully");
     }
 
-    private PrintJobResponse toPrintJobResponse(PrintJob printJob) {
-        return new PrintJobResponse(
-                printJob.getJobId(),
-                printJob.getJobStartTime(),
-                printJob.getStatusPrint().name(),
-                printJob.getPrinter().getBrand(),
-                printJob.getFileConfig().getPaperRange()
-        );
-    }
-
     @Override
     public PrintJobResponse getPrintJobById(Long jobId) {
         PrintJob printJob = printJobRepository.findById(jobId)
                 .orElseThrow(() -> new RuntimeException("Print job not found"));
-        return toPrintJobResponse(printJob);
+        return PrintJobResponse.toPrintJobResponse(printJob);
+    }
+
+    @Override
+    public ApiResponse<?> makeLog(Long fileId, Long printerId) {
+        // find file and printer
+        FileConfig fileConfig = fileConfigRepository.findById(fileId).orElseThrow(() -> new RuntimeException("File not found"));
+        Printer printer = printerRepository.findById(printerId).orElseThrow(() -> new RuntimeException("Printer not found"));
+        int numberOfPages = (int) Math.ceil((double) fileConfig.getDocument().getNumOfPage() /fileConfig.getPageOfSheet()*fileConfig.getNumberOfCopies());
+        if (fileConfig.getPaperSize().equals(PaperSize.A3)){
+            numberOfPages *= 2;
+        }
+        // get student make log
+        User student = fileConfig.getDocument().getStudent();
+        if (student.getNumOfPrintingPages() < numberOfPages) {
+            throw new RuntimeException("Student not enough printing pages");
+        }
+        student.setNumOfPrintingPages(student.getNumOfPrintingPages() - numberOfPages);
+        userRepository.save(student);
+        PrintJob printJob = PrintJob.builder()
+                .statusPrint(StatusPrint.COMPLETED)
+                .printer(printer)
+                .student(student)
+                .fileConfig(fileConfig)
+                .numberPagePrint(numberOfPages)
+                .build();
+        printJobRepository.save(printJob);
+        return new ApiResponse<>(200, "Success", null);
     }
 }
 

@@ -77,4 +77,9 @@ public class PrinterServiceImpl implements PrinterService {
         printerRepository.save(printer);
         return new MessageResponse("Printer status toggled successfully");
     }
+
+    @Override
+    public List<PrinterResponse> getPrintersEnable() {
+        return printerRepository.findAllByStatusPrinter(Status.ENABLE).stream().map(PrinterResponse::toPrinterResponse).toList();
+    }
 }

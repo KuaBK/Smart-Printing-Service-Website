@@ -61,4 +61,13 @@ public class FileConfigController {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
+
+    @GetMapping("/public/code")
+    public ResponseEntity<?> getAllPublicFileConfigs(@RequestParam String code) {
+        try {
+            return ResponseEntity.ok(fileConfigService.getFileConfigByCode(code));
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
+    }
 }

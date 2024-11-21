@@ -4,17 +4,23 @@ import hcmut.spss.be.dtos.request.FileConfigRequest;
 import hcmut.spss.be.dtos.response.ApiResponse;
 import hcmut.spss.be.dtos.response.MessageResponse;
 import hcmut.spss.be.dtos.response.FileConfigResponse;
+import hcmut.spss.be.dtos.response.PrinterResponse;
 import hcmut.spss.be.entity.codePrint.CodePrint;
 import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.fileConfig.*;
+import hcmut.spss.be.entity.printer.Printer;
+import hcmut.spss.be.entity.printer.Status;
 import hcmut.spss.be.repository.CodePrintRepository;
 import hcmut.spss.be.repository.DocumentRepository;
 import hcmut.spss.be.repository.FileConfigRepository;
+import hcmut.spss.be.repository.PrinterRepository;
 import hcmut.spss.be.service.FileConfigService;
 import hcmut.spss.be.utils.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -31,6 +37,9 @@ public class FileConfigServiceImpl implements FileConfigService {
 
     @Autowired
     private CodePrintRepository codePrintRepository;
+
+    @Autowired
+    private PrinterRepository printerRepository;
 
     @Autowired
     public FileConfigServiceImpl(FileConfigRepository fileConfigRepository) {
@@ -64,12 +73,12 @@ public class FileConfigServiceImpl implements FileConfigService {
                 .document(document)
                 .build();
 
+        fileConfigRepository.save(fileConfig);
         if (codePrint != null) {
+            codePrint.setFileConfig(fileConfig);
             codePrintRepository.save(codePrint);
-            fileConfig.setCodePrint(codePrint);
             Map<String, String> data = new HashMap<>();
             data.put("CodePrint", codePrint.getGeneratedCode());
-            fileConfigRepository.save(fileConfig);
             document.getFileConfigs().add(fileConfig);
             documentRepository.save(document);
             return new ApiResponse<>(200, "Successfully created file config", data);
@@ -114,6 +123,17 @@ public class FileConfigServiceImpl implements FileConfigService {
         FileConfig fileConfig = fileConfigRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found"));
         fileConfigRepository.deleteById(id);
         return new MessageResponse("FileConfiguration deleted successfully");
+    }
+
+    @Override
+    public ApiResponse<?> getFileConfigByCode(String code) {
+        CodePrint codePrint = codePrintRepository.findByGeneratedCode(code).orElseThrow(() -> new RuntimeException("Code print not found"));
+        List<Printer> printers = printerRepository.findAll().stream().filter(printer -> printer.getStatusPrinter().equals(Status.ENABLE)).toList();
+        FileConfig fileConfig = codePrint.getFileConfig();
+        Map<String, Object> data = new HashMap<>();
+        data.put("fileConfig", FileConfigResponse.toFileConfigResponse(fileConfig));
+        data.put("printers", printers.stream().map(PrinterResponse::toPrinterResponse));
+        return new ApiResponse<>(200, "Successful", data);
     }
 
     public String generateCode() {

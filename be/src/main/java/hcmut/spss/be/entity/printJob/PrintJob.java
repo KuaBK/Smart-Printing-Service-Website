@@ -34,6 +34,8 @@ public class PrintJob {
     @Column(name = "status_print")
     StatusPrint statusPrint;
 
+    int numberPagePrint;
+
     @ManyToOne
     @JoinColumn(name = "printer_id")
     Printer printer;

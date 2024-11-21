@@ -46,9 +46,16 @@ public class PrintJobController {
     @PostMapping("/create")
     public ResponseEntity<?> createPrintJob(@RequestBody PrintJobRequest request) {
         try {
-            PrintJob printJob = convertToPrintJob(request);
-            MessageResponse response = printJobService.createPrintJob(printJob);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(printJobService.makeLog(request.getFileConfigId(), request.getPrinterId()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/public/print-by-code")
+    public ResponseEntity<?> createLogByCode(@RequestBody PrintJobRequest request) {
+        try {
+            return ResponseEntity.ok(printJobService.makeLog(request.getFileConfigId(), request.getPrinterId()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
@@ -95,24 +102,5 @@ public class PrintJobController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
-    }
-
-    private PrintJob convertToPrintJob(PrintJobRequest request) {
-        // Lấy các đối tượng từ ID
-        Printer printer = printerRepository.findById(request.getPrinterId())
-                .orElseThrow(() -> new RuntimeException("Printer not found"));
-        User student = userRepository.findById(request.getStudentId())
-                .orElseThrow(() -> new RuntimeException("Student not found"));
-        FileConfig fileConfig = fileConfigRepository.findById(request.getFileConfigId())
-                .orElseThrow(() -> new RuntimeException("FileConfig not found"));
-        Document document = documentRepository.findById(request.getDocumentId())
-                .orElseThrow(() -> new RuntimeException("Document not found"));
-
-        return PrintJob.builder()
-                .statusPrint(StatusPrint.PRINTING)
-                .printer(printer)
-                .student(student)
-                .fileConfig(fileConfig)
-                .build();
     }
 }
