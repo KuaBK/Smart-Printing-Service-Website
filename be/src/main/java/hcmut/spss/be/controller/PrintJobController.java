@@ -113,7 +113,6 @@ public class PrintJobController {
                 .printer(printer)
                 .student(student)
                 .fileConfig(fileConfig)
-                .document(document)
                 .build();
     }
 }

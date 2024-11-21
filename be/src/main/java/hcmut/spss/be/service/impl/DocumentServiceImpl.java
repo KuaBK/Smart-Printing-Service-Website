@@ -1,5 +1,6 @@
 package hcmut.spss.be.service.impl;
 
+import hcmut.spss.be.dtos.response.DocumentResponse;
 import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.repository.DocumentRepository;
 import hcmut.spss.be.service.DocumentService;
@@ -15,12 +16,13 @@ public class DocumentServiceImpl implements DocumentService {
     private DocumentRepository documentRepository;
 
     @Override
-    public List<Document> getAllDocuments() {
-        return documentRepository.findAll();
+    public List<DocumentResponse> getAllDocuments() {
+        return documentRepository.findAll().stream().map(DocumentResponse::toDocumentResponse).toList();
     }
 
     @Override
-    public Document getDocument(Long documentId) {
-        return documentRepository.findById(documentId).orElseThrow(() -> new RuntimeException("Document not found"));
+    public DocumentResponse getDocument(Long documentId) {
+        Document document =  documentRepository.findById(documentId).orElseThrow(() -> new RuntimeException("Document not found"));
+        return DocumentResponse.toDocumentResponse(document);
     }
 }

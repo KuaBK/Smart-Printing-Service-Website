@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Builder
 @Data
@@ -66,12 +69,12 @@ public class Document {
 
     @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "user_id")
-    @JsonBackReference
+    @JsonManagedReference
     private User student;
 
-    @OneToOne(mappedBy = "document")
-    @JsonManagedReference
-    private FileConfig fileConfig;
+    @OneToMany(mappedBy = "document")
+    @JsonBackReference
+    private Set<FileConfig> fileConfigs = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "share_library")

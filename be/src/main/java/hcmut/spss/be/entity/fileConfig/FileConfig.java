@@ -1,12 +1,18 @@
 package hcmut.spss.be.entity.fileConfig;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import hcmut.spss.be.entity.codePrint.CodePrint;
 import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.printer.Printer;
 import hcmut.spss.be.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -55,8 +61,11 @@ public class FileConfig {
     @Column(name = "qr_code")
     Boolean QRCode;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "document_id")
-    @JsonBackReference
+    @JsonManagedReference
     Document document;
+
+    @OneToOne(mappedBy = "fileConfig")
+    CodePrint codePrint;
 }

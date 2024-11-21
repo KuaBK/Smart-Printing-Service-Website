@@ -1,5 +1,6 @@
 package hcmut.spss.be.entity.codePrint;
 
+import hcmut.spss.be.entity.fileConfig.FileConfig;
 import hcmut.spss.be.entity.printJob.PrintJob;
 import hcmut.spss.be.entity.user.User;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,21 +25,19 @@ public class CodePrint {
     @Column(name = "code_id")
     Long codeId;
 
-    @Column(name = "generated_code")
+    @Column(name = "generated_code", unique = true)
     String generatedCode;
 
-    @CreationTimestamp
     @Column(name = "code_start_date", updatable = false)
     LocalDateTime codeStartDate;
 
     @Column(name = "code_end_date")
     LocalDateTime codeEndDate;
 
-    @OneToOne
-    @JoinColumn(name = "job_id")
-    PrintJob printjob;
+    @Column(name = "is_used")
+    boolean used = false;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id", referencedColumnName = "user_id")
-    User student;
+    @OneToOne
+    @JoinColumn(name = "file_config_id")
+    FileConfig fileConfig;
 }
