@@ -24,7 +24,6 @@ public class FileConfigResponse {
     private int pageOfSheet;
     private String margin;
     private int scale;
-    private String pagesPrint;
 
     public static FileConfigResponse toFileConfigResponse(FileConfig fileConfig) {
         return FileConfigResponse.builder()
@@ -41,7 +40,6 @@ public class FileConfigResponse {
                 .pageOfSheet(fileConfig.getPageOfSheet())
                 .margin(fileConfig.getMargin())
                 .scale(fileConfig.getScale())
-                .pagesPrint(fileConfig.getPagesPrint().name())
                 .build();
     }
 

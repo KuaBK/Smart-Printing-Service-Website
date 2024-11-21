@@ -16,5 +16,4 @@ public class FileConfigRequest {
     private int pageOfSheet;
     private String margin;
     private int scale;
-    private String pagesPrint;
 }

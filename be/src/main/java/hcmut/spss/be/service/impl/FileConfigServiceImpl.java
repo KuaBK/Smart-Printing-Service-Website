@@ -50,7 +50,6 @@ public class FileConfigServiceImpl implements FileConfigService {
                 .pageOfSheet(request.getPageOfSheet())
                 .margin(request.getMargin())
                 .scale(request.getScale())
-                .pagesPrint(PagesPrint.valueOf(request.getPagesPrint()))
                 .document(document)
                 .build();
         fileConfigRepository.save(fileConfig);

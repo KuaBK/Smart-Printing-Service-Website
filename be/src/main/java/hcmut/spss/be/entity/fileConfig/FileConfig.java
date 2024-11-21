@@ -29,10 +29,6 @@ public class FileConfig {
     @Column(name = "scale")
     int scale;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "pages_print")
-    PagesPrint pagesPrint;
-
     @Column(name = "paper_range")
     String paperRange;
 
