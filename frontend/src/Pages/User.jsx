@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Auth } from '../components/Auth'
 import { BuyPrintingPages } from '../components/BuyPrintingPages'
 import { GlobalContext } from '../Context'
@@ -20,6 +20,10 @@ import { Notifications } from '../components/Notifications'
 import {HistoryTransaction} from '../components/HistoryTransaction'
 
 function getContent(type) {
+  const {reload} = useContext(GlobalContext)
+  useEffect(() => {
+    reload()
+  }, [])
   switch (type) {
     case 'Profile':
       return <Profile/>;
@@ -48,7 +52,13 @@ function getContent(type) {
 }
 
 function User() {
-  const { selecInput, setSelecInput} = useContext(GlobalContext)
+  const { selecInput, setSelecInput, fetchProfile, profile} = useContext(GlobalContext)
+  useEffect(() => {
+    setSelecInput('HomePageUser')
+    if (!profile) {
+      fetchProfile()
+    }
+  }, [])
   return (
     <div className='my-0 p-0'>
       <Navbar/>

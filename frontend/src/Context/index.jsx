@@ -7,7 +7,7 @@ export const GlobalContext = createContext(null)
 export default function GlobalState({ children }) {
   const [selecInput, setSelecInput] = useState('HomePageUser')
   const [fileChoice, setFileChoice] = useState();
-  const [profile, setProfile] = useState();
+  
   const [noti, setNoti] = useState([
     {
       time: "10:00 AM - 22/11/2022",
@@ -42,7 +42,6 @@ export default function GlobalState({ children }) {
   const getToken = localStorage.getItem("JWT_TOKEN") 
     ? localStorage.getItem("JWT_TOKEN") 
     : null;
-    // : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0cmxvYzEyIiwiZW1haWwiOiJ0cmxvY25lQGdtYWlsLmNvbSIsInJvbGVzIjoiU1RVREVOVCIsImlhdCI6MTczMTc3MDI3MiwiZXhwIjoxNzMxOTQzMDcyfQ.1AKZy5_90FIcNnpX_yvXQ4V3ElCdpRLpugI2GY9aYIk";
   const [token, setToken] = useState(getToken);
 
   const [currentUser, setCurrentUser] = useState(null);
@@ -52,8 +51,8 @@ export default function GlobalState({ children }) {
       console.log("USER:", user);
       if (user?.username){
           try {
-              const {data} = await api.get(`/auth/user`);
-              setCurrentUser(data);
+              const response = await api.get(`/auth/user`);
+              setCurrentUser(response.data);
           }
           catch (error){
               console.error("Failed to fetch user", error);
@@ -64,6 +63,23 @@ export default function GlobalState({ children }) {
   useEffect(() => {
       fetchUser();
   }, [token]);
+
+
+  const [profile, setProfile] = useState();
+  const fetchProfile = async () => {
+    try {
+      const response = await api.get(`/auth/user`);
+      setProfile(response.data);
+    } catch (error) {
+      console.error("Failed to fetch profile", error);
+      toast.error("Failed to fetch profile");
+    }
+  }
+  const reload = async () => {
+    setFileChoice(null);
+    fetchProfile();
+    fetchUser();
+  };
   return (
     <GlobalContext.Provider
       value={{
@@ -80,7 +96,9 @@ export default function GlobalState({ children }) {
         fileChoice, 
         setFileChoice,
         profile, 
-        setProfile
+        setProfile,
+        fetchProfile,
+        reload
       }}
     >
       {children}

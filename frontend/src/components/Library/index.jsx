@@ -189,7 +189,7 @@ export const Library = () => {
       <div className="mr-[20px] grid grid-rows-4 grid-flow-col gap-9 h-[550px] bg-[#F5F5F5] p-[35px] rounded-[25px]">
         {document.map(item => (
           <div key={item.id} className="flex flex-col bg-[#FFFFFF] rounded-[16px] px-[15px] py-[7px] shadow-xl"  onClick={() => handlePreview(item.id)}>
-            <div className="flex flex-row justify-start items-center h-[40px] w-full mb-[3px]">
+            <div className="flex flex-row justify-between items-center h-[40px] w-full mb-[3px]">
               <div className="w-[40%] font-Inter font-semibold text-sm">{item.title}</div>
               <div className="flex flex-row items-center">
                 <img src={calendar_Phong} className="h-[17px] w-[17px]" alt="calendar icon" />

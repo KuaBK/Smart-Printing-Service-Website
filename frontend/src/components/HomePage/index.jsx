@@ -15,8 +15,7 @@ export const HomePage = () => {
           <img src={logo} className='p-[5px] w-[50px] h-[50px] py-[10px]'/>
           <div className=' font-semibold'>
             HCMUT-SPSS
-          </div>
-          
+          </div>    
         </div>
         <div>
           <ul className="flex flex-row min-w-[230px] justify-between font-semibold cursor-pointer">
@@ -25,7 +24,7 @@ export const HomePage = () => {
           </ul>
         </div>
         <div>
-          <button className='w-[100px] bg-[#0f6cbf] hover:opacity-90 rounded-[60px] text-[#fff] font-semibold py-[3px]'>Login</button>
+        <a href='http://localhost:5173/login'><button className='w-[100px] bg-[#0f6cbf] hover:opacity-90 rounded-[60px] text-[#fff] font-semibold py-[3px]'>Login</button></a>
         </div>
       </div>
 
@@ -41,7 +40,7 @@ export const HomePage = () => {
 
         <div className='flex flex-row mb-[27px] items-center'>
           <div className='mr-[25px]'>
-            <button className='w-[200px] h-[45px] bg-[#0f6cbf] hover:opacity-90 rounded-[60px] text-[#fff] font-semibold py-[5px]'>Login now</button>
+          <a href='http://localhost:5173/login'><button className='w-[200px] h-[45px] bg-[#0f6cbf] hover:opacity-90 rounded-[60px] text-[#fff] font-semibold py-[5px]'>Login now</button></a>
           </div>
           <a href='#' className='flex flex-row items-center hover:opacity-90'>
           <img src={play} className='h-[22.5px] w-[22.5px] mr-[5px]'/>

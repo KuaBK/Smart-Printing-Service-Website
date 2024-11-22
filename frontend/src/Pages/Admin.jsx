@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { Auth } from '../components/Auth'
 import { BuyPrintingPages } from '../components/BuyPrintingPages'
 import { GlobalContext } from '../Context'
@@ -20,6 +20,10 @@ import { Notifications } from '../components/Notifications'
 import {HistoryTransaction} from '../components/HistoryTransaction'
 
 function getContent(type) {
+  const { selecInput, setSelecInput, fetchProfile, profile, reload} = useContext(GlobalContext)
+  // useEffect(() => {
+  //   reload()
+  // }, [])
   switch (type) {
     case 'Profile':
       return <Profile/>;
@@ -48,7 +52,16 @@ function getContent(type) {
 }
 
 function Admin() {
-  const { selecInput, setSelecInput} = useContext(GlobalContext)
+  const { selecInput, setSelecInput, fetchProfile, profile, reload} = useContext(GlobalContext)
+  useEffect(() => {
+    setSelecInput('HomePageAdmin')
+    // if (!profile) {
+    //   fetchProfile()
+    // }
+  }, [])
+  useEffect(() => {
+    fetchProfile()
+  }, [profile])
   return (
     <div className='my-0 p-0'>
       <Navbar/>

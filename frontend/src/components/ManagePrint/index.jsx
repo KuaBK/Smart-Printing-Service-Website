@@ -85,13 +85,30 @@ export const ManagePrint = (props) => {
         : pageOption === "Custom"
         ? customRange
         : "ALL";
+
+      //   {
+      //     "paperSize": "A4",
+      //     "paperRange": "ALL",
+      //     "sides": "SINGLE",
+      //     "numberOfCopies": 5,
+      //     "layout": "PORTRAIT",
+      //     "color": true,
+      //     "qrCode": true,
+      //     "pageOfSheet": 1,
+      //     "margin":"margin",
+      //     "scale": 100
+      // }
     api.post(`/file-configs/post?fileId=${props.file.documentId}`, {
       "paperSize": paper_size == "Letter" ? "LETTER" : paper_size == "A4" ? "A4" : "A3",
       "paperRange": pageRange,
       "sides": nopageprint == "Single sided" ? "SINGLE" : "DOUBLE",
       "numberOfCopies": noprint,
       "layout": layout == "Landscape" ? "LANDSCAPE" : "PORTRAIT",
-      "color": colors == "Color" ? true : false
+      "color": colors == "Color" ? true : false,
+      "qrCode": qr ? true : false,
+      "pageOfSheet": parseInt(pageOfSize),
+      "margin": margin,
+      "scale": parseInt(scale)
     })
     .then(response => {
       console.log(response.data)
@@ -249,7 +266,7 @@ export const ManagePrint = (props) => {
                 <div className={`${classes.section} ${classes.borderit}`}>
                   <div className={classes.item_box1}>
                     <label>Tiêu đề: </label>
-                    <input defaultValue={props.file?.name} type="text" className={`${classes.inputField} ${classes.longInput1}`} required/>
+                    <input defaultValue={props.file?.documentName} type="text" className={`${classes.inputField} ${classes.longInput1}`} required/>
                   </div>
                   <div className={`${classes.section2} ${classes.format}`}>
                     <div className={classes.item_box1}>
@@ -281,7 +298,7 @@ export const ManagePrint = (props) => {
         <div className={`${classes.rightside} ${classes.rightsize}`}>
           <div className={`${classes.page_remain} flex flex-row items-center justify-between`}>
             <p className={classes.page_rm}><div className='px-[20px] bg-[#0f6cbf] rounded-[15px] text-[12px] font-bold text-[#fff] align-center items-center text-center h-fit py-[3px]'>Số trang hiện có: </div>  <b className={classes.numberpage}>10</b></p>
-            {<p className="text-[13px] text-red-500 font-bold"> Số trang in: {props.file?.numOfPage * sbi} </p>}
+            {<p className="text-[13px] text-red-500 font-bold"> Số trang in: {props.file?.numberOfPages * sbi} </p>}
           </div>
           <iframe
             src={props.file?.url}

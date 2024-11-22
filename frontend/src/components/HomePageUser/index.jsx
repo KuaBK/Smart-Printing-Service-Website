@@ -148,12 +148,13 @@ export const HomePageUser = () => {
   const handleFilter = (e) => {
     setSelectHK(e.target.selectedOptions[0].value);
   };
-  const handlePreview = (e) => {
-    // const currentIndex = document.findIndex(doc => doc.id === e);
-    // setDocDetail(document[currentIndex]);
-    setIdPreview(e);
-    setPreview(!preview);
-  }
+  // const handlePreview = (e) => {
+  //   // const currentIndex = document.findIndex(doc => doc.documentId === e);
+  //   // setDocDetail(document[currentIndex]);
+  //   console.log(e);
+  //   setIdPreview(e);
+  //   setPreview(!preview);
+  // }
   const handleClosePreview=()=>{
     setPreview(!preview);
   }
@@ -177,10 +178,6 @@ export const HomePageUser = () => {
         setAnimationClass('');
       }, 300);
 
-      // const timer = setTimeout(() => {
-      //   setAnimationClass('');
-      // }, 3000);
-
       return () => clearTimeout(timer);
     }
   }, [preview]);
@@ -197,17 +194,12 @@ export const HomePageUser = () => {
 
     fetchData();
   }, []);
-  // useEffect(() => {
-  //   // Gọi API để lấy URL của file PDF
-  //   fetch('/api/get-pdf-url')
-  //     .then(response => response.json())
-  //     .then(data => setPdfUrl(data.url));
-  // }, []);
+
   return (
     <div className={classes.container}>
       <div className={classes.info}>
         <div className={classes.info_name}>
-          <div className={classes.info_h}> Hi, {profile.name}</div>
+          <div className={classes.info_h}> Hi, {profile?.name}</div>
           <p className={classes.info_p}>Hope you have a good day</p>
         </div>
         <div className={classes.info_page}>
@@ -215,12 +207,12 @@ export const HomePageUser = () => {
             <div className={classes.hPage_img}><img src={Folder_dublicate_duotone} /></div>
             <div className={classes.hPage_content}>
               <div className={classes.content_title}>Số trang giấy</div>
-              <div className={classes.content_number}>{numberHPage}</div>
+              <div className={classes.content_number}>{profile?.numOfPrintingPages}</div>
             </div>
           </div>
           <div className={classes.info_pPage}>
             <div className={classes.pPage_title}>Số trang đã in trong tháng</div>
-            <div className={classes.pPage_number}>{numberPPage}</div>
+            <div className={classes.pPage_number}>{profile?.numberPageUsed}</div>
           </div>
         </div>
       </div>
@@ -241,9 +233,10 @@ export const HomePageUser = () => {
       <div className={classes.body}>
         <div className={classes.list_doc}>
           {document?.map(item => (
-            <div key={item.documentId} className={classes.document} onClick={() => handlePreview(item.documentId)}>
+            console.log(item),
+            <div key={item.id} className={classes.document} onClick={() => {setIdPreview(item.id); setPreview(!preview)}}>
               <div className={classes.line1}>
-                <div className={classes.doc_title}>{item.documentName}</div>
+                <div className={classes.doc_title}>{item?.documentName}</div>
                 {!item.shared  ? (
                   <img className={classes.doc_dot} src={onProgressDot} />
                 ) : (
@@ -268,7 +261,7 @@ export const HomePageUser = () => {
         {preview && (
           <div className={`${classes.preview} ${animationClass}`} >
             <div className={classes.preview_info}>
-              <div className={classes.info_title}>{docDetail.title}</div>
+              <div className={classes.info_title}>{docDetail.documentName}</div>
               <div className={classes.info_tag}>
                 {docDetail.shared?(
                   <div className={classes.info_share}>Share</div>
@@ -278,27 +271,28 @@ export const HomePageUser = () => {
               </div>
               <div className={classes.info_wAndt}>
                 <img className={classes.info_locIMG} src={location} />
-                <div className={classes.info_loc}>Tầng 9- GDH6</div>
+                <div className={classes.info_loc}>{docDetail?.facultyName}</div>
                 <img className={classes.info_calenIMG} src={calendar_Phong} />
-                <div className={classes.info_time}>18:25 - 01/01/2024</div>
+                <div className={classes.info_time}>{docDetail?.uploadTime}</div>
               </div>
               <div className={classes.info_quanAndCat}>
                 <div className={classes.info_quantity}>
                   <label htmlFor="" className={classes.quantity_label}>Số trang in</label>
-                  <div className={classes.quantity_div}>{docDetail.numOfPage}</div>
+                  <div className={classes.quantity_div}>{docDetail?.numberOfPages}</div>
                 </div>
                 <div className={classes.info_category}>
                   <label htmlFor="" className={classes.category_label}>Danh mục</label>
-                  <div className={classes.category_div}>{docDetail.category}</div>
+                  <div className={classes.category_div}>{docDetail?.category}</div>
                 </div>
               </div>
               <div className={classes.info_printer}>
                 <label htmlFor="" className={classes.printer_label}>Thông tin máy in</label>
-                <div className={classes.printer_div}>{docDetail.infoPrinter}</div>
+                <div className={classes.printer_div}>{docDetail?.infoPrinter}</div>
               </div>
               <button className={classes.button_nav}>Cấu Hình In</button>
             </div>
             <div className={classes.preview_file}>
+              {console.log(docDetail)}
               <iframe src={docDetail?.url} ></iframe>
             </div>
             <div className={classes.preview_close} onClick={()=>handleClosePreview()}></div>

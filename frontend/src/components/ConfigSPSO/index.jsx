@@ -8,103 +8,104 @@ import arrowup from '../../assets/arrowup.svg'
 // import './styleModule.css';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import 'sweetalert2/src/sweetalert2.scss'
+import api from '../../Services/api';
 const listPromotes = [
   {
     id: 1,
-    term: "HK231",
+    semester: "HK231",
     startDate: "22/01/2023",
     endDate: "28/01/2023",
-    quantity: 100,
+    pagesFree: 100,
     status: "Kết thúc",
     type: "All"
   },
   {
     id: 2,
-    term: "HK231",
+    semester: "HK231",
     startDate: "22/01/2023",
     endDate: "28/01/2023",
-    quantity: 100,
+    pagesFree: 100,
     status: "Kết thúc",
     type: "All"
   },
   {
     id: 3,
-    term: "HK231",
+    semester: "HK231",
     startDate: "22/01/2023",
     endDate: "28/01/2023",
-    quantity: 100,
+    pagesFree: 100,
     status: "Kết thúc",
     type: "All"
   },
   {
     id: 4,
-    term: "HK231",
+    semester: "HK231",
     startDate: "22/01/2023",
     endDate: "28/01/2023",
-    quantity: 100,
+    pagesFree: 100,
     status: "Kết thúc",
     type: "All"
   },
   {
     id: 5,
-    term: "HK231",
+    semester: "HK231",
     startDate: "22/01/2023",
     endDate: "28/01/2023",
-    quantity: 100,
+    pagesFree: 100,
     status: "Kết thúc",
     type: "All"
   },
   {
     id: 6,
-    term: "HK231",
+    semester: "HK231",
     startDate: "22/01/2023",
     endDate: "28/01/2023",
-    quantity: 100,
+    pagesFree: 100,
     status: "Kết thúc",
     type: "All"
   },
   {
     id: 7,
-    term: "HK231",
+    semester: "HK231",
     startDate: "22/01/2023",
     endDate: "28/01/2023",
-    quantity: 100,
+    pagesFree: 100,
     status: "Kết thúc",
     type: "All"
   },
   {
     id: 8,
-    term: "HK231",
+    semester: "HK231",
     startDate: "22/01/2023",
     endDate: "28/01/2023",
-    quantity: 100,
+    pagesFree: 100,
     status: "Kết thúc",
     type: "All"
   },
   {
     id: 9,
-    term: "HK231",
+    semester: "HK231",
     startDate: "22/01/2023",
     endDate: "28/01/2023",
-    quantity: 100,
+    pagesFree: 100,
     status: "Kết thúc",
     type: "All"
   },
   {
     id: 10,
-    term: "HK231",
+    semester: "HK231",
     startDate: "22/01/2023",
     endDate: "28/01/2023",
-    quantity: 100,
+    pagesFree: 100,
     status: "Kết thúc",
     type: "All"
   },
   {
     id: 11,
-    term: "HK231",
+    semester: "HK231",
     startDate: "22/01/2023",
     endDate: "28/01/2023",
-    quantity: 100,
+    pagesFree: 100,
     status: "Kết thúc",
     type: "All"
   }
@@ -147,15 +148,42 @@ export const ConfigSPSO = () => {
   //     })
   // }, [reload])
 
-  const submitPromote = (e) => {
+  const submitPromote = async (e) => {
     e.preventDefault();
     const newPromote = {
-      term: e.target[0].value,
-      quantity: e.target[1].value,
+      semester: e.target[0].value,
+      pagesFree: e.target[1].value,
       startDate: e.target[2].value,
       endDate: e.target[3].value,
       status: "Hoạt động",
       type: e.target[4].selectedOptions[0].value
+    }
+    try {
+      const response = await api.post('/spso/make-discount', {
+        semester: e.target[0].value,
+        pagesFree: e.target[1].value,
+        startDate: e.target[2].value,
+        expirationDate: e.target[3].value,
+        // status: "Hoạt động",
+        isAll: e.target[4].selectedOptions[0].value == 'All' ? false : true
+      });
+
+      console.log(response.data);
+      Swal.fire({
+        icon: "success",
+        title: "Tạo khuyến mãi thành công",
+        showConfirmButton: false,
+        timer: 3000
+      });
+    }
+    catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Tạo khuyến mãi thất bại",
+        text: "Vui lòng kiểm tra lại thông tin hoặc thử lại sau.",
+        showConfirmButton: true,
+        timer: 3000
+      });    
     }
     // fetch("http://localhost:3000/listPromote", {
     //   method: "POST",
@@ -177,14 +205,10 @@ export const ConfigSPSO = () => {
     //       timer: 3000
     //     });
     //   })
-    setListPromote([...listPromote, newPromote]);
-    Swal.fire({
-      // position: "top-end",
-      icon: "success",
-      title: "Tạo khuyến mãi thành công",
-      showConfirmButton: false,
-      timer: 3000
-    });
+  
+    const response = await api.get('/spso/discounts');
+    setListPromote(response.data);
+    
     inputRefs.current.forEach(ref => ref.value = '');
     // console.log(listPromote);
   };
@@ -271,6 +295,20 @@ export const ConfigSPSO = () => {
     // document.removeEventListener('mousedown', handleClickOutside);
   }
   // console.log(typeFile);
+
+  useEffect(() => {
+    const fetchdiscounts = async () => {
+      try {
+        const response = await api.get(`/spso/discounts`);
+        setListPromote(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching files:', error);
+      }
+    };
+
+    fetchdiscounts();
+  }, []);
   return (
     <div className={classes.container}>
       <div className={classes.info}>
@@ -296,22 +334,18 @@ export const ConfigSPSO = () => {
             <th>Ngày cấp phát</th>
             <th>Ngày kết thúc</th>
             <th>Số trang A4 được cấp</th>
-            <th>Trạng thái</th>
             <th>Mã</th>
-            <th className={classes.hidden_th}></th>
           </thead>
           <tbody style={{ height: "240px", overflowY: "auto" }}>
             {listPromote.map((item) => {
-              if (selectHK === "All" || item.term === selectHK) {
+              if (selectHK === "All" || item.semester === selectHK) {
                 return (
                   <tr key={item.id}>
-                    <td>{item.term}</td>
+                    <td>{item.semester}</td>
                     <td>{item.startDate}</td>
-                    <td>{item.endDate}</td>
-                    <td>{item.quantity}</td>
-                    <td>{item.status}</td>
-                    <td>{item.type}</td>
-                    <td><img className={classes.hidden_td} src={deletePromote} onClick={() => handleDeletePromote(item.id)} /></td>
+                    <td>{item.expirationDate}</td>
+                    <td>{item.pagesFree}</td>
+                    <td>{item.discountCode}</td>
                   </tr>)
               }
             }
@@ -323,11 +357,11 @@ export const ConfigSPSO = () => {
         <div className={`${classes.fP__block} ${classes.fp__block1}`}>
           <div className={classes.block_1}>
             <div className={classes.block_item}>
-              <label htmlFor="term">Học kì</label>
+              <label htmlFor="semester">Học kì</label>
               <input ref={(el) => inputRefs.current[0] = el} className={`${classes.item_box} bg-[#fff]`} type="text" required />
             </div>
             <div className={classes.block_item}>
-              <label htmlFor="quantity">Số trang cấp</label>
+              <label htmlFor="pagesFree">Số trang cấp</label>
               <input ref={(el) => inputRefs.current[1] = el} className={classes.item_box} type="text" required />
             </div>
           </div>

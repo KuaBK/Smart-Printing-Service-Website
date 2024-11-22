@@ -102,7 +102,7 @@ export const BuyPrintingPages = () => {
             <div className='flex flex-col'>
             <button className="payment-option">
               <img src={momo} alt="Momo" />
-              Momo
+              VNPAY
             </button>
             <button className="payment-option">
               <img src={bk} alt="BK Pay" />

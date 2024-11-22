@@ -57,7 +57,7 @@ export const Navbar = () => {
           <div className='flex flex-row justify-items-center items-center h-[100%] cursor-pointer mr-5'>
             <div className='min-w-[150px] items-end flex flex-col px-[10px]'>
               <p className='font-bold text-[16px] leading-[16px]'>{profile?.name}</p>
-              <p className='font-normal text-[14px] leading-[16px] text-[#787486] mt-[5px]'>{profile?.role.charAt(0).toUpperCase() + profile.role.slice(1).toLowerCase()}</p>
+              <p className='font-normal text-[14px] leading-[16px] text-[#787486] mt-[5px]'>{profile?.role.charAt(0).toUpperCase() + profile?.role.slice(1).toLowerCase()}</p>
             </div>
             <div className='flex flex-row justify-items-center items-center h-[100%] w-[60px] justify-between relative' onClick={() => setShowProfile(!showProfile)}>
               <img src={test} className='rounded-[50%] w-[38px] h-[38px]'/>
