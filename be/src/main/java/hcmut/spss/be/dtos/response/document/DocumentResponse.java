@@ -1,4 +1,4 @@
-package hcmut.spss.be.dtos.response;
+package hcmut.spss.be.dtos.response.document;
 
 import hcmut.spss.be.entity.document.Document;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class DocumentResponse {
     private int numberOfPages;
     private boolean shared;
     private String url;
-    private Date uploadTime;
+    private String uploadTime;
     private String headline;
     private String facultyName;
     private String subject;
@@ -27,6 +28,7 @@ public class DocumentResponse {
     private String category;
 
     public static DocumentResponse toDocumentResponse(Document document) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm - dd/MM/yyyy");
         return DocumentResponse.builder()
                 .id(document.getDocumentId())
                 .documentName(document.getDocumentName())
@@ -34,7 +36,7 @@ public class DocumentResponse {
                 .numberOfPages(document.getNumOfPage())
                 .shared(document.isShared())
                 .url(document.getUrl())
-                .uploadTime(document.getUploadTime())
+                .uploadTime(document.getUploadTime().format(formatter))
                 .headline(document.getHeadline())
                 .facultyName(document.getFacultyName())
                 .subject(document.getSubject())

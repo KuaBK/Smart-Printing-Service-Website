@@ -1,13 +1,11 @@
 package hcmut.spss.be.controller;
 
-import hcmut.spss.be.dtos.response.DocumentResponse;
-import hcmut.spss.be.entity.document.Document;
+import hcmut.spss.be.dtos.response.document.DocumentResponse;
+import hcmut.spss.be.dtos.request.UpdateDocumentRequest;
 import hcmut.spss.be.service.CloudinaryService;
 import hcmut.spss.be.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,5 +54,13 @@ public class FileController {
         }catch (Exception e){
             return ResponseEntity.status(500).body("Error retrieving file: " + e.getMessage());
         }
+    }
+
+    @PatchMapping("/{documentId}")
+    public ResponseEntity<DocumentResponse> updateDocument(
+            @PathVariable Long documentId,
+            @RequestBody UpdateDocumentRequest request) {
+        DocumentResponse updatedDocument = documentService.updateDocument(documentId, request);
+        return ResponseEntity.ok(updatedDocument);
     }
 }
