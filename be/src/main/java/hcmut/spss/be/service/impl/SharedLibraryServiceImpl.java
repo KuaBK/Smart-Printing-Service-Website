@@ -14,6 +14,7 @@ import io.jsonwebtoken.io.IOException;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,37 +27,6 @@ public class SharedLibraryServiceImpl implements SharedLibraryService {
         this.sharedLibraryRepository = sharedLibraryRepository;
         this.documentRepository = documentRepository;
     }
-
-
-//    public ShareDocumentResponse shareDocument(ShareDocumentRequest request) {
-//        SharedLibrary defaultLibrary = sharedLibraryRepository.findByDefaultLibraryTrue()
-//                .orElseThrow(() -> new RuntimeException("Default library not found"));
-//
-//        Document document = documentRepository.findById(request.getDocumentId())
-//                .orElseThrow(() -> new RuntimeException("Document not found"));
-//
-//        document.shareWithLibrary(defaultLibrary);
-//        documentRepository.save(document);
-//
-//        return new ShareDocumentResponse(
-//                document.getDocumentId(),
-//                document.getDocumentName(),
-//                true,
-//                defaultLibrary.getLibraryId(),
-//                defaultLibrary.getLibraryName()
-//        );
-//    }
-//
-//    @Override
-//    public ShareDocumentResponse unshareDocument(UnshareDocumentRequest request) {
-//        Document document = documentRepository.findById(request.getDocumentId())
-//                .orElseThrow(() -> new RuntimeException("Document not found"));
-//
-//        document.unshareFromLibrary();
-//        documentRepository.save(document);
-//
-//        return new ShareDocumentResponse(document.getDocumentId(), document.getDocumentName(), false, null, null);
-//    }
 
     public MessageResponse shareDocument(ShareDocumentRequest request) {
         SharedLibrary defaultLibrary = sharedLibraryRepository.findByDefaultLibraryTrue()
@@ -86,11 +56,23 @@ public class SharedLibraryServiceImpl implements SharedLibraryService {
     public List<SearchDocumentResponse> searchDocuments(SearchDocumentRequest request) {
         Long libraryId = 1L;
         String query = request.getQuery().trim().toLowerCase();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm - dd/MM/yyyy");
 
         List<Document> documents = documentRepository.searchByLibraryAndQuery(libraryId, query);
 
         return documents.stream()
-                .map(doc -> new SearchDocumentResponse(doc.getDocumentId(), doc.getDocumentName(), doc.isShared()))
+                .map(doc -> new SearchDocumentResponse(
+                        doc.getDocumentId(),
+                        doc.getDocumentName(),
+                        doc.getUrl(),
+                        doc.isShared(),
+                        doc.getHeadline(),
+                        doc.getFacultyName(),
+                        doc.getSubject(),
+                        doc.getCategory(),
+                        doc.getSemester(),
+                        doc.getUploadTime().format(formatter)
+                        ))
                 .collect(Collectors.toList());
     }
 
@@ -98,11 +80,23 @@ public class SharedLibraryServiceImpl implements SharedLibraryService {
     public List<SearchDocumentResponse> getAllDocuments() {
             SharedLibrary defaultLibrary = sharedLibraryRepository.findByDefaultLibraryTrue()
                     .orElseThrow(() -> new RuntimeException("Default library not found"));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm - dd/MM/yyyy");
 
             List<Document> documents = documentRepository.findAllBySharedLibrary(defaultLibrary);
 
             return documents.stream()
-                    .map(doc -> new SearchDocumentResponse(doc.getDocumentId(), doc.getDocumentName(), true))
+                    .map(doc -> new SearchDocumentResponse(
+                            doc.getDocumentId(),
+                            doc.getDocumentName(),
+                            doc.getUrl(),
+                            true,
+                            doc.getHeadline(),
+                            doc.getFacultyName(),
+                            doc.getSubject(),
+                            doc.getCategory(),
+                            doc.getSemester(),
+                            doc.getUploadTime().format(formatter)
+                            ))
                     .toList();
     }
 }

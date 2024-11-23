@@ -1,7 +1,6 @@
 package hcmut.spss.be.service;
 
-import hcmut.spss.be.dtos.response.DocumentResponse;
-import hcmut.spss.be.entity.document.Document;
+import hcmut.spss.be.dtos.response.document.DocumentResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

@@ -8,6 +8,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SharedLibraryRepository extends JpaRepository<SharedLibrary, Long> {
-    Optional<SharedLibrary> findByLibraryName(String libraryName);
     Optional<SharedLibrary> findByDefaultLibraryTrue();
 }

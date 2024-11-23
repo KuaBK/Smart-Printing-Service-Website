@@ -37,5 +37,6 @@ public class SharedLibrary {
     LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "sharedLibrary", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     List<Document> documents;
 }

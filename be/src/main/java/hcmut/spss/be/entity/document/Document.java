@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +51,7 @@ public class Document {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "upload_time", updatable = false)
-    private Date uploadTime;
+    private LocalDateTime uploadTime;
 
     @Column(name = "headline")
     private String headline;
@@ -67,6 +68,7 @@ public class Document {
     @Column(name = "category")
     private String category;
 
+
     @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "user_id")
     @JsonManagedReference
@@ -78,6 +80,7 @@ public class Document {
 
     @ManyToOne
     @JoinColumn(name = "library_id")
+    @JsonBackReference
     private SharedLibrary sharedLibrary;
 
     public void shareWithLibrary(SharedLibrary library) {
