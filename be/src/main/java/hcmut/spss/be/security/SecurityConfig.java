@@ -3,6 +3,7 @@ package hcmut.spss.be.security;
 import hcmut.spss.be.security.jwt.AuthEntryPointJwt;
 import hcmut.spss.be.security.jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -77,7 +77,14 @@ public class Document {
     private Set<FileConfig> fileConfigs = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "share_library")
-    @JsonBackReference
+    @JoinColumn(name = "library_id")
     private SharedLibrary sharedLibrary;
+
+    public void shareWithLibrary(SharedLibrary library) {
+        this.sharedLibrary = library;
+    }
+
+    public void unshareFromLibrary() {
+        this.sharedLibrary = null;
+    }
 }
