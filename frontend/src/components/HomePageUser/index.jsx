@@ -194,7 +194,7 @@ export const HomePageUser = () => {
 
     fetchData();
   }, []);
-
+  console.log(profile)
   return (
     <div className={classes.container}>
       <div className={classes.info}>

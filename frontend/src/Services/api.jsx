@@ -34,7 +34,7 @@ api.interceptors.request.use(
             config.headers['X-XSRF-TOKEN'] = csrfToken;
         }
         
-        console.log("X-XSRF-TOKEN" + csrfToken);
+        // console.log("X-XSRF-TOKEN" + csrfToken);
         return config;
     },
     (error) => {

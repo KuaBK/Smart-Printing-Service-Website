@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ProgressBar from "@ramonak/react-progress-bar";
 import classes from './style.module.css';
-
+import api from '../../Services/api';
 
 /////////////////////////////////// GENERAL /////////////////////////////////////////////////////////////////////////////////////////
 //----------Filter----------------------------------------------------
@@ -120,8 +120,8 @@ const FilterMenu = ({ onFilter, onReset }) => {
               className={classes.filterInput}
             >
               <option value="">Tất cả</option>
-              <option value="active">Hoạt động</option>
-              <option value="inactive">Không hoạt động</option>
+              <option value="ENABLE">Hoạt động</option>
+              <option value="DISABLE">Không hoạt động</option>
             </select>
           </div>
           <div className={classes.applyresetButton}>
@@ -248,8 +248,8 @@ const PrinterCard = ({ title, onDelete, processingPages, pageProgress, inkProgre
                 onChange={handleInputChange}
                 className={classes.printerInput}
               >
-                <option value="active">Hoạt động</option>
-                <option value="inactive">Không hoạt động</option>
+                <option value="ENABLE">Hoạt động</option>
+                <option value="DISABLE">Không hoạt động</option>
               </select>
 
               <label htmlFor="paperUsage">Số giấy in (%):</label>
@@ -322,21 +322,34 @@ const CustomProgressBar = ({
 /////////////////////////////////// MAIN CODE /////////////////////////////////////////////////////////////////////////////////////////
 export const ConfigPrint = () => {
   const [printers, setPrinters] = useState([
-    { id: 1, title: 'H1-101', processingPages: 100, pageProgress: 70, inkProgress: 35, status: 'active' },
-    { id: 2, title: 'H1-102', processingPages: 50, pageProgress: 50, inkProgress: 80, status: 'inactive' },
-    { id: 3, title: 'H1-123', processingPages: 75, pageProgress: 60, inkProgress: 50, status: 'active' },
-    { id: 4, title: 'H2-104', processingPages: 90, pageProgress: 3, inkProgress: 40, status: 'inactive' },
-    { id: 5, title: 'H4-504', processingPages: 23, pageProgress: 80, inkProgress: 5, status: 'inactive' },
-    { id: 6, title: 'H3-164', processingPages: 90, pageProgress: 80, inkProgress: 100, status: 'active' },
-    { id: 7, title: 'H1-504', processingPages: 568, pageProgress: 80, inkProgress: 40, status: 'inactive' },
-    { id: 8, title: 'H5-124', processingPages: 2367, pageProgress: 81, inkProgress: 75, status: 'active' },
-    { id: 9, title: 'H3-164', processingPages: 90, pageProgress: 42, inkProgress: 40, status: 'active' },
-    { id: 10, title: 'H5-214', processingPages: 90, pageProgress: 89, inkProgress: 32, status: 'active' },
-    { id: 11, title: 'H1-604', processingPages: 32, pageProgress: 9, inkProgress: 47, status: 'active' },
-    { id: 12, title: 'H2-304', processingPages: 32, pageProgress: 54, inkProgress: 86, status: 'active' },
-    { id: 13, title: 'H3-154', processingPages: 12, pageProgress: 5, inkProgress: 5, status: 'active' },
-    { id: 14, title: 'H5-154', processingPages: 76, pageProgress: 52, inkProgress: 78, status: 'active' },
+    // { id: 1, title: 'H1-101', processingPages: 100, pageProgress: 70, inkProgress: 35, status: 'ENABLE' },
+    // { id: 2, title: 'H1-102', processingPages: 50, pageProgress: 50, inkProgress: 80, status: 'DISABLE' },
+    // { id: 3, title: 'H1-123', processingPages: 75, pageProgress: 60, inkProgress: 50, status: 'ENABLE' },
+    // { id: 4, title: 'H2-104', processingPages: 90, pageProgress: 3, inkProgress: 40, status: 'DISABLE' },
+    // { id: 5, title: 'H4-504', processingPages: 23, pageProgress: 80, inkProgress: 5, status: 'DISABLE' },
+    // { id: 6, title: 'H3-164', processingPages: 90, pageProgress: 80, inkProgress: 100, status: 'ENABLE' },
+    // { id: 7, title: 'H1-504', processingPages: 568, pageProgress: 80, inkProgress: 40, status: 'DISABLE' },
+    // { id: 8, title: 'H5-124', processingPages: 2367, pageProgress: 81, inkProgress: 75, status: 'ENABLE' },
+    // { id: 9, title: 'H3-164', processingPages: 90, pageProgress: 42, inkProgress: 40, status: 'ENABLE' },
+    // { id: 10, title: 'H5-214', processingPages: 90, pageProgress: 89, inkProgress: 32, status: 'ENABLE' },
+    // { id: 11, title: 'H1-604', processingPages: 32, pageProgress: 9, inkProgress: 47, status: 'ENABLE' },
+    // { id: 12, title: 'H2-304', processingPages: 32, pageProgress: 54, inkProgress: 86, status: 'ENABLE' },
+    // { id: 13, title: 'H3-154', processingPages: 12, pageProgress: 5, inkProgress: 5, status: 'ENABLE' },
+    // { id: 14, title: 'H5-154', processingPages: 76, pageProgress: 52, inkProgress: 78, status: 'ENABLE' },
   ]);
+
+  useEffect(() => {
+    const fetchPrinter = async () => {
+      try {
+        const response = await api.get("/printers");
+        setPrinters(response.data); 
+      } catch (error) {
+        console.error("Có lỗi xảy ra khi tải dữ liệu:", error); 
+      }
+    };
+
+    fetchPrinter(); 
+  }, [printers]);
 
   const [filters, setFilters] = useState({
     inkRange: { min: '', max: '' },
@@ -385,14 +398,16 @@ export const ConfigPrint = () => {
   };
 
   const handleDeletePrinter = useCallback((id) => {
-    console.log(`Deleting printer with ID: ${id}`);
-    setPrinters((prevPrinters) => prevPrinters.filter((printer) => printer.id !== id));
+    // console.log(`Deleting printer with ID: ${id}`);
+    // setPrinters((prevPrinters) => prevPrinters.filter((printer) => printer.id !== id));
+    api.delete(`/printers/${id}`)
+    // setPrinters(del.data)
   }, []);
 
   const [showAddPrinterPopup, setShowAddPrinterPopup] = useState(false); // Toggle popup visibility
   const [formData, setFormData] = useState({
     name: '',
-    status: 'active',
+    status: 'ENABLE',
     paperUsage: '',
     inkUsage: '',
   });
@@ -401,7 +416,7 @@ export const ConfigPrint = () => {
 
   const handleClosePopup = () => {
     setShowAddPrinterPopup(false);
-    setFormData({ name: '', status: 'active', paperUsage: '', inkUsage: '' }); // Reset form
+    setFormData({ name: '', status: 'ENABLE', paperUsage: '', inkUsage: '' }); // Reset form
   };
 
   const handleInputChange = (event) => {
@@ -435,17 +450,32 @@ export const ConfigPrint = () => {
 
     // Tạo máy in mới
     const newPrinter = {
-      id: Date.now(), // Unique ID
-      title: formData.name.trim(),
-      processingPages: 0, // Giá trị mặc định
-      pageProgress: Number(formData.paperUsage), // % số giấy in
-      inkProgress: Number(formData.inkUsage), // % số mực in
-      status: formData.status,
+      brand: "DELL", // Giá trị có thể thay đổi theo formData
+      model: "XPS 13", // Giá trị có thể thay đổi theo formData
+      status: formData.status || "ENABLE", // Nếu formData không có status, mặc định là "ENABLE"
+      description: formData.description?.trim() || 
+                   "A lightweight laptop with a 13-inch display, ideal for professionals.", // Mô tả mặc định nếu không có
+      location: formData.name?.trim() || "H1-404", // Kiểm tra tên có hợp lệ không, nếu không thì giá trị mặc định là "H1-404"
+      numOfPaper: isNaN(Number(formData.paperUsage)) ? 100 : Number(formData.paperUsage), // Nếu không hợp lệ thì mặc định là 100
+      amountOfInk: isNaN(Number(formData.inkUsage)) ? 100 : Number(formData.inkUsage) // Nếu không hợp lệ thì mặc định là 100
     };
-
+    console.log( formData.status);
     // Cập nhật danh sách máy in
-    setPrinters((prevPrinters) => [...prevPrinters, newPrinter]);
-
+    // setPrinters((prevPrinters) => [...prevPrinters, newPrinter]);
+    const handleAddPrinter = async () => {
+      try {
+        const response = await api.post(`/printers`, newPrinter);
+        console.log("Printer added successfully:", response.data);
+        // Nếu cần cập nhật danh sách máy in sau khi thêm thành công
+        // setPrinters((prevPrinters) => [...prevPrinters, response.data]);
+      } catch (error) {
+        console.error("Failed to add printer:", error.response?.data || error.message);
+      }
+    };
+    
+    handleAddPrinter();
+    
+    // setPrinters(add.data);
     // Đóng popup và reset form
     handleClosePopup();
   };
@@ -505,8 +535,8 @@ export const ConfigPrint = () => {
                 onChange={handleInputChange}
                 className={classes.printerInput}
               >
-                <option value="active">Hoạt động</option>
-                <option value="inactive">Không hoạt động</option>
+                <option value="ENABLE">Hoạt động</option>
+                <option value="DISABLE">Không hoạt động</option>
               </select>
 
               <label htmlFor="paperUsage">Số giấy in (%):</label>
@@ -551,18 +581,19 @@ export const ConfigPrint = () => {
       {/* Main content section (grid of printer cards) */}
       <main className={classes.printerDashboard}>
         <div className={classes.printerGrid}>
-          {printers
-            .filter(applyFilters) // Áp dụng bộ lọc trước khi hiển thị PrinterCard
+          {(printers
+            .filter(applyFilters)) // Áp dụng bộ lọc trước khi hiển thị PrinterCard
             .map((printer) => (
               <PrinterCard
-                key={printer.id}
-                title={printer.title}
-                processingPages={printer.processingPages}
-                pageProgress={printer.pageProgress}
-                inkProgress={printer.inkProgress}
+                key={printer.printerId}
+                title={printer.location}
+                // title="100"
+                processingPages="10"
+                pageProgress={printer.numOfPaper}
+                inkProgress={printer.amountOfInk}
                 status={printer.status}
-                onDelete={() => handleDeletePrinter(printer.id)}
-                onUpdate={(updatedData) => handleUpdatePrinter(printer.id, updatedData)}
+                onDelete={() => handleDeletePrinter(printer.printerId)}
+                onUpdate={(updatedData) => handleUpdatePrinter(printer.printerId, updatedData)}
               />
             ))}
         </div>
