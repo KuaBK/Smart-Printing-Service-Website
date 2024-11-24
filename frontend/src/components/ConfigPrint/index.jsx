@@ -232,7 +232,7 @@ const PrinterCard = ({ title, onDelete, processingPages, pageProgress, inkProgre
         <div className={classes.overlay}>
           <div className={classes.overlayContent} ref={overlayRef}>
             <form className={classes.printerForm} onSubmit={handleSave}>
-              <label htmlFor="name">Tên:</label>
+              <label htmlFor="location">Tên:</label>
               <input
                 className={classes.printerInput}
                 type="text"
@@ -252,22 +252,26 @@ const PrinterCard = ({ title, onDelete, processingPages, pageProgress, inkProgre
                 <option value="DISABLE">Không hoạt động</option>
               </select>
 
-              <label htmlFor="paperUsage">Số giấy in (%):</label>
+              <label htmlFor="numOfPaper">Số giấy in (%):</label>
               <input
                 className={classes.printerInput}
                 type="number"
                 name="paperUsage"
                 value={formData.paperUsage}
                 onChange={handleInputChange}
+                min="0" // Giá trị tối thiểu là 0
+                max="100"
               />
 
-              <label htmlFor="inkUsage">Số mực in (%):</label>
+              <label htmlFor="amountOfInk">Số mực in (%):</label>
               <input
                 className={classes.printerInput}
                 type="number"
                 name="inkUsage"
                 value={formData.inkUsage}
                 onChange={handleInputChange}
+                min="0" // Giá trị tối thiểu là 0
+                max="100"
               />
 
               <button type="submit" className={classes.printerSubmit}>Save</button>
@@ -342,13 +346,13 @@ export const ConfigPrint = () => {
     const fetchPrinter = async () => {
       try {
         const response = await api.get("/printers");
-        setPrinters(response.data); 
+        setPrinters(response.data);
       } catch (error) {
-        console.error("Có lỗi xảy ra khi tải dữ liệu:", error); 
+        console.error("Có lỗi xảy ra khi tải dữ liệu:", error);
       }
     };
 
-    fetchPrinter(); 
+    fetchPrinter();
   }, [printers]);
 
   const [filters, setFilters] = useState({
@@ -390,11 +394,12 @@ export const ConfigPrint = () => {
   };
 
   const handleUpdatePrinter = (id, updatedData) => {
-    setPrinters((prevPrinters) =>
-      prevPrinters.map((printer) =>
-        printer.id === id ? { ...printer, ...updatedData } : printer
-      )
-    );
+    // setPrinters((prevPrinters) =>
+    //   prevPrinters.map((printer) =>
+    //     printer.id === id ? { ...printer, ...updatedData } : printer
+    //   )
+    // );
+    api.patch(`/printers/${id}`, updatedData)
   };
 
   const handleDeletePrinter = useCallback((id) => {
@@ -453,13 +458,13 @@ export const ConfigPrint = () => {
       brand: "DELL", // Giá trị có thể thay đổi theo formData
       model: "XPS 13", // Giá trị có thể thay đổi theo formData
       status: formData.status || "ENABLE", // Nếu formData không có status, mặc định là "ENABLE"
-      description: formData.description?.trim() || 
-                   "A lightweight laptop with a 13-inch display, ideal for professionals.", // Mô tả mặc định nếu không có
+      description: formData.description?.trim() ||
+        "A lightweight laptop with a 13-inch display, ideal for professionals.", // Mô tả mặc định nếu không có
       location: formData.name?.trim() || "H1-404", // Kiểm tra tên có hợp lệ không, nếu không thì giá trị mặc định là "H1-404"
       numOfPaper: isNaN(Number(formData.paperUsage)) ? 100 : Number(formData.paperUsage), // Nếu không hợp lệ thì mặc định là 100
       amountOfInk: isNaN(Number(formData.inkUsage)) ? 100 : Number(formData.inkUsage) // Nếu không hợp lệ thì mặc định là 100
     };
-    console.log( formData.status);
+    console.log(formData.status);
     // Cập nhật danh sách máy in
     // setPrinters((prevPrinters) => [...prevPrinters, newPrinter]);
     const handleAddPrinter = async () => {
@@ -472,9 +477,9 @@ export const ConfigPrint = () => {
         console.error("Failed to add printer:", error.response?.data || error.message);
       }
     };
-    
+
     handleAddPrinter();
-    
+
     // setPrinters(add.data);
     // Đóng popup và reset form
     handleClosePopup();
@@ -546,6 +551,8 @@ export const ConfigPrint = () => {
                 name="paperUsage"
                 value={formData.paperUsage}
                 onChange={handleInputChange}
+                min="0" // Giá trị tối thiểu là 0
+                max="100"
                 required
               />
 
@@ -556,6 +563,8 @@ export const ConfigPrint = () => {
                 name="inkUsage"
                 value={formData.inkUsage}
                 onChange={handleInputChange}
+                min="0" // Giá trị tối thiểu là 0
+                max="100"
                 required
               />
 
@@ -588,7 +597,7 @@ export const ConfigPrint = () => {
                 key={printer.printerId}
                 title={printer.location}
                 // title="100"
-                processingPages="10"
+                processingPages="0"
                 pageProgress={printer.numOfPaper}
                 inkProgress={printer.amountOfInk}
                 status={printer.status}
