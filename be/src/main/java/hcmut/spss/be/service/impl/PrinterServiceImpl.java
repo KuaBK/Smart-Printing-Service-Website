@@ -30,6 +30,8 @@ public class PrinterServiceImpl implements PrinterService {
                 .statusPrinter(Status.valueOf(request.getStatus()))
                 .description(request.getDescription())
                 .location(request.getLocation())
+                .numOfPaper(request.getNumOfPaper())
+                .amountOfInk(request.getAmountOfInk())
                 .build();
         printerRepository.save(printer);
         return new MessageResponse("Printer created successfully");
@@ -57,6 +59,8 @@ public class PrinterServiceImpl implements PrinterService {
         printer.setStatusPrinter(Status.valueOf(request.getStatus()));
         printer.setDescription(request.getDescription());
         printer.setLocation(request.getLocation());
+        printer.setNumOfPaper(request.getNumOfPaper());
+        printer.setAmountOfInk(request.getAmountOfInk());
         printerRepository.save(printer);
         return new MessageResponse("Printer updated successfully");
     }
