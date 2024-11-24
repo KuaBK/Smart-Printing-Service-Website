@@ -6,6 +6,7 @@ import hcmut.spss.be.service.CloudinaryService;
 import hcmut.spss.be.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,11 +37,21 @@ public class FileController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('SPSO')")
     public ResponseEntity<?> getAllFiles() {
         try {
             List<DocumentResponse> files = documentService.getAllDocuments();
             return ResponseEntity.ok(files);
         }catch (Exception e) {
+            return ResponseEntity.status(500).body("Error retrieving files: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserFiles() {
+        try {
+            return ResponseEntity.ok(documentService.getDocsByCurrentUser());
+        }catch (Exception e){
             return ResponseEntity.status(500).body("Error retrieving files: " + e.getMessage());
         }
     }

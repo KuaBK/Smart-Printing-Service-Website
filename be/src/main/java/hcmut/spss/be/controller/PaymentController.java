@@ -2,7 +2,10 @@ package hcmut.spss.be.controller;
 
 
 import hcmut.spss.be.dtos.request.BuyPrintingPageRequest;
+import hcmut.spss.be.dtos.response.ApiResponse;
+import hcmut.spss.be.dtos.response.DiscountResponse;
 import hcmut.spss.be.dtos.response.PaymentResponse;
+import hcmut.spss.be.service.DiscountService;
 import hcmut.spss.be.service.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,18 @@ public class PaymentController {
 
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    private DiscountService discountService;
+
+    @GetMapping("/discount")
+    public ResponseEntity<?> getDiscount(@RequestParam String code){
+        try {
+            return ResponseEntity.ok(new ApiResponse<>(200, "success", discountService.getDiscountByCode(code)));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(400, e.getMessage(), null));
+        }
+    }
 
     @PostMapping("/vnpay")
     public ResponseEntity<?> createPayment(@RequestBody BuyPrintingPageRequest request) {

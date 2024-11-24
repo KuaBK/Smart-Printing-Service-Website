@@ -10,7 +10,9 @@ import hcmut.spss.be.entity.sharedLibrary.SharedLibrary;
 import hcmut.spss.be.repository.DocumentRepository;
 import hcmut.spss.be.repository.SharedLibraryRepository;
 import hcmut.spss.be.service.SharedLibraryService;
+import hcmut.spss.be.utils.AuthUtil;
 import io.jsonwebtoken.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -23,6 +25,9 @@ public class SharedLibraryServiceImpl implements SharedLibraryService {
     private final SharedLibraryRepository sharedLibraryRepository;
     private final DocumentRepository documentRepository;
 
+    @Autowired
+    private AuthUtil authUtils;
+
     public SharedLibraryServiceImpl(SharedLibraryRepository sharedLibraryRepository, DocumentRepository documentRepository) {
         this.sharedLibraryRepository = sharedLibraryRepository;
         this.documentRepository = documentRepository;
@@ -34,7 +39,9 @@ public class SharedLibraryServiceImpl implements SharedLibraryService {
 
         Document document = documentRepository.findById(request.getDocumentId())
                 .orElseThrow(() -> new RuntimeException("Document not found"));
-
+        if (!document.getStudent().equals(authUtils.loggedInUser())){
+            throw new RuntimeException("Unauthorized access");
+        }
         document.shareWithLibrary(defaultLibrary);
         documentRepository.save(document);
 
@@ -45,6 +52,9 @@ public class SharedLibraryServiceImpl implements SharedLibraryService {
         Document document = documentRepository.findById(request.getDocumentId())
                 .orElseThrow(() -> new RuntimeException("Document not found"));
 
+        if (!document.getStudent().equals(authUtils.loggedInUser())){
+            throw new RuntimeException("Unauthorized access");
+        }
         document.unshareFromLibrary();
         documentRepository.save(document);
 

@@ -2,6 +2,7 @@ package hcmut.spss.be.repository;
 
 import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.sharedLibrary.SharedLibrary;
+import hcmut.spss.be.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +17,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
      List<Document> searchByLibraryAndQuery(@Param("libraryId") Long libraryId, @Param("query") String query);
 
      List<Document> findAllBySharedLibrary(SharedLibrary sharedLibrary);
+
+     List<Document> findAllByStudent(User user);
 }
