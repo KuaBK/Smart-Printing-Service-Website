@@ -51,7 +51,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private DiscountRepository discountRepository;
 
-    public PaymentResponse createPaymentURL(int numberPages, long codeId) {
+    public PaymentResponse createPaymentURL(int numberPages, String id) {
         try {
             // calc amount
             String amount = String.valueOf(numberPages*500); // hardcode price
@@ -77,7 +77,7 @@ public class PaymentServiceImpl implements PaymentService {
             vnp_Params.put("vnp_OrderInfo", vnp_OrderInfo);
             vnp_Params.put("vnp_OrderType", orderType);
             vnp_Params.put("vnp_Locale", vnp_Locale);
-            vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl+"/"+codeId);
+            vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl+"/"+id);
             vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -110,7 +110,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentResponse buyPrintingPage(BuyPrintingPageRequest request) {
         if(request.getDiscountCode().isEmpty()){
-            return createPaymentURL(request.getPage(), 0);
+            return createPaymentURL(request.getPage(), "0-"+authUtil.loggedInUserId());
         }
         Discount discount = discountRepository.findByDiscountCode(request.getDiscountCode()).orElseThrow(() -> new RuntimeException("Discount Code Not Found"));
         User student = authUtil.loggedInUser();
@@ -126,11 +126,11 @@ public class PaymentServiceImpl implements PaymentService {
         numberPages -= discount.getPagesFree();
         student.getDiscounts().add(discount);
         userRepository.save(student);
-        return  createPaymentURL(numberPages, discount.getDiscountId());
+        return  createPaymentURL(numberPages, discount.getDiscountId().toString()+"-"+authUtil.loggedInUserId());
     }
 
     @Override
-    public PaymentResponse handleResponse(long codeId, HttpServletRequest request) {
+    public PaymentResponse handleResponse(String id, HttpServletRequest request) {
         try {
             // Lấy các tham số từ request callback
             Map<String, String> params = new HashMap<>();
@@ -150,18 +150,20 @@ public class PaymentServiceImpl implements PaymentService {
                 throw new RuntimeException("Chữ ký không hợp lệ!");
             }
 
+            List<String> ids = Arrays.asList(id.split("-")); // 0=>code 2=>user
+
             // Lấy mã phản hồi từ VNPay
             String responseCode = params.get("vnp_ResponseCode");
             if ("00".equals(responseCode)) {
                 // Xử lý khi thanh toán thành công
                 //thay doi so giay in cua sinh vien
-                User student = authUtil.loggedInUser();
+                User student = userRepository.findById(Long.parseLong(ids.get(1))).orElseThrow(() -> new RuntimeException("User Not Found"));
                 String amount = params.get("vnp_Amount");
                 int numberPages = Integer.parseInt(amount)/500/100;
                 student.setNumOfPrintingPages(student.getNumOfPrintingPages()+numberPages);
                 userRepository.save(student);
 
-                Discount discount = discountRepository.findById(codeId).orElse(null);
+                Discount discount = discountRepository.findById(Long.parseLong(ids.get(0))).orElse(null);
 
 
                 // save log

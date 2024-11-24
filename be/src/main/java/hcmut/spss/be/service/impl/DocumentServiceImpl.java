@@ -3,6 +3,7 @@ package hcmut.spss.be.service.impl;
 import hcmut.spss.be.dtos.response.document.DocumentResponse;
 import hcmut.spss.be.dtos.request.UpdateDocumentRequest;
 import hcmut.spss.be.entity.document.Document;
+import hcmut.spss.be.entity.user.Role;
 import hcmut.spss.be.entity.user.User;
 import hcmut.spss.be.repository.DocumentRepository;
 import hcmut.spss.be.service.DocumentService;
@@ -21,7 +22,12 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public List<DocumentResponse> getAllDocuments() {
-        return documentRepository.findAll().stream().map(DocumentResponse::toDocumentResponse).toList();
+        User user = authUtil.loggedInUser();
+        if (user.getRole().equals(Role.SPSO)){
+            return documentRepository.findAll().stream().map(DocumentResponse::toDocumentResponse).toList();
+        }else {
+            return documentRepository.findAllByStudent(user).stream().map(DocumentResponse::toDocumentResponse).toList();
+        }
     }
 
     @Override

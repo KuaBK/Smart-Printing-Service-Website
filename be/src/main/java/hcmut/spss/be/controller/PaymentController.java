@@ -45,10 +45,10 @@ public class PaymentController {
         }
     }
 
-    @GetMapping("/vnpay-callback/{codeId}")
-    public ResponseEntity<?> handleVNPayReturn(@PathVariable long codeId, HttpServletRequest request) {
+    @GetMapping("/vnpay-callback/{id}")
+    public ResponseEntity<?> handleVNPayReturn(@PathVariable String id, HttpServletRequest request) {
         try {
-            PaymentResponse response = paymentService.handleResponse(codeId, request);
+            PaymentResponse response = paymentService.handleResponse(id, request);
             if(response.getStatus()==200){
                 return ResponseEntity.ok(response);
             }

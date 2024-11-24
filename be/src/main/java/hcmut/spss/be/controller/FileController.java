@@ -37,7 +37,6 @@ public class FileController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('SPSO')")
     public ResponseEntity<?> getAllFiles() {
         try {
             List<DocumentResponse> files = documentService.getAllDocuments();
