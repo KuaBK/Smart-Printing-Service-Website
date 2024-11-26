@@ -35,6 +35,7 @@ public class SharedLibraryServiceImpl implements SharedLibraryService {
         Document document = documentRepository.findById(request.getDocumentId())
                 .orElseThrow(() -> new RuntimeException("Document not found"));
 
+        document.setShared(true);
         document.shareWithLibrary(defaultLibrary);
         documentRepository.save(document);
 
@@ -45,6 +46,7 @@ public class SharedLibraryServiceImpl implements SharedLibraryService {
         Document document = documentRepository.findById(request.getDocumentId())
                 .orElseThrow(() -> new RuntimeException("Document not found"));
 
+        document.setShared(false);
         document.unshareFromLibrary();
         documentRepository.save(document);
 
