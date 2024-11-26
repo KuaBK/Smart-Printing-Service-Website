@@ -1,10 +1,32 @@
-import React from 'react'
+import React, {useState} from 'react'
 import classes from './style.module.css'
 import logo from '../../assets/logo.png'
 import play from '../../assets/play.svg'
 import img1 from '../../assets/hcmut_bg.png'
+import api from '../../Services/api'
+import {ManagePrint} from '../ManagePrint'
 
 export const HomePage = () => {
+  const [showConfig, setShowConfig] = useState(true);
+  const [fileReport, setFileReport] = useState([]);
+  const handlePrint = async () => {
+    const code = document.getElementById('code').value;
+    try {
+      const response = await api.get(`/file-configs/public/code?code=${code}`);
+      const fileReport = response.data;
+      console.log(fileReport);
+      try {
+        const resfile = await api.get(`/files/${fileReport.data.fileConfig.fileId}`);
+        setShowConfig(false);
+        setFileReport(resfile.data);
+      } catch (error) {
+        console.error('Error fetching files:', error);
+      }
+      // Handle the file report as needed
+    } catch (error) {
+      console.error('Error fetching the file report:', error);
+    }
+  };
   return (
     <div className="lg:w-[100vw] mx-auto font-semibold relative bg-cover bg-[url(${img1})] bg-no-repeat	bg-fixed bg-center">
       <div className={classes.header_border}>
@@ -60,8 +82,11 @@ export const HomePage = () => {
               <input type="text" id="code" class=" border border-gray-300 text-sm rounded-[13px] block px-[10px] py-[13px] w-full outline-none" placeholder="Nhập mã code" required />
             </form>
             <div className='w-[100px]'>
-              <button className='w-[100px] bg-[#0f6cbf] hover:opacity-90 rounded-[60px] text-[#fff] font-semibold py-[8px] ml-[5px] h-full'>Print </button>
+              <button onClick={handlePrint} className='w-[100px] bg-[#0f6cbf] hover:opacity-90 rounded-[60px] text-[#fff] font-semibold py-[8px] ml-[5px] h-full'>Print</button>
+              <ManagePrint setIsHidden={setShowConfig} isHidden={showConfig} file={fileReport}/>
             </div>
+
+
           </div>
         </div>
       </div>

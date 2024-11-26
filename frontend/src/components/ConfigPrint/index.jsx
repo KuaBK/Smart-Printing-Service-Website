@@ -201,8 +201,10 @@ const PrinterCard = ({ title, onDelete, processingPages, pageProgress, inkProgre
           </svg>}
         </svg>
 
-        <div className={classes.printerProcessing}>Số trang giấy đang được xử lý:</div>
-        <div className={classes.printerProcessingNumber}>{processingPages}</div>
+        <div className={`${classes.printerProcessing} font-bold`}>
+          <div  className='font-bold'>Thông tin máy in</div>
+          <div className='pt-[5px]'>{processingPages}</div>
+        </div>
 
         <div className={classes.printerProgress}>
           <div className={classes.printerPages}>
@@ -252,7 +254,7 @@ const PrinterCard = ({ title, onDelete, processingPages, pageProgress, inkProgre
                 <option value="DISABLE">Không hoạt động</option>
               </select>
 
-              <label htmlFor="numOfPaper">Số giấy in (%):</label>
+              <label htmlFor="numOfPaper">Số giấy in:</label>
               <input
                 className={classes.printerInput}
                 type="number"
@@ -260,7 +262,6 @@ const PrinterCard = ({ title, onDelete, processingPages, pageProgress, inkProgre
                 value={formData.paperUsage}
                 onChange={handleInputChange}
                 min="0" // Giá trị tối thiểu là 0
-                max="100"
               />
 
               <label htmlFor="amountOfInk">Số mực in (%):</label>
@@ -353,7 +354,7 @@ export const ConfigPrint = () => {
     };
 
     fetchPrinter();
-  }, [printers]);
+  }, []);
 
   const [filters, setFilters] = useState({
     inkRange: { min: '', max: '' },
@@ -432,7 +433,7 @@ export const ConfigPrint = () => {
     }));
   };
 
-  const handleSave = (event) => {
+  const handleSave = async (event) => {
     event.preventDefault();
 
     // Kiểm tra dữ liệu đầu vào
@@ -445,7 +446,7 @@ export const ConfigPrint = () => {
       isNaN(formData.paperUsage) ||
       isNaN(formData.inkUsage) ||
       formData.paperUsage < 0 ||
-      formData.paperUsage > 100 ||
+      formData.paperUsage > 100000 ||
       formData.inkUsage < 0 ||
       formData.inkUsage > 100
     ) {
@@ -477,6 +478,12 @@ export const ConfigPrint = () => {
         console.error("Failed to add printer:", error.response?.data || error.message);
       }
     };
+    try {
+      const response = await api.get("/printers");
+      setPrinters(response.data);
+    } catch (error) {
+      console.error("Có lỗi xảy ra khi tải dữ liệu:", error);
+    }
 
     handleAddPrinter();
 
@@ -544,7 +551,7 @@ export const ConfigPrint = () => {
                 <option value="DISABLE">Không hoạt động</option>
               </select>
 
-              <label htmlFor="paperUsage">Số giấy in (%):</label>
+              <label htmlFor="paperUsage">Số giấy in:</label>
               <input
                 className={classes.printerInput}
                 type="number"
@@ -552,7 +559,6 @@ export const ConfigPrint = () => {
                 value={formData.paperUsage}
                 onChange={handleInputChange}
                 min="0" // Giá trị tối thiểu là 0
-                max="100"
                 required
               />
 
@@ -597,7 +603,7 @@ export const ConfigPrint = () => {
                 key={printer.printerId}
                 title={printer.location}
                 // title="100"
-                processingPages="0"
+                processingPages={`${printer.brand} ${printer.model}`}
                 pageProgress={printer.numOfPaper}
                 inkProgress={printer.amountOfInk}
                 status={printer.status}
