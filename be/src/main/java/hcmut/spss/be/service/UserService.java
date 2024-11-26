@@ -3,6 +3,7 @@ package hcmut.spss.be.service;
 import hcmut.spss.be.dtos.request.UpdateUserRequest;
 import hcmut.spss.be.dtos.response.PrintJobResponse;
 import hcmut.spss.be.dtos.response.UpdateUserResponse;
+import hcmut.spss.be.dtos.response.UserInfoResponse;
 import hcmut.spss.be.entity.user.User;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Optional;
 public interface UserService {
     void updateUserRole(Long userId, String roleName);
 
-    List<User> getAllUsers();
+    List<UserInfoResponse> getAllUsers();
 
     User findByUsername(String username);
 

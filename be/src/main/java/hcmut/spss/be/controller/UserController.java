@@ -3,10 +3,15 @@ package hcmut.spss.be.controller;
 import hcmut.spss.be.dtos.request.UpdateUserRequest;
 import hcmut.spss.be.dtos.response.ApiResponse;
 import hcmut.spss.be.dtos.response.UpdateUserResponse;
+import hcmut.spss.be.dtos.response.UserInfoResponse;
+import hcmut.spss.be.entity.user.User;
 import hcmut.spss.be.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -49,5 +54,14 @@ public class UserController {
                     .data(ex.getMessage())
                     .build());
         }
+    }
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<UserInfoResponse>>> getAllAccounts() {
+        List<UserInfoResponse> accounts = userService.getAllUsers();
+        ApiResponse<List<UserInfoResponse>> response = ApiResponse.<List<UserInfoResponse>>builder()
+                .message("Fetched all accounts successfully")
+                .data(accounts)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

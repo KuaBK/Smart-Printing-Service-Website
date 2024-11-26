@@ -1,5 +1,6 @@
 package hcmut.spss.be.entity.payment;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import hcmut.spss.be.entity.discount.Discount;
 import hcmut.spss.be.entity.user.User;
 import jakarta.persistence.*;
@@ -43,6 +44,7 @@ public class Payment {
     Discount discount;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "student_id", referencedColumnName = "user_id")
     User student;
 }
