@@ -8,7 +8,6 @@ import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.fileConfig.FileConfig;
 import hcmut.spss.be.entity.payment.Payment;
 import hcmut.spss.be.entity.printJob.PrintJob;
-import hcmut.spss.be.entity.report.Report;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -92,10 +91,6 @@ public class User {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<PrintJob> printJobList;
-
-    @OneToMany(mappedBy = "spso")
-    @JsonManagedReference
-    private List<Report> reportList;
 
     @ManyToMany
     @JoinTable(
