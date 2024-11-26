@@ -30,7 +30,7 @@ public class Discount {
     @Column(name = "semester")
     String semester;
 
-    @Column(name = "discount_code", unique = true)
+    @Column(name = "discount_code")
     String discountCode;
 
     @Column(name = "pages_free")
