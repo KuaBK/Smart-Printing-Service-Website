@@ -77,19 +77,26 @@ public class FileConfigServiceImpl implements FileConfigService {
                 .build();
 
         fileConfigRepository.save(fileConfig);
+        FileConfigResponse response = FileConfigResponse.toFileConfigResponse(fileConfig);
         if (codePrint != null) {
             codePrint.setFileConfig(fileConfig);
             codePrintRepository.save(codePrint);
-            Map<String, String> data = new HashMap<>();
+
+            Map<String, Object> data = new HashMap<>();
             data.put("CodePrint", codePrint.getGeneratedCode());
+            data.put("FileConfigResponse", response);
+
             document.getFileConfigs().add(fileConfig);
             documentRepository.save(document);
             return new ApiResponse<>(200, "Successfully created file config", data);
         }else {
+            Map<String, Object> data = new HashMap<>();
+            data.put("FileConfigResponse", response);
+
             document.getFileConfigs().add(fileConfig);
             documentRepository.save(document);
 
-            return new ApiResponse<>(200, "Successfully created file config", null);
+            return new ApiResponse<>(200, "Successfully created file config", data);
         }
 
     }
