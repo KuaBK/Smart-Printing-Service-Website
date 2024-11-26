@@ -12,7 +12,7 @@ public interface PaymentService {
 
     PaymentResponse buyPrintingPage(BuyPrintingPageRequest request);
 
-    PaymentResponse handleResponse(long codeId, HttpServletRequest request);
+    PaymentResponse handleResponse(String id, HttpServletRequest request);
 
     List<TransactionResponse> getTransactionsOfCurrentUser(); //user
 

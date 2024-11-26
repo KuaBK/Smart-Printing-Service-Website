@@ -36,6 +36,12 @@ public class DiscountServiceImpl implements DiscountService {
         return discountRepository.findAll().stream().map(DiscountResponse::toDiscountResponse).toList();
     }
 
+    @Override
+    public DiscountResponse getDiscountByCode(String code) {
+        Discount discount = discountRepository.findByDiscountCode(code).orElseThrow(() -> new IllegalArgumentException("discount code not found"));
+        return DiscountResponse.toDiscountResponse(discount);
+    }
+
     public String generateDiscountCode() {
         return "DIS-" + UUID.randomUUID().toString().substring(0, 5).toUpperCase();
     }

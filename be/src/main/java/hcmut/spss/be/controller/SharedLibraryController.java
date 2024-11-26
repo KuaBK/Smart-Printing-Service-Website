@@ -36,14 +36,22 @@ public class SharedLibraryController {
 //    }
     @PostMapping("/share")
     public ResponseEntity<MessageResponse> shareDocument(@RequestBody ShareDocumentRequest request) {
-        MessageResponse response = sharedLibraryService.shareDocument(request);
-        return ResponseEntity.ok(response);
+        try {
+            MessageResponse response = sharedLibraryService.shareDocument(request);
+            return ResponseEntity.ok(response);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse(e.getMessage()));
+        }
     }
 
     @PostMapping("/unshare")
     public ResponseEntity<MessageResponse> unshareDocument(@RequestBody UnshareDocumentRequest request) {
-        MessageResponse response = sharedLibraryService.unshareDocument(request);
-        return ResponseEntity.ok(response);
+        try {
+            MessageResponse response = sharedLibraryService.unshareDocument(request);
+            return ResponseEntity.ok(response);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse(e.getMessage()));
+        }
     }
 
     @PostMapping("/search")
