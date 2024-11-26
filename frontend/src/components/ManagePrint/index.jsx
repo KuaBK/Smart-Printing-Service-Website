@@ -115,26 +115,48 @@ export const ManagePrint = (props) => {
       "scale": parseInt(scale)
     })
     .then(response => {
-      console.log(response.data)
+      console.log('------------------')
+      console.log(response.data.data.FileConfigResponse.id)
       {qr ? toast.success(`Tạo mã QR thành công ${response.data.data.CodePrint}`) : toast.success("Cấu hình file thành công")}
-      fetchProfile();
+      if (qr) {
+        api.post('/print-jobs/create', {
+          "printerId": applyPrinter.printerId,
+          "fileConfigId": response.data.data.FileConfigResponse.id
+        })
+        .then(response => {
+          console.log(response.data);
+          toast.success("In thành công", {
+            onClose: () => {
+              props.setIsHidden(true);
+            }
+          });
+          // fetchProfile();
+        })
+        .catch(error => {
+          toast.error("In thất bại");
+        }) 
+      } else {
+        api.post('/print-jobs/public/print-by-code', {
+          "printerId": applyPrinter.printerId,
+          "fileConfigId": response.data.data.FileConfigResponse.id
+        })
+        .then(response => {
+          console.log(response.data);
+          toast.success("In thành công", {
+            onClose: () => {
+              props.setIsHidden(true);
+            }
+          });
+          // fetchProfile();
+        })
+        .catch(error => {
+          toast.error("In thất bại");
+        }) 
+      }
     })
     .catch(error => {
       toast.error("Cấu hình file thất bại");
     })
-    // try {
-    //   const response = await api.post('/print-jobs/create', {
-    //     "printerId": props.file.id,
-    //     "fileConfigId": 10
-    //   });
-    //   console.log(response.data);
-    //   toast.success("In thành công");
-    //   fetchProfile();
-    // }
-    // catch (error) {
-    //   console.error(error);
-    //   toast.error("In thất bại");
-    // }
   };
   const onChangeSbi = (e) => {
     setSbi(e.target.value);
@@ -330,7 +352,7 @@ export const ManagePrint = (props) => {
           ></iframe>
           <div className='flex align-end flex-row justify-end'>
             <button className={classes.shareButton} form='form2'>Share</button>
-            <button className={classes.payButton} form='form1'>Thanh Toán</button>
+            <button className={classes.payButton} form='form1'>Gạch ví</button>
           </div>
         </div>
       </div>

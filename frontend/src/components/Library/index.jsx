@@ -4,135 +4,8 @@ import Folder_dublicate_duotone from '../../assets/Folder_dublicate_duotone.svg'
 import calendar_Phong from '../../assets/calendar_Phong.svg';
 import location from '../../assets/location.svg';
 import api from '../../Services/api';
-
-// const document = [
-//   {
-//     id: 1,
-//     title: "Tài liệu 1",
-//     status: "On Progress",
-//     location: "Tầng 1- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     field: "CSCE",
-//     course: "CO1004",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi",
-//     tags: ["Math", "HK241"]
-//   },
-
-//   {
-//     id: 1,
-//     title: "Tài liệu 1",
-//     status: "On Progress",
-//     location: "Tầng 1- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     field: "CSCE",
-//     course: "CO1004",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi",
-//     tags: ["Math", "HK241"]
-//   },
-
-//   {
-//     id: 1,
-//     title: "Tài liệu 1",
-//     status: "On Progress",
-//     location: "Tầng 1- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     field: "CSCE",
-//     course: "CO1004",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi",
-//     tags: ["Math", "HK241"]
-//   },
-
-//   {
-//     id: 1,
-//     title: "Tài liệu 1",
-//     status: "On Progress",
-//     location: "Tầng 1- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     field: "CSCE",
-//     course: "CO1004",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi",
-//     tags: ["Math", "HK241"]
-//   },
-
-//   {
-//     id: 1,
-//     title: "Tài liệu 1",
-//     status: "On Progress",
-//     location: "Tầng 1- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     field: "CSCE",
-//     course: "CO1004",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi",
-//     tags: ["Math", "HK241"]
-//   },
-
-//   {
-//     id: 1,
-//     title: "Tài liệu 1",
-//     status: "On Progress",
-//     location: "Tầng 1- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     field: "CSCE",
-//     course: "CO1004",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi",
-//     tags: ["Math", "HK241"]
-//   },
-
-//   {
-//     id: 1,
-//     title: "Tài liệu 1",
-//     status: "On Progress",
-//     location: "Tầng 1- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     field: "CSCE",
-//     course: "CO1004",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi",
-//     tags: ["Math", "HK241"]
-//   },
-
-//   {
-//     id: 1,
-//     title: "Tài liệu 1",
-//     status: "On Progress",
-//     location: "Tầng 1- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     field: "CSCE",
-//     course: "CO1004",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi",
-//     tags: ["Math", "HK241"]
-//   },
-
-//   {
-//     id: 1,
-//     title: "Tài liệu 1",
-//     status: "On Progress",
-//     location: "Tầng 1- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     field: "CSCE",
-//     course: "CO1004",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi",
-//     tags: ["Math", "HK241"]
-//   },
-//   // Add additional documents as needed
-// ];
+// import ManagePrint from '../ManagePrint';
+import { ManagePrint } from '../ManagePrint'
 
 export const Library = () => {
   const [animationClass, setAnimationClass] = useState('');
@@ -143,6 +16,7 @@ export const Library = () => {
 
   useEffect(() => {
     const fetchLib = async () => {
+      console.log("fetching library data...");
       try {
         const response = await api.get("/library/all");
         setDocument(response.data); 
@@ -157,19 +31,26 @@ export const Library = () => {
 
 
   const handleFilter = (e) => setSelectHK(e.target.value);
+  const [fileC, setFileC] = useState([]);
 
-  const handlePreview = (docId) => {
+  const handlePreview = async (docId) => {
     const selectedDoc = document.find(doc => doc.documentId === docId);
+    try {
+      const response = await api.get(`/files/${docId}`);
+      console.log(response.data);
+      setFileC(response.data);
+    } catch (error) {
+      console.error('Error fetching files:', error);
+    }
     setDocDetail(selectedDoc);
     setPreview(!preview);
   }
-
   const handleClosePreview = () => setPreview(false);
-
+  const [showConfig, setShowConfig] = useState(true);
   useEffect(() => {
     if (preview) {
       setAnimationClass(classes.zoomIn);
-      const timer = setTimeout(() => setAnimationClass(''), 300);
+      const timer = setTimeout(() => setAnimationClass(''), 200);
       return () => clearTimeout(timer);
     }
   }, [preview]);
@@ -207,7 +88,7 @@ export const Library = () => {
           {document?.map(item => (
             <div key={item.documentId} className="flex flex-col bg-[#FFFFFF] rounded-[16px] px-[15px] py-[7px] shadow-xl" onClick={() => handlePreview(item.documentId)}>
               <div className="flex flex-row justify-between items-center h-[40px] w-full mb-[3px]">
-                <div className="w-[40%] font-Inter font-semibold text-sm w-[100px] whitespace-nowrap overflow-hidden text-ellipsis">{item.documentName}</div>
+                <div className="w-[40%] font-Inter font-semibold text-sm whitespace-nowrap overflow-hidden text-ellipsis">{item.documentName}</div>
                 <div className="flex flex-row items-center">
                   <img src={calendar_Phong} className="h-[17px] w-[17px]" alt="calendar icon" />
                   <div className="text-[#787486] font-Inter mx-[10px] text-sm">{item.uploadTime}</div>
@@ -219,6 +100,7 @@ export const Library = () => {
                   className={`h-[23px] w-[46px] rounded-[4px] bg-opacity-30 text-xs text-center pt-[2.5px] mr-[12px]
                     bg-[#83C29D33] text-[#68B266]`}
                 >
+                  {item.category}
                 </div>)}
                 {item.semester&&(<div
                   className={`h-[23px] w-[46px] rounded-[4px] bg-opacity-30 text-xs text-center pt-[2.5px] mr-[12px]
@@ -235,12 +117,6 @@ export const Library = () => {
             <div className={`${classes.preview} ${animationClass}`}>
               <div className={classes.preview_info}>
                 <div className={classes.info_title}>{docDetail.documentName}</div>
-                {/* <div className={classes.info_tag}>
-                <div className={`${classes.info_status} ${docDetail.status ====== "Completed" ? classes.info_completed : classes.info_onProgress}`}>
-                  {docDetail.status}
-                </div>
-                <div className={classes.info_share}>Share</div>
-              </div> */}
                 <div className="flex flex-row">
                     <div
                       className={`h-[23px] w-[46px] rounded-[4px] bg-opacity-30 text-xs text-center pt-[2.5px] mr-[12px] bg-[#83C29D33] text-[#68B266]`}
@@ -280,8 +156,8 @@ export const Library = () => {
                 </div>
 
                 <button className={classes.button_report}>Báo cáo</button>
-                <button className={classes.button_nav}>Cấu Hình In</button>
-
+                <button className={classes.button_nav} onClick={() => {setShowConfig(false)}}>Cấu Hình In</button>
+                <ManagePrint setIsHidden={setShowConfig} isHidden={showConfig} file={fileC}/>
               </div>
               <div className={classes.preview_file}>
                 <iframe src={docDetail.url} title="Document Preview"></iframe>

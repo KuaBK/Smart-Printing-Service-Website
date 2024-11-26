@@ -25,13 +25,6 @@ export const HomePageUser = () => {
   const handleFilter = (e) => {
     setSelectHK(e.target.selectedOptions[0].value);
   };
-  // const handlePreview = (e) => {
-  //   // const currentIndex = document.findIndex(doc => doc.documentId === e);
-  //   // setDocDetail(document[currentIndex]);
-  //   console.log(e);
-  //   setIdPreview(e);
-  //   setPreview(!preview);
-  // }
   const [showConfig, setShowConfig] = useState(true);
   const [allFiles, setAllFiles] = useState([]);
   const handleClosePreview=()=>{
@@ -40,7 +33,7 @@ export const HomePageUser = () => {
   useEffect(() => {
     const fetchDataID = async () => {
       try {
-        const resfile = await api.get(`/files/${idPreview}`);
+        const resfile = await api.get(`/files/${idPreview.fileConfig.fileId}`);
         setDocDetail(resfile.data);
         console.log(resfile.data);
       } catch (error) {
@@ -63,7 +56,7 @@ export const HomePageUser = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resfile = await api.get('/file-configs');
+        const resfile = await api.get('/print-jobs/current-user');
         setDocument(resfile.data);
         const res = await api.get('/files');
         setAllFiles(res.data);
@@ -114,10 +107,10 @@ export const HomePageUser = () => {
         <div className={classes.list_doc}>
           {document?.map(item => {
             console.log(allFiles);
-            const filteredItem = allFiles.find(file => file.id === item.id);
+            const filteredItem = allFiles.find(file => file.id === item.fileConfig.fileId);
             console.log(filteredItem);
             return (
-              <div key={item.id} className={classes.document} onClick={() => {setIdPreview(item.id); setPreview(!preview)}}>
+              <div key={item.fileConfig.fileId} className={classes.document} onClick={() => {setIdPreview(item); setPreview(!preview)}}>
                 <div className={classes.line1}>
                   <div className={classes.doc_title}>{filteredItem?.documentName}</div>
                   {!filteredItem?.shared ? (
@@ -133,7 +126,7 @@ export const HomePageUser = () => {
                 </div>
                 <div className={classes.line2}>
                   <img className={classes.doc_locIMG} src={location} />
-                  <div className={classes.doc_loc}>Tầng 9- GDH6</div>
+                  <div className={classes.doc_loc}>{item.location}</div>
                   <img className={classes.doc_calenIMG} src={calendar_Phong} />
                   <div className={classes.doc_time}>{filteredItem?.uploadTime}</div>
                 </div>
@@ -155,7 +148,7 @@ export const HomePageUser = () => {
               </div>
               <div className={classes.info_wAndt}>
                 <img className={classes.info_locIMG} src={location} />
-                <div className={classes.info_loc}>{docDetail?.facultyName}</div>
+                <div className={classes.info_loc}>{idPreview?.location}</div>
                 <img className={classes.info_calenIMG} src={calendar_Phong} />
                 <div className={classes.info_time}>{docDetail?.uploadTime}</div>
               </div>
@@ -171,7 +164,7 @@ export const HomePageUser = () => {
               </div>
               <div className={classes.info_printer}>
                 <label htmlFor="" className={classes.printer_label}>Thông tin máy in</label>
-                <div className={classes.printer_div}>{docDetail?.infoPrinter}</div>
+                <div className={classes.printer_div}>{idPreview?.printerBrand}</div>
               </div>
               <button className={classes.button_nav} onClick={() => {setShowConfig(false)}}>Cấu Hình In</button>
               <ManagePrint setIsHidden={setShowConfig} isHidden={showConfig} file={docDetail}/>
