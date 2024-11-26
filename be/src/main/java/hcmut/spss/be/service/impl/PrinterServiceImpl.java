@@ -54,15 +54,31 @@ public class PrinterServiceImpl implements PrinterService {
     public MessageResponse updatePrinter(Long id, PrinterRequest request) {
         Printer printer = printerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Printer not found"));
-        printer.setBrand(request.getBrand());
-        printer.setModel(request.getModel());
-        printer.setStatusPrinter(Status.valueOf(request.getStatus()));
-        printer.setDescription(request.getDescription());
-        printer.setLocation(request.getLocation());
-        printer.setNumOfPaper(request.getNumOfPaper());
-        printer.setAmountOfInk(request.getAmountOfInk());
+
+        if (request.getBrand() != null) {
+            printer.setBrand(request.getBrand());
+        }
+        if (request.getModel() != null) {
+            printer.setModel(request.getModel());
+        }
+        if (request.getStatus() != null) {
+            printer.setStatusPrinter(Status.valueOf(request.getStatus()));
+        }
+        if (request.getDescription() != null) {
+            printer.setDescription(request.getDescription());
+        }
+        if (request.getLocation() != null) {
+            printer.setLocation(request.getLocation());
+        }
+        if (request.getNumOfPaper() != null) {
+            printer.setNumOfPaper(request.getNumOfPaper());
+        }
+        if (request.getAmountOfInk() != null) {
+            printer.setAmountOfInk(request.getAmountOfInk());
+        }
         printerRepository.save(printer);
-        return new MessageResponse("Printer updated successfully");
+
+        return new MessageResponse("Printer updated successfully (PATCH)");
     }
 
     @Override

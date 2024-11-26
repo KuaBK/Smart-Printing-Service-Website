@@ -17,7 +17,7 @@ public class DocumentResponse {
     private Long id;
     private String documentName;
     private Long size;
-    private int numberOfPages;
+    private int numOfPage;
     private boolean shared;
     private String url;
     private String uploadTime;
@@ -33,7 +33,7 @@ public class DocumentResponse {
                 .id(document.getDocumentId())
                 .documentName(document.getDocumentName())
                 .size(document.getSize())
-                .numberOfPages(document.getNumOfPage())
+                .numOfPage(document.getNumOfPage())
                 .shared(document.isShared())
                 .url(document.getUrl())
                 .uploadTime(document.getUploadTime().format(formatter))
