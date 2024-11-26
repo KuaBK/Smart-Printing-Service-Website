@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface DocumentService {
     List<DocumentResponse> getAllDocuments();
+    List<DocumentResponse> getDocsByCurrentUser();
     DocumentResponse getDocument(Long documentId);
     DocumentResponse updateDocument(Long documentId, UpdateDocumentRequest request);
 }

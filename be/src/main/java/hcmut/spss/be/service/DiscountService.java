@@ -11,4 +11,6 @@ public interface DiscountService {
     MessageResponse makeDiscount(DiscountRequest request);
 
     List<DiscountResponse> getAllDiscounts();
+
+    DiscountResponse getDiscountByCode(String code);
 }
