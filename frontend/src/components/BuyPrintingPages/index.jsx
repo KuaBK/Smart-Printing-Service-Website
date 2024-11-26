@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import './stylemodule.css';
 import momo from './img/momo.png';
 import bk from './img/bk.jpg';
+import api from '../../Services/api';
 export const BuyPrintingPages = () => {
   const [soTrang, setSoTrang] = useState(100); // Default to 100 pages
   const [tongTienGiay, setTongTienGiay] = useState(0);
-  const [giamGia] = useState(9000); // Fixed discount
+  const [giamGia, setGiamGia] = useState(0); // Fixed discount
   const [tongThanhToan, setTongThanhToan] = useState(0);
   const [showPaymentModal, setShowPaymentModal] = useState(false); // Control modal visibility
+  const [valueDiscount, setValueDiscount] = useState('');
 
   // Calculate total price when `soTrang` changes
   useEffect(() => {
-    let giaTrang = 1000; // Price per page: 1000 vnd
+    let giaTrang = 500; // Price per page: 1000 vnd
     let tongTienGiay = soTrang * giaTrang;
     setTongTienGiay(tongTienGiay);
     setTongThanhToan(tongTienGiay - giamGia >= 0 ? tongTienGiay - giamGia : 0); // Total after discount
@@ -28,10 +30,47 @@ export const BuyPrintingPages = () => {
     setSoTrang(value);
   };
 
+  const handleInputDiscount = async (e) => {
+    const code  = e.target.value.toUpperCase();
+    setValueDiscount(code);
+    try {
+      const response = await api.get(`/payment/discount?code=${code}`);
+      if (response.status === 200) {
+        setGiamGia(response.data.data.pagesFree * 500);
+        console.log(response.data.data.pagesFree);
+      } else if (response.status === 400) {
+        setGiamGia(0);
+        setValueDiscount('');
+
+      }
+    } catch (error) {
+      setGiamGia(0);
+    }
+  }
+
   // Handle "Thanh toán" button to show modal
   const handleThanhToan = () => {
     setShowPaymentModal(true);
   };
+
+  const handlePaymentVNPay = async () => {
+    try {
+      const response = await api.post('/payment/vnpay', {
+        "page": soTrang,
+        "discountCode": giamGia === 0 ? '' : valueDiscount
+      });
+      console.log(response);
+      if (response.status === 200) {
+        window.open(response.data.url, '_blank').focus();
+        setShowPaymentModal(false);
+        setSoTrang(0);
+        setGiamGia(0);
+        setValueDiscount('');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   // Close modal when "Hủy" button is clicked or outside is clicked
   const handleCloseModal = () => {
@@ -82,7 +121,7 @@ export const BuyPrintingPages = () => {
 
         <div className="form-group">
           <p className="ma-giam-gia">Mã giảm giá</p>
-          <input type="text" id="ma-giam-gia" placeholder="Nhập mã giảm giá" />
+          <input type="text" id="ma-giam-gia" placeholder="Nhập mã giảm giá" onChange={handleInputDiscount}/>
         </div>
 
         <div className="summary">
@@ -100,8 +139,8 @@ export const BuyPrintingPages = () => {
           <div className="modal-content relative" onClick={(e) => e.stopPropagation()}>
             <h2 className='font-bold'>Phương thức thanh toán</h2>
             <div className='flex flex-col'>
-            <button className="payment-option">
-              <img src={momo} alt="Momo" />
+            <button className="payment-option" onClick={handlePaymentVNPay}>
+              <img src={momo} alt="Momo"/>
               VNPAY
             </button>
             <button className="payment-option">

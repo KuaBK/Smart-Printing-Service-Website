@@ -8,131 +8,8 @@ import calendar_Phong from '../../assets/calendar_Phong.svg'
 import location from '../../assets/location.svg'
 import { GlobalContext } from '../../Context'
 import api from '../../Services/api'
-
-// const document = [
-//   {
-//     id: 1,
-//     title: "Tài liệuaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 1",
-//     status: "On Progress",
-//     location: "Tầng 1- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   },
-//   {
-//     id: 2,
-//     title: "Tài liệu 2",
-//     status: "On Progress",
-//     location: "Tầng 2- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   },
-//   {
-//     id: 3,
-//     title: "Tài liệu 3",
-//     status: "On Progress",
-//     location: "Tầng 3- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   },
-//   {
-//     id: 4,
-//     title: "Tài liệu 4",
-//     status: "On Progress",
-//     location: "Tầng 4- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   },
-//   {
-//     id: 5,
-//     title: "Tài liệu 5",
-//     status: "On Progress",
-//     location: "Tầng 5- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   },
-//   {
-//     id: 6,
-//     title: "Tài liệu 6",
-//     status: "On Progress",
-//     location: "Tầng 6- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   },
-//   {
-//     id: 7,
-//     title: "Tài liệu 7",
-//     status: "On Progress",
-//     location: "Tầng 7- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   },
-//   {
-//     id: 8,
-//     title: "Tài liệu 8",
-//     status: "On Progress",
-//     location: "Tầng 8- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   },
-//   {
-//     id: 9,
-//     title: "Tài liệu 9",
-//     status: "On Progress",
-//     location: "Tầng 9- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   },
-//   {
-//     id: 10,
-//     title: "Tài liệu 10",
-//     status: "On Progress",
-//     location: "Tầng 10- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   },
-//   {
-//     id: 11,
-//     title: "Tài liệu 11",
-//     status: "On Progress",
-//     location: "Tầng 11- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   },
-//   {
-//     id: 12,
-//     title: "Tài liệu 12",
-//     status: "On Progress",
-//     location: "Tầng 12- GDH6",
-//     time: "18:25 - 01/01/2024",
-//     quantity: "15",
-//     category: "Math",
-//     infoPrinter: "BE ơi"
-//   }
-
-// ];
-
+import "react-toastify/dist/ReactToastify.css";
+import { ManagePrint } from '../ManagePrint'
 export const HomePageUser = () => {
   const [animationClass, setAnimationClass] = useState('');
   const numberHPage = 200;
@@ -155,6 +32,8 @@ export const HomePageUser = () => {
   //   setIdPreview(e);
   //   setPreview(!preview);
   // }
+  const [showConfig, setShowConfig] = useState(true);
+  const [allFiles, setAllFiles] = useState([]);
   const handleClosePreview=()=>{
     setPreview(!preview);
   }
@@ -184,9 +63,10 @@ export const HomePageUser = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resfile = await api.get('/files');
+        const resfile = await api.get('/file-configs');
         setDocument(resfile.data);
-        console.log(resfile.data);
+        const res = await api.get('/files');
+        setAllFiles(res.data);
       } catch (error) {
         console.error('Error fetching files:', error);
       }
@@ -232,31 +112,35 @@ export const HomePageUser = () => {
       </div>
       <div className={classes.body}>
         <div className={classes.list_doc}>
-          {document?.map(item => (
-            console.log(item),
-            <div key={item.id} className={classes.document} onClick={() => {setIdPreview(item.id); setPreview(!preview)}}>
-              <div className={classes.line1}>
-                <div className={classes.doc_title}>{item?.documentName}</div>
-                {!item.shared  ? (
-                  <img className={classes.doc_dot} src={onProgressDot} />
-                ) : (
-                  <img className={classes.doc_dot} src={doneDot} />
-                )}
-                {item.shared  ? (
-                  <div className={classes.doc_status}>Share</div>
-                ) : (
-                  <div className={classes.doc_status}>Not Share</div>
-                )}
+          {document?.map(item => {
+            console.log(allFiles);
+            const filteredItem = allFiles.find(file => file.id === item.id);
+            console.log(filteredItem);
+            return (
+              <div key={item.id} className={classes.document} onClick={() => {setIdPreview(item.id); setPreview(!preview)}}>
+                <div className={classes.line1}>
+                  <div className={classes.doc_title}>{filteredItem?.documentName}</div>
+                  {!filteredItem?.shared ? (
+                    <img className={classes.doc_dot} src={onProgressDot} />
+                  ) : (
+                    <img className={classes.doc_dot} src={doneDot} />
+                  )}
+                  {filteredItem?.shared ? (
+                    <div className={classes.doc_status}>Share</div>
+                  ) : (
+                    <div className={classes.doc_status}>Not Share</div>
+                  )}
+                </div>
+                <div className={classes.line2}>
+                  <img className={classes.doc_locIMG} src={location} />
+                  <div className={classes.doc_loc}>Tầng 9- GDH6</div>
+                  <img className={classes.doc_calenIMG} src={calendar_Phong} />
+                  <div className={classes.doc_time}>{filteredItem?.uploadTime}</div>
+                </div>
+                <div className={classes.ellipsis}>. . .</div>
               </div>
-              <div className={classes.line2}>
-                <img className={classes.doc_locIMG} src={location} />
-                <div className={classes.doc_loc}>Tầng 9- GDH6</div>
-                <img className={classes.doc_calenIMG} src={calendar_Phong} />
-                <div className={classes.doc_time}>18:25 - 01/01/2024</div>
-              </div>
-              <div className={classes.ellipsis}>. . .</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         {preview && (
           <div className={`${classes.preview} ${animationClass}`} >
@@ -289,7 +173,8 @@ export const HomePageUser = () => {
                 <label htmlFor="" className={classes.printer_label}>Thông tin máy in</label>
                 <div className={classes.printer_div}>{docDetail?.infoPrinter}</div>
               </div>
-              <button className={classes.button_nav}>Cấu Hình In</button>
+              <button className={classes.button_nav} onClick={() => {setShowConfig(false)}}>Cấu Hình In</button>
+              <ManagePrint setIsHidden={setShowConfig} isHidden={showConfig} file={docDetail}/>
             </div>
             <div className={classes.preview_file}>
               {console.log(docDetail)}

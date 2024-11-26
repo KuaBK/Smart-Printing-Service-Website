@@ -18,6 +18,7 @@ import { StatisticsSPSO } from '../components/StatisticsSPSO'
 import { Profile } from '../components/Profile'
 import { Notifications } from '../components/Notifications'
 import {HistoryTransaction} from '../components/HistoryTransaction'
+import "react-toastify/dist/ReactToastify.css";
 
 function getContent(type) {
   const {reload} = useContext(GlobalContext)
@@ -51,16 +52,50 @@ function getContent(type) {
   }
 }
 
+function getUrl(type) {
+  switch (type) {
+    case '/user':
+      return 'HomePageUser'
+    case '/user/config':
+      return 'PrintService'
+    case '/user/lib':
+      return 'Library'
+    case '/user/buypages':
+      return 'BuyPrintingPages'
+    case '/spso':
+      return 'HomePageSPSO'
+    case '/spso/manageprint':
+      return 'ConfigPrint'
+    case '/spso/statistics':
+      return 'StatisticsSPSO'
+    case '/spso/config':
+      return 'ConfigSPSO'
+    case '/admin':
+      return 'HomePageAdmin'
+    default:
+      return null;
+  }
+}
+
 function Spso() {
-  const { selecInput, setSelecInput, fetchProfile, profile} = useContext(GlobalContext)
+  const { selecInput, setSelecInput, fetchProfile, profile, reload, ToastContainer,toast} = useContext(GlobalContext)
   useEffect(() => {
-    setSelecInput('HomePageSPSO')
+    // setSelecInput('HomePageUser')
+    setSelecInput(getUrl(location.pathname))
     if (!profile) {
       fetchProfile()
     }
   }, [])
+  useEffect(() => {
+    // console.log(location.pathname)
+    setSelecInput(getUrl(location.pathname))
+    // if (!profile) {
+    reload()
+    // }
+  }, [selecInput])
   return (
     <div className='my-0 p-0'>
+      <ToastContainer/>
       <Navbar/>
       {getContent(selecInput)}
     </div>

@@ -18,26 +18,28 @@ export const BillToPDF = ({billData}) => {
           </div>
           <h1 className='font-bold text-xl text-[#0D062D] h-fit'>Invoice</h1>
         </div>
-        <h1 className='font-bold p-[5px] mt-[40px]'>Bill id: {billData.code}</h1>
-        <h2 className='flex flex-row px-[5px]'> <p className='font-bold pr-[5px]'>Customer:</p> {billData.customerName}</h2>
+        <h1 className='font-bold p-[5px] mt-[40px]'>Bill id: #{billData.id}</h1>
+        <h2 className='flex flex-row px-[5px]'> <p className='font-bold pr-[5px]'>Customer:</p> {billData.studentName}</h2>
         <h2 className='flex flex-row px-[5px]'> <p className='font-bold pr-[5px]'>MSSV:</p> {billData.mssv}</h2>
-        <h2 className='flex flex-row px-[5px]'> <p className='font-bold pr-[5px]'>Time:</p> {billData.time}</h2>
-        <div className="w-full p-6 my-[50px] font-sans">
+        <h2 className='flex flex-row px-[5px]'> <p className='font-bold pr-[5px]'>Time:</p> {billData.paidTime}</h2>
+        <h2 className='flex flex-row px-[5px]'> <p className='font-bold pr-[5px]'>Method:</p> {billData.method}</h2>
+        {billData.discountCode != 'NaN' ? <h2 className='flex flex-row px-[5px]'> <p className='font-bold pr-[5px]'>Discount code:</p> {billData.discountCode}</h2> : null}
+        <div className="w-full h-[100px] p-6 my-[50px] font-sans">
           <div className="flex justify-between mb-2 w-full">
-            <span className="text-gray-700">Số lượng giấy mua</span>
-            <span className="text-gray-700">{billData.slg} tờ</span>
+            <div className="text-gray-700">Số lượng giấy mua</div>
+            <div className="text-gray-700">{billData.numberOfPages} tờ</div>
           </div>
           <div className="flex justify-between mb-2 w-full">
-            <span className="text-gray-700">Tổng tiền giấy</span>
-            <span className="text-gray-700">{billData.price} vnd</span>
+            <div className="text-gray-700">Tổng tiền giấy</div>
+            <div className="text-gray-700">{billData.numberOfPages * 500} vnd</div>
           </div>
           <div className="flex justify-between mb-2 w-full">
-            <span className="text-gray-700">Giảm giá:</span>
-            <span className="text-gray-700">{billData.priceDis} vnd</span>
+            <div className="text-gray-700">Giảm giá:</div>
+            <div className="text-gray-700">{billData.amount - billData.numberOfPages * 500} vnd</div>
           </div>
           <div className="flex justify-between font-bold text-lg w-full">
-            <span className="text-gray-900 font-bold">Tổng tiền thanh toán:</span>
-            <span className="text-gray-900 font-bold">{billData.total} vnd</span>
+            <div className="text-gray-900 font-bold">Tổng tiền thanh toán:</div>
+            <div className="text-gray-900 font-bold">{billData.amount} vnd</div>
           </div>
         </div>
       </div>
@@ -51,7 +53,7 @@ export const BillToPDF = ({billData}) => {
           billData={billData}
         />
       </div>
-      <button onClick={() => generatePDF(printRef, {filename: billData.code})}>Save as PDF</button>
+      <button onClick={() => generatePDF(printRef, {filename: billData.code})} className='mt-[50px] px-[10px] py-[10px] font-bold text-[#ffff] bg-[#0f6dbf] rounded-xl h-fit'>Save as PDF</button>
     </div>
   );
 };

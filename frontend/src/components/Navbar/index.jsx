@@ -8,7 +8,7 @@ import test from '../../assets/test.svg'
 import arrowdown from '../../assets/arrowdown.svg'
 import filterimage from '../../assets/filterimage.svg'
 import { GlobalContext } from '../../Context'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, Link} from 'react-router-dom'
 
 export const Navbar = () => {
   const { noti, setNoti } = useContext(GlobalContext);
@@ -22,16 +22,18 @@ export const Navbar = () => {
     // localStorage.setItem('ROLE', 'user')
     localStorage.removeItem('USER')
     localStorage.removeItem('CSRF_TOKEN')
+    localStorage.removeItem('ROLE')
     navigate('/login')
   }
   return (
     <div className='relative'>
       <div className={classes.header_border}></div>
       <div className="h-[70px] flex flex-row justify-between after:content-[''] after:bottom-0 after:left-0 after:w-screen after:h-[1px] after:bg-[#DBDBDB] after:absolute">
-        <div className='flex flex-row w-[220px] justify-items-center items-center h-[100%] center justify-center ' onClick={() => setSelecInput('Homepage')}>
+        <Link to='/'><div className='flex flex-row w-[220px] justify-items-center items-center h-[100%] center justify-center ' onClick={() => setSelecInput('Homepage')}>
           <img src={logo} className='p-[5px] w-[50px] h-[50px] py-[10px]'/>
           <h1 className='text-xl text-[#303030] font-[650]'>HCMUT-SSPS</h1>
         </div>
+        </Link>
         <div className='min-w-[300px] flex flex-row'>
           <ul className='flex flex-row justify-items-center justify-between items-center h-[100%] cursor-pointer min-w-[120px]'>
             <li className='relative'>
@@ -64,10 +66,9 @@ export const Navbar = () => {
               <img src ={arrowdown} className={showProfile ? `w-[20px] h-[20px] p-[5px] rotate-180`: 'w-[20px] h-[20px] p-[5px]' }/>
               {showProfile && <div className={`absolute top-[80px] right-0 bg-[#FFFFFF] border-[1px] border-[#DBDBDB] rounded-[10px] z-50`}>
                 <ul className='flex flex-col min-w-[230px] py-[10px]'>
-                  <li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]' onClick={() => setSelecInput('Profile')}>Tài khoản</li>
-                  <li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]'>Cài đặt</li>
-                  <li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]' onClick={() => setSelecInput('BuyPrintingPages')}>Mua trang in</li>
-                  <li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]' onClick={() => setSelecInput('HistoryTransaction')}>Lịch sử giao dịch</li>
+                  <Link to="/profile"><li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]' onClick={() => setSelecInput('Profile')}>Tài khoản</li></Link>
+                  <Link to="/user/buypages" ><li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]' onClick={() => setSelecInput('BuyPrintingPages')}>Mua trang in</li></Link>
+                  <Link to="/history" ><li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]' onClick={() => setSelecInput('HistoryTransaction')}>Lịch sử giao dịch</li></Link>
                   <li className='p-[5px] hover:bg-[#0f6cbf] hover:text-[#ffff] px-[15px]' onClick={logout}>Đăng xuất</li>
                 </ul>
               </div>}

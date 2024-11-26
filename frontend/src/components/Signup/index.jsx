@@ -2,16 +2,16 @@ import React , {useContext, useEffect, useState} from 'react';
 import classes from './style.module.css';
 import logo from '../../assets/logo.png'
 import api from '../../Services/api.jsx'
-import toast from "react-hot-toast";
 import { GlobalContext } from '../../Context/index.jsx';
 import { jwtDecode } from "jwt-decode";
-import {useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom';
+import "react-toastify/dist/ReactToastify.css";
 
 
 export const Signup = () => {
   const [user, setUser] = useState(true);
   const [jwtToken, setJwtToken] = useState("");
-  const {token, setToken,profile, setProfile} = useContext(GlobalContext)
+  const {token, setToken,profile, setProfile, ToastContainer, toast} = useContext(GlobalContext)
   const [selectRole, setSelectRole] = useState("user")
   const navigate = useNavigate();
 
@@ -28,17 +28,28 @@ export const Signup = () => {
       const rs = await api.get('/auth/user');
       setProfile(rs.data);
     } catch (error) {
-      console.log(error);
+      toast.error("Đã xảy ra lỗi! Vui lòng thử lại sau.", {
+        duration: 3000,
+        position: "top-right",
+      });
     }
 
     //store the token on the context state  so that it can be shared any where in our application by context provider
     const rolene = JSON.parse(localStorage.getItem("USER"))
     if (rolene.roles.includes('ADMIN')) {
       navigate('/admin')
+      localStorage.setItem("ROLE", 'admin')
     } else if (selectRole == 'user' && rolene.roles.includes('STUDENT')) {
       navigate('/user')
+      localStorage.setItem("ROLE", 'user')
     } else if (selectRole == 'spso'  && rolene.roles.includes('SPSO')) {
       navigate('/spso')
+      localStorage.setItem("ROLE", 'spso')
+    } else {
+      toast.error("Đã xảy ra lỗi! Vui lòng thử lại sau.", {
+        duration: 3000,
+        position: "top-right",
+      });
     }
     setToken(token);
 
@@ -58,22 +69,28 @@ export const Signup = () => {
 
       try {
         const response = await api.post('/auth/public/signin', data);
-        toast.success("Login Successful");
         const decodedToken = jwtDecode(response.data.jwtToken);
         if (response.status === 200 && response.data.jwtToken) {
           setJwtToken(response.data.jwtToken);
           handleSuccessfulLogin(response.data.jwtToken, decodedToken);
         } else {
-          toast.error(
-            "Login failed. Please check your credentials and try again."
-          );
+          toast.error("Đã xảy ra lỗi! Vui lòng thử lại sau.", {
+            position: "top-right",
+            autoClose: 3000,
+          });
         }
       }
       catch(error){
-        console.log(error)
-        toast.error(
-          "Login failed. Please check your credentials and try again."
-        );
+        toast.error("Đã xảy ra lỗi! Vui lòng thử lại sau.", {
+          position: "top-right", // Vị trí hiển thị
+          autoClose: 3000, // Tự động đóng sau 3 giây
+          hideProgressBar: false, // Hiển thị thanh tiến trình
+          closeOnClick: true, // Cho phép đóng khi click
+          pauseOnHover: true, // Tạm dừng khi hover vào
+          draggable: true, // Kéo thả được
+          progress: undefined, // Hiển thị tiến trình mặc định
+          theme: "colored", // Chủ đề: "light", "dark", "colored"
+        });
       }
       
 
@@ -117,6 +134,7 @@ export const Signup = () => {
         </ul>
       </div>
       <div>
+        <ToastContainer/>
         <button className='w-[100px] bg-[#0f6cbf] hover:opacity-90 rounded-[60px] text-[#fff] font-semibold py-[3px]'>Login</button>
       </div>
     </div>

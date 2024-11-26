@@ -81,7 +81,7 @@ export const PrintService = () => {
 
       console.log('Upload successful:', response.data);
     //   {
-    //     "documentId": 51,
+    //     "id": 51,
     //     "documentName": "Lab 2 INCLASS.pdf",
     //     "size": 956862,
     //     "type": "pdf",
@@ -93,7 +93,7 @@ export const PrintService = () => {
     //     "fileConfig": null
     //  }
 
-      // setFiles((prevFiles) => [...prevFiles, { name: response.data.documentName, size: `${(response.data.size / 1024).toFixed(1)}KB`, type: response.data.type , link : response.data.url, id: response.data.documentId,  }]);
+      // setFiles((prevFiles) => [...prevFiles, { name: response.data.documentName, size: `${(response.data.size / 1024).toFixed(1)}KB`, type: response.data.type , link : response.data.url, id: response.data.id,  }]);
       setFiles((prevFiles) => [...prevFiles, response.data]);
       setIsUploadMode(false);
     } catch (error) {
@@ -148,7 +148,7 @@ export const PrintService = () => {
             <div className={classes.fileList}>
               {files.map((file, index) => (
                 <div
-                  className={`${classes.fileItem} ${fileChoice?.documentId == file.documentId ? classes.fileItemAct: ''} ${isOptionsOpen && activeFileIndex === index ? classes.shrinkFileItem : ''}`}
+                  className={`${classes.fileItem} ${fileChoice?.id == file.id ? classes.fileItemAct: ''} ${isOptionsOpen && activeFileIndex === index ? classes.shrinkFileItem : ''}`}
                   key={index}
                   onClick={() => setFileChoice(file)}
                 >

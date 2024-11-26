@@ -1,6 +1,6 @@
 import React, {createContext, useState, useContext, useEffect} from "react"
-import toast from 'react-hot-toast';
 import api from '../Services/api.jsx'
+import { ToastContainer, toast } from "react-toastify";
 
 export const GlobalContext = createContext(null)
 
@@ -61,9 +61,10 @@ export default function GlobalState({ children }) {
       }
   }
   useEffect(() => {
-      fetchUser();
+    fetchUser();
   }, [token]);
 
+  const [curAccount, setCurAccount] = useState(null);
 
   const [profile, setProfile] = useState();
   const fetchProfile = async () => {
@@ -98,7 +99,9 @@ export default function GlobalState({ children }) {
         profile, 
         setProfile,
         fetchProfile,
-        reload
+        reload,
+        ToastContainer,
+        toast,
       }}
     >
       {children}

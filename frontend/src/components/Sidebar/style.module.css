@@ -31,10 +31,10 @@
 
 .itemSliderbar:hover{
     font-weight: bold;
-    color: #5030E5;
+    color: #0f6dbf;
 }
 
 .activate{
     border-radius: 6px;
-    background: #5030e514;
+    background: #0f6dbf18;
 }
