@@ -38,6 +38,7 @@ public class PrintJob {
 
     @ManyToOne
     @JoinColumn(name = "printer_id")
+    @JsonBackReference
     Printer printer;
 
     @ManyToOne
@@ -47,5 +48,6 @@ public class PrintJob {
 
     @ManyToOne
     @JoinColumn(name = "file_id")
+    @JsonBackReference
     FileConfig fileConfig;
 }

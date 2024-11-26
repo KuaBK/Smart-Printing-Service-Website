@@ -2,6 +2,7 @@ package hcmut.spss.be.service.impl;
 
 import hcmut.spss.be.dtos.request.UpdateUserRequest;
 import hcmut.spss.be.dtos.response.UpdateUserResponse;
+import hcmut.spss.be.dtos.response.UserInfoResponse;
 import hcmut.spss.be.entity.user.Role;
 import hcmut.spss.be.entity.user.User;
 import hcmut.spss.be.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -31,8 +33,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserInfoResponse> getAllUsers() {
+        List<User> accounts = userRepository.findAll();
+        return accounts.stream().map(this::fromUser).collect(Collectors.toList());
     }
 
     @Override
@@ -80,6 +83,20 @@ public class UserServiceImpl implements UserService {
                 .username(user.getUsername())
                 .enabled(user.isEnabled())
                 .message("User with id " + user.getUserId() + " has been " + status + " successfully.")
+                .build();
+    }
+
+    public UserInfoResponse fromUser(User user) {
+        return UserInfoResponse.builder()
+                .id(user.getUserId())
+                .userName(user.getUsername())
+                .name(user.getName())
+                .email(user.getEmail())
+                .mssv(user.getMssv())
+                .numOfPrintingPages(user.getNumOfPrintingPages())
+                .phone(user.getPhoneNumber())
+                .avtUrl(user.getAvatarUrl())
+                .role(user.getRole().name())
                 .build();
     }
 }

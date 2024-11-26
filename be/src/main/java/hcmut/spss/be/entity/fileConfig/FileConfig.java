@@ -71,5 +71,6 @@ public class FileConfig {
 
     @ManyToOne
     @JoinColumn(name = "student_id")
+    @JsonBackReference
     User student;
 }
