@@ -354,6 +354,7 @@ export const ConfigPrint = () => {
     };
 
     fetchPrinter();
+    console.log(67898767890);
   }, []);
 
   const [filters, setFilters] = useState({
