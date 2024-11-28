@@ -402,7 +402,14 @@ export const ConfigPrint = () => {
     //     printer.id === id ? { ...printer, ...updatedData } : printer
     //   )
     // );
-    api.patch(`/printers/${id}`, updatedData)
+    var updatePrinter = {
+      location: updatedData.name,
+      status: updatedData.status,
+      numOfPaper: updatedData.paperUsage,
+      amountOfInk: updatedData.inkUsage
+    }
+    console.log(updatePrinter);
+    api.patch(`/printers/${id}`, updatePrinter)
   };
 
   const handleDeletePrinter =useCallback( async (id) => {
