@@ -4,6 +4,7 @@ import hcmut.spss.be.dtos.request.DiscountRequest;
 import hcmut.spss.be.service.DiscountService;
 import hcmut.spss.be.service.PaymentService;
 import hcmut.spss.be.service.PrintJobService;
+import hcmut.spss.be.service.StatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,9 @@ public class SpsoController {
 
     @Autowired
     private PrintJobService printJobService;
+
+    @Autowired
+    private StatisticService statisticService;
 
     @GetMapping("/transactions")
     public ResponseEntity<?> getTransactions() {
@@ -49,11 +53,23 @@ public class SpsoController {
     }
 
     @GetMapping("/print-logs")
-    public ResponseEntity<?> getAllPrintLogs() {
+    public ResponseEntity<?> getAllPrintLogs(@RequestParam(defaultValue = "0") Boolean searchFlag) {
         try {
+            if (searchFlag == Boolean.TRUE) {
+                return ResponseEntity.ok(printJobService.getAllPrintJobInWeek());
+            }
             return ResponseEntity.ok(printJobService.getAllPrintJobs());
         }catch (Exception e) {
             return ResponseEntity.badRequest().body("Something went wrong");
+        }
+    }
+
+    @GetMapping("/get-statistic")
+    public ResponseEntity<?> getStatistic() {
+        try {
+            return ResponseEntity.ok(statisticService.getStatistic());
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

@@ -215,5 +215,10 @@ public class PrintJobServiceImpl implements PrintJobService {
     public List<PrintJobResponse> getAllPrintJobs() {
         return printJobRepository.findAll().stream().map(PrintJobResponse::toPrintJobResponse).toList();
     }
+
+    @Override
+    public List<PrintJobResponse> getAllPrintJobInWeek() {
+        return printJobRepository.findAllPrintJobsThisWeek().stream().map(PrintJobResponse::toPrintJobResponse).toList();
+    }
 }
 

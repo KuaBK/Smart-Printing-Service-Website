@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping("/api/payment")
@@ -47,13 +48,26 @@ public class PaymentController {
 
     @GetMapping("/vnpay-callback/{id}")
     public ResponseEntity<?> handleVNPayReturn(@PathVariable String id, HttpServletRequest request) {
+//        try {
+//            PaymentResponse response = paymentService.handleResponse(id, request);
+//            if(response.getStatus()==200){
+//                return ResponseEntity.ok(response);
+//            }
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+//        }catch (Exception e){
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+//        }
         try {
             PaymentResponse response = paymentService.handleResponse(id, request);
-            if(response.getStatus()==200){
-                return ResponseEntity.ok(response);
+
+            if (response.getStatus() == 200) {
+                // Redirect to localhost:5173 after successful payment
+                return ResponseEntity.status(HttpStatus.FOUND).header("Location", "http://localhost:5173").build();
             }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }catch (Exception e){
+
+            // Redirect to localhost:5173 on failure
+            return ResponseEntity.status(HttpStatus.FOUND).header("Location", "http://localhost:5173").build();
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         }
     }

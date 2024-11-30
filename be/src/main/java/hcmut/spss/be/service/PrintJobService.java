@@ -21,4 +21,6 @@ public interface PrintJobService {
     ApiResponse<?> makeLog(Long fileId, Long printerId);
 
     List<PrintJobResponse> getAllPrintJobs();
+
+    List<PrintJobResponse> getAllPrintJobInWeek();
 }
