@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import classes from './style.module.css'
 import logo from '../../assets/logo.png'
 import play from '../../assets/play.svg'
@@ -8,25 +8,29 @@ import {ManagePrint} from '../ManagePrint'
 
 export const HomePage = () => {
   const [showConfig, setShowConfig] = useState(true);
-  const [fileReport, setFileReport] = useState([]);
+  const [fileReport, setFileReport] = useState({});
+  const [printers, setPrinters] = useState([]);
+  const [fileConfig, setFileConfig] = useState({});
   const handlePrint = async () => {
     const code = document.getElementById('code').value;
     try {
       const response = await api.get(`/file-configs/public/code?code=${code}`);
       const fileReport = response.data;
-      console.log(fileReport);
-      try {
-        const resfile = await api.get(`/files/${fileReport.data.fileConfig.fileId}`);
-        setShowConfig(false);
-        setFileReport(resfile.data);
-      } catch (error) {
-        console.error('Error fetching files:', error);
-      }
+      // console.log(fileReport);
+      setFileReport(fileReport.data.fileConfig.document);
+      setShowConfig(false);
+      setPrinters(fileReport.data.printers);
+      setFileConfig(fileReport.data.fileConfig);
+      console.log(fileConfig);
+      // console.log(fileReport.data.fileConfig.document);
       // Handle the file report as needed
     } catch (error) {
       console.error('Error fetching the file report:', error);
     }
   };
+  useEffect(() => {
+    console.log(fileReport);
+  }, [fileReport]);
   return (
     <div className="lg:w-[100vw] mx-auto font-semibold relative bg-cover bg-[url(${img1})] bg-no-repeat	bg-fixed bg-center">
       <div className={classes.header_border}>
@@ -83,7 +87,7 @@ export const HomePage = () => {
             </form>
             <div className='w-[100px]'>
               <button onClick={handlePrint} className='w-[100px] bg-[#0f6cbf] hover:opacity-90 rounded-[60px] text-[#fff] font-semibold py-[8px] ml-[5px] h-full'>Print</button>
-              <ManagePrint setIsHidden={setShowConfig} isHidden={showConfig} file={fileReport}/>
+              {fileReport && <ManagePrint setIsHidden={setShowConfig} isHidden={showConfig} guess={true} printer1={printers} config={fileConfig}  file={fileReport}/>}
             </div>
 
 

@@ -10,9 +10,13 @@ export const ManagePrint = (props) => {
   const [applyPrinter, setApplyPrinter] = useState({});
   const getDataPrinter = async () => {
     try {
-      const response = await api.get('/printers');
-      console.log(response.data);
-      setArrPrinter(response.data);
+      if (props?.guess) {
+        setArrPrinter(props.printer1);
+      } else {
+        const response = await api.get('/printers');
+        console.log(response.data);
+        setArrPrinter(response.data);
+      }
     }
     catch (error) {
       console.error(error);
@@ -86,22 +90,48 @@ export const ManagePrint = (props) => {
         ? customRange
         : "ALL";
     const nb = props.file ? props.file.numberOfPages * sbi : 0;
-    if (nb > profile.numOfPrintingPages) {
+    if (!props.guess && nb > profile.numOfPrintingPages) {
       toast.error("Số trang in vượt quá số trang còn lại");
       return;
     }
     if (applyPrinter) {
+      console.log(applyPrinter);
+      if (props.guess) {
+        const nbp = applyPrinter.numOfPaper ? applyPrinter.numOfPaper : 0;
+        if (nbp < props.config.numberOfCopies * props.file.numOfPage) {
+          toast.error("Số trang in vượt quá số trang còn lại của máy in");
+          return;
+        }
+      } else {
       const nbp = applyPrinter.numOfPaper ? applyPrinter.numOfPaper : 0;
-      if (nbp < nb * sbi) {
+      if (nbp < nb) {
         toast.error("Số trang in vượt quá số trang còn lại của máy in");
         return;
-      }
+      }}
 
     } else {
       toast.error("Chưa chọn máy in");
       return;
     }
-    
+
+    if (props?.guess) {
+      api.post('/print-jobs/public/print-by-code', {
+        "printerId": applyPrinter.printerId,
+        "fileConfigId": props.file.documentId
+      })
+      .then(response => {
+        console.log(response.data);
+        toast.success("In thành công", {
+          onClose: () => {
+            props.setIsHidden(true);
+          }
+        });
+        // fetchProfile();
+      })
+      .catch(error => {
+        toast.error("In thành công");
+      }) 
+    } else {
     api.post(`/file-configs/post?fileId=${props.file.id}`, {
       "paperSize": paper_size == "Letter" ? "LETTER" : paper_size == "A4" ? "A4" : "A3",
       "paperRange": pageRange,
@@ -117,8 +147,7 @@ export const ManagePrint = (props) => {
     .then(response => {
       console.log('------------------')
       console.log(response.data.data.FileConfigResponse.id)
-      {qr ? toast.success(`Tạo mã QR thành công ${response.data.data.CodePrint}`) : toast.success("Cấu hình file thành công")}
-      if (qr) {
+      {qr ? toast.success(`Tạo mã QR thành công ${response.data.data.CodePrint}`) : 
         api.post('/print-jobs/create', {
           "printerId": applyPrinter.printerId,
           "fileConfigId": response.data.data.FileConfigResponse.id
@@ -134,29 +163,11 @@ export const ManagePrint = (props) => {
         })
         .catch(error => {
           toast.error("In thất bại");
-        }) 
-      } else {
-        api.post('/print-jobs/public/print-by-code', {
-          "printerId": applyPrinter.printerId,
-          "fileConfigId": response.data.data.FileConfigResponse.id
-        })
-        .then(response => {
-          console.log(response.data);
-          toast.success("In thành công", {
-            onClose: () => {
-              props.setIsHidden(true);
-            }
-          });
-          // fetchProfile();
-        })
-        .catch(error => {
-          toast.error("In thất bại");
-        }) 
-      }
+        });}
     })
     .catch(error => {
       toast.error("Cấu hình file thất bại");
-    })
+    }) }
   };
   const onChangeSbi = (e) => {
     setSbi(e.target.value);
@@ -199,10 +210,11 @@ export const ManagePrint = (props) => {
                 </div>
 
                 {/* Print Settings */}
-                <div className={classes.section3}>
+                
+                {props.guess ? <div> </div> :<div className={classes.section3}>
                   <div className={classes.item_box}>
                     <label>Số bản in:</label>
-                    <input type="text" name='sbi' className={classes.inputField} defaultValue={1} onChange={onChangeSbi} required/>
+                    <input type="text" name='sbi' className={classes.inputField} min={1} value={sbi} onChange={onChangeSbi} required/>
                   </div>
                   <div className={classes.item_box}>
                     <label>Layout:</label>
@@ -218,10 +230,10 @@ export const ManagePrint = (props) => {
                       <option>Color</option>
                     </select>
                   </div>
-                </div>
+                </div> }
 
                 {/* Paper and Scale */}
-                <div className={classes.section3}>
+                {props.guess ? <div> </div> :<div className={classes.section3}>
                   <div className={classes.item_box}>
                     <label>Paper Size</label>
                     <select name='ps' className={classes.inputField} required>
@@ -241,16 +253,16 @@ export const ManagePrint = (props) => {
                       <option>Double sided</option>
                     </select>
                   </div>
-                </div>
+                </div>}
               
                 {/* QR Code */}
-                <div className={classes.section1}>
+                {props.guess ? <div> </div> :<div className={classes.section1}>
                   <input name='qr' type="checkbox" />
                   <label> Tạo mã QR nhận</label>
-                </div>
+                </div>}
 
                 {/* Page Options */}
-                <div className={classes.page_container}>
+                {props.guess ? <div> </div> :<div className={classes.page_container}>
                   <label className={classes.page_label}>Page</label>
                   <div className={`${classes.section2} ${classes.borderit}`}>
                     <div className={`${classes.leftside} `}>
@@ -300,59 +312,59 @@ export const ManagePrint = (props) => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div>}
               </div>
             </form>
           
             {/* Share Options */}
+            {props.guess ? <div></div> : 
             <div className={`${classes.page_container} ${classes.leftside2}`}>
-              <form id='form2' onSubmit={submitConfig1} className={classes.formShare}>
-                <label className={classes.page_label}>Share</label>
-                <div className={`${classes.section} ${classes.borderit}`}>
+            <form id='form2' onSubmit={submitConfig1} className={classes.formShare}>
+              <label className={classes.page_label}>Share</label>
+              <div className={`${classes.section} ${classes.borderit}`}>
+                <div className={classes.item_box1}>
+                  <label>Tiêu đề: </label>
+                  <input defaultValue={props.file?.documentName} type="text" name='tt' className={`${classes.inputField} ${classes.longInput1}`} required/>
+                </div>
+                <div className={`${classes.section2} ${classes.format}`}>
                   <div className={classes.item_box1}>
-                    <label>Tiêu đề: </label>
-                    <input defaultValue={props.file?.documentName} type="text" name='tt' className={`${classes.inputField} ${classes.longInput1}`} required/>
+                    <label>Khoa: </label>
+                    <input type="text" name='khoa' className={`${classes.inputField} ${classes.inputField1}`} required/>
                   </div>
-                  <div className={`${classes.section2} ${classes.format}`}>
-                    <div className={classes.item_box1}>
-                      <label>Khoa: </label>
-                      <input type="text" name='khoa' className={`${classes.inputField} ${classes.inputField1}`} required/>
-                    </div>
-                    <div className={classes.item_box1}>
-                      <label>Môn học: </label>
-                      <input type="text" name='mh' className={`${classes.inputField} ${classes.inputField1}`} required/>
-                    </div>
-                  </div>
-                  <div className={`${classes.section2} ${classes.format}`}>
-                    <div className={classes.item_box1}>
-                      <label>Danh mục: </label>
-                      <input type="text" name='dm' className={`${classes.inputField} ${classes.inputField1}`} required/>
-                    </div>
-                    <div className={classes.item_box1}>
-                      <label>Năm học: </label>
-                      <input type="text" name='nh' className={`${classes.inputField} ${classes.inputField1}`} required/>
-                    </div>
+                  <div className={classes.item_box1}>
+                    <label>Môn học: </label>
+                    <input type="text" name='mh' className={`${classes.inputField} ${classes.inputField1}`} required/>
                   </div>
                 </div>
-               
-              </form>
-            </div>
+                <div className={`${classes.section2} ${classes.format}`}>
+                  <div className={classes.item_box1}>
+                    <label>Danh mục: </label>
+                    <input type="text" name='dm' className={`${classes.inputField} ${classes.inputField1}`} required/>
+                  </div>
+                  <div className={classes.item_box1}>
+                    <label>Năm học: </label>
+                    <input type="text" name='nh' className={`${classes.inputField} ${classes.inputField1}`} required/>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>}
           </div>
         </div>
 
         <div className={`${classes.rightside} ${classes.rightsize}`}>
-          <div className={`${classes.page_remain} flex flex-row items-center justify-between`}>
+          {props.guess ? <div></div>:<div className={`${classes.page_remain} flex flex-row items-center justify-between`}>
             <p className={classes.page_rm}><div className='px-[20px] bg-[#0f6cbf] rounded-[15px] text-[12px] font-bold text-[#fff] align-center items-center text-center h-fit py-[3px]'>Số trang hiện có: </div>  <b className={classes.numberpage}>{profile?.numOfPrintingPages}</b></p>
             {<p className="text-[13px] text-red-500 font-bold"> Số trang in: {props.file ? props.file.numberOfPages * sbi: 0} </p>}
-          </div>
+          </div>}
           <iframe
             src={props.file?.url}
             title="file preview"
             className={classes.preview}
           ></iframe>
           <div className='flex align-end flex-row justify-end'>
-            <button className={classes.shareButton} form='form2'>Share</button>
-            <button className={classes.payButton} form='form1'>Gạch ví</button>
+          {props.guess ? <div></div>:<button className={classes.shareButton} form='form2'>Share</button>}
+          {props.guess ?<button className={classes.payButton} form='form1'>Print</button>: <button className={classes.payButton} form='form1'>Gạch ví</button>}
           </div>
         </div>
       </div>

@@ -31,19 +31,6 @@ export const HomePageUser = () => {
     setPreview(!preview);
   }
   useEffect(() => {
-    const fetchDataID = async () => {
-      try {
-        const resfile = await api.get(`/files/${idPreview.fileConfig.fileId}`);
-        setDocDetail(resfile.data);
-        console.log(resfile.data);
-      } catch (error) {
-        console.error('Error fetching files:', error);
-      }
-    };
-
-    fetchDataID();
-  }, [idPreview]);
-  useEffect(() => {
     if (preview) {
       setAnimationClass(classes.zoomIn);
       const timer = setTimeout(() => {
@@ -58,8 +45,7 @@ export const HomePageUser = () => {
       try {
         const resfile = await api.get('/print-jobs/current-user');
         setDocument(resfile.data);
-        const res = await api.get('/files');
-        setAllFiles(res.data);
+        console.log(resfile.data);
       } catch (error) {
         console.error('Error fetching files:', error);
       }
@@ -106,19 +92,16 @@ export const HomePageUser = () => {
       <div className={classes.body}>
         <div className={classes.list_doc}>
           {document?.map(item => {
-            console.log(allFiles);
-            const filteredItem = allFiles.find(file => file.id === item.fileConfig.fileId);
-            console.log(filteredItem);
             return (
-              <div key={item.fileConfig.fileId} className={classes.document} onClick={() => {setIdPreview(item); setPreview(!preview)}}>
+              <div className={classes.document} onClick={() => {setIdPreview(item); setPreview(!preview); setDocDetail(item.fileConfig.document)}}>
                 <div className={classes.line1}>
-                  <div className={classes.doc_title}>{filteredItem?.documentName}</div>
-                  {!filteredItem?.shared ? (
+                  <div className={classes.doc_title}>{item.fileConfig.document?.documentName}</div>
+                  {!item.fileConfig.document?.shared ? (
                     <img className={classes.doc_dot} src={onProgressDot} />
                   ) : (
                     <img className={classes.doc_dot} src={doneDot} />
                   )}
-                  {filteredItem?.shared ? (
+                  {item.fileConfig.document?.shared ? (
                     <div className={classes.doc_status}>Share</div>
                   ) : (
                     <div className={classes.doc_status}>Not Share</div>
@@ -128,7 +111,7 @@ export const HomePageUser = () => {
                   <img className={classes.doc_locIMG} src={location} />
                   <div className={classes.doc_loc}>{item.location}</div>
                   <img className={classes.doc_calenIMG} src={calendar_Phong} />
-                  <div className={classes.doc_time}>{filteredItem?.uploadTime}</div>
+                  <div className={classes.doc_time}>{item.fileConfig.document?.uploadTime}</div>
                 </div>
                 <div className={classes.ellipsis}>. . .</div>
               </div>
@@ -148,14 +131,14 @@ export const HomePageUser = () => {
               </div>
               <div className={classes.info_wAndt}>
                 <img className={classes.info_locIMG} src={location} />
-                <div className={classes.info_loc}>{idPreview?.location}</div>
+                <div className={classes.info_loc}>{docDetail?.facultyName}</div>
                 <img className={classes.info_calenIMG} src={calendar_Phong} />
                 <div className={classes.info_time}>{docDetail?.uploadTime}</div>
               </div>
               <div className={classes.info_quanAndCat}>
                 <div className={classes.info_quantity}>
                   <label htmlFor="" className={classes.quantity_label}>Số trang in</label>
-                  <div className={classes.quantity_div}>{docDetail?.numberOfPages}</div>
+                  <div className={classes.quantity_div}>{docDetail?.numOfPage}</div>
                 </div>
                 <div className={classes.info_category}>
                   <label htmlFor="" className={classes.category_label}>Danh mục</label>
