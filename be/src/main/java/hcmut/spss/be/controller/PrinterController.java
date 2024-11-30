@@ -46,7 +46,7 @@ public class PrinterController {
         return ResponseEntity.ok(printerService.getAllPrinters());
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('SPSO')")
     public ResponseEntity<?> updatePrinter(@PathVariable Long id, @RequestBody PrinterRequest request) {
         try {
