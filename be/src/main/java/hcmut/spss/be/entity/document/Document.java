@@ -71,7 +71,7 @@ public class Document {
 
     @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "user_id")
-    @JsonManagedReference
+    @JsonBackReference
     private User student;
 
     @OneToMany(mappedBy = "document")

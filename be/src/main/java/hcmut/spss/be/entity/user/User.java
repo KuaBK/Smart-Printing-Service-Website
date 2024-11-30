@@ -8,7 +8,6 @@ import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.fileConfig.FileConfig;
 import hcmut.spss.be.entity.payment.Payment;
 import hcmut.spss.be.entity.printJob.PrintJob;
-import hcmut.spss.be.entity.report.Report;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -81,7 +80,7 @@ public class User {
     private int numOfPrintingPages=100; //default 100 page for student
 
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonManagedReference
     private List<Document> documents;
 
     @OneToMany(mappedBy = "student")
@@ -93,11 +92,8 @@ public class User {
     @JsonManagedReference
     private List<PrintJob> printJobList;
 
-    @OneToMany(mappedBy = "spso")
-    @JsonManagedReference
-    private List<Report> reportList;
-
     @ManyToMany
+    @JsonBackReference
     @JoinTable(
             name = "user_discount",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -106,5 +102,6 @@ public class User {
     private Set<Discount> discounts = new HashSet<>();
 
     @OneToMany(mappedBy = "student")
+    @JsonManagedReference
     private List<FileConfig> fileConfigs;
 }

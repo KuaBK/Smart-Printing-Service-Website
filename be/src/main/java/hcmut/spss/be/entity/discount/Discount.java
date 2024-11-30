@@ -1,5 +1,6 @@
 package hcmut.spss.be.entity.discount;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import hcmut.spss.be.entity.payment.Payment;
 import hcmut.spss.be.entity.user.User;
 import jakarta.persistence.*;
@@ -40,6 +41,7 @@ public class Discount {
     LocalDate expirationDate;
 
     @OneToOne(mappedBy = "discount")
+    @JsonBackReference
     Payment payment;
 
 
@@ -53,5 +55,6 @@ public class Discount {
     LocalDateTime updateDate;
 
     @ManyToMany(mappedBy = "discounts")
+    @JsonBackReference
     Set<User> users = new HashSet<>();
 }

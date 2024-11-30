@@ -1,5 +1,6 @@
 package hcmut.spss.be.dtos.response;
 
+import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.fileConfig.FileConfig;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FileConfigResponse {
     private Long id;
-    private Long fileId;
-    private String fileName;
+    private Document document;
     private String paperSize;
     private String paperRange;
     private String sides;
@@ -28,8 +28,7 @@ public class FileConfigResponse {
     public static FileConfigResponse toFileConfigResponse(FileConfig fileConfig) {
         return FileConfigResponse.builder()
                 .id(fileConfig.getId())
-                .fileId(fileConfig.getDocument().getDocumentId())
-                .fileName(fileConfig.getDocument().getDocumentName())
+                .document(fileConfig.getDocument())
                 .paperSize(fileConfig.getPaperSize().name())
                 .paperRange(fileConfig.getPaperRange())
                 .sides(fileConfig.getSides().name())
