@@ -30,19 +30,20 @@ export const HomePageUser = () => {
   const handleClosePreview=()=>{
     setPreview(!preview);
   }
-  useEffect(() => {
-    const fetchDataID = async () => {
-      try {
-        const resfile = await api.get(`/files/${idPreview.fileConfig.fileId}`);
-        setDocDetail(resfile.data);
-        console.log(resfile.data);
-      } catch (error) {
-        console.error('Error fetching files:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchDataID = async () => {
+  //     try {
+  //       const resfile = await api.get(`/files/${idPreview.fileConfig.fileId}`);
+  //       // const resfile = await api.get(`/files/${idPreview}`);
+  //       setDocDetail(resfile.data);
+  //       console.log(resfile.data);
+  //     } catch (error) {
+  //       console.error('Error fetching files:', error);
+  //     }
+  //   };
 
-    fetchDataID();
-  }, [idPreview]);
+  //   fetchDataID();
+  // }, [idPreview]);
   useEffect(() => {
     if (preview) {
       setAnimationClass(classes.zoomIn);
@@ -60,6 +61,8 @@ export const HomePageUser = () => {
         setDocument(resfile.data);
         const res = await api.get('/files');
         setAllFiles(res.data);
+        console.log(resfile.data)
+        console.log(res.data)
       } catch (error) {
         console.error('Error fetching files:', error);
       }

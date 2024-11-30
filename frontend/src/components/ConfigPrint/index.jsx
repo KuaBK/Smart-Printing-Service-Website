@@ -576,6 +576,7 @@ export const ConfigPrint = () => {
 
               <label htmlFor="inkUsage">Số mực in (%):</label>
               <input
+              
                 className={classes.printerInput}
                 type="number"
                 name="inkUsage"
