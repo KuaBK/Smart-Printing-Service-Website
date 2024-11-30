@@ -1,18 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bar, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import classes from './style.module.css';
+import api from '../../Services/api';
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 
 export const HomePageSPSO = () => {
+  const [APIdata,setAPIdata] =useState(null);
+  useEffect(() => {
+    const fetchAPI = async () => {
+      try {
+        const res = await api.get("/spso/get-statistic");
+        setAPIdata(res.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    fetchAPI();
+  }, []);
   const barData = {
     labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
     datasets: [
       {
         label: 'Tổng số lượt in trong tuần',
-        data: [500, 800, 600, 1000, 750, 1200, 900],
+        data: [APIdata?.printing[0].totalPagesPrinted,
+              APIdata?.printing[1].totalPagesPrinted,
+              APIdata?.printing[2].totalPagesPrinted,
+              APIdata?.printing[3].totalPagesPrinted, 
+              APIdata?.printing[4].totalPagesPrinted, 
+              APIdata?.printing[5].totalPagesPrinted, 
+              APIdata?.printing[6].totalPagesPrinted],
         backgroundColor: 'rgba(250, 190, 125, 0.7)',
         hoverBackgroundColor: 'rgba(250, 190, 122, 1)',
         borderColor: 'rgba(200, 150, 120, 1)',
@@ -26,11 +46,21 @@ export const HomePageSPSO = () => {
   };
 
   const lineData = {
-    labels: ['Oct 2021', 'Nov 2021', 'Dec 2021', 'Jan 2022', 'Feb 2022', 'Mar 2022'],
+    labels: [APIdata?.revenues[0].month+' '+APIdata?.revenues[0].year, 
+              APIdata?.revenues[1].month+' '+APIdata?.revenues[1].year, 
+              APIdata?.revenues[2].month+' '+APIdata?.revenues[2].year, 
+              APIdata?.revenues[3].month+' '+APIdata?.revenues[3].year, 
+              APIdata?.revenues[4].month+' '+APIdata?.revenues[4].year, 
+              APIdata?.revenues[5].month+' '+APIdata?.revenues[5].year],
     datasets: [
       {
         label: 'Doanh thu (triệu VND)',
-        data: [9.1, 1, 3, 7, 6, 5],
+        data: [APIdata?.revenues[0].revenue,
+              APIdata?.revenues[1].revenue, 
+              APIdata?.revenues[2].revenue, 
+              APIdata?.revenues[3].revenue, 
+              APIdata?.revenues[4].revenue, 
+              APIdata?.revenues[5].revenue],
         fill: true,
         backgroundColor: 'rgba(105, 155, 255, 1)',
         borderColor: 'rgba(105, 155, 255, 1)',
@@ -81,7 +111,6 @@ export const HomePageSPSO = () => {
     aspectRatio: 2,
   };
 
-
   return (
     <div className={classes.HomePageSPSO}>
       <header className={classes.header}>
@@ -111,19 +140,19 @@ export const HomePageSPSO = () => {
         <div className={`${classes.AreaGrid} ${classes.ThongKe}`}>
           <div className={classes.Area1}>
             <div className={`${classes.LuotTruyCap} ${classes.box}`}>
-              <h2 className={classes.numberArea1}>128</h2>
+              <h2 className={classes.numberArea1}>{APIdata?.access.today}</h2>
               <p className={classes.MoTa}>Lượt truy cập</p>
-              <p className={classes.HomQua}>Hôm qua: 20</p>
+              <p className={classes.HomQua}>Hôm qua: {APIdata?.access.yesterday}</p>
             </div>
             <div className={`${classes.SoTrangGiayDaDuocIn} ${classes.box}`}>
-              <h2 className={classes.numberArea1}>1000</h2>
+              <h2 className={classes.numberArea1}>{APIdata?.pagePrinted.today}</h2>
               <p className={classes.MoTa}>Số trang giấy đã được in</p>
-              <p className={classes.HomQua}>Hôm qua: 200</p>
+              <p className={classes.HomQua}>Hôm qua: {APIdata?.pagePrinted.yesterday}</p>
             </div>
             <div className={`${classes.SoTrangGiayDaDuocMua} ${classes.box}`}>
-              <h2 className={classes.numberArea1}>300</h2>
+              <h2 className={classes.numberArea1}>{APIdata?.pageSold.today}</h2>
               <p className={classes.MoTa}>Số trang giấy đã được mua</p>
-              <p className={classes.HomQua}>Hôm qua: 30</p>
+              <p className={classes.HomQua}>Hôm qua: {APIdata?.pageSold.yesterday}</p>
             </div>
           </div>
         </div>

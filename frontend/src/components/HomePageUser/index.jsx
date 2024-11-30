@@ -30,6 +30,20 @@ export const HomePageUser = () => {
   const handleClosePreview=()=>{
     setPreview(!preview);
   }
+  // useEffect(() => {
+  //   const fetchDataID = async () => {
+  //     try {
+  //       const resfile = await api.get(`/files/${idPreview.fileConfig.fileId}`);
+  //       // const resfile = await api.get(`/files/${idPreview}`);
+  //       setDocDetail(resfile.data);
+  //       console.log(resfile.data);
+  //     } catch (error) {
+  //       console.error('Error fetching files:', error);
+  //     }
+  //   };
+
+  //   fetchDataID();
+  // }, [idPreview]);
   useEffect(() => {
     if (preview) {
       setAnimationClass(classes.zoomIn);
@@ -82,12 +96,6 @@ export const HomePageUser = () => {
           <option value="HK232">HK232</option>
           <option value="HK233">HK233</option>
         </select>
-        {/* <select value={selectHK} onChange={handleFilter} className={classes.filter_calendar}>
-          <option value="All">All</option>
-          <option value="HK231">HK231</option>
-          <option value="HK232">HK232</option>
-          <option value="HK233">HK233</option>
-        </select> */}
       </div>
       <div className={classes.body}>
         <div className={classes.list_doc}>

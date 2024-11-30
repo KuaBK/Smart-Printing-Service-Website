@@ -343,6 +343,7 @@ export const ConfigPrint = () => {
     // { id: 14, title: 'H5-154', processingPages: 76, pageProgress: 52, inkProgress: 78, status: 'ENABLE' },
   ]);
 
+  const [reload,setReload] = useState(false);
   useEffect(() => {
     const fetchPrinter = async () => {
       try {
@@ -354,7 +355,8 @@ export const ConfigPrint = () => {
     };
 
     fetchPrinter();
-  }, []);
+    console.log(67898767890);
+  }, [reload]);
 
   const [filters, setFilters] = useState({
     inkRange: { min: '', max: '' },
@@ -400,13 +402,21 @@ export const ConfigPrint = () => {
     //     printer.id === id ? { ...printer, ...updatedData } : printer
     //   )
     // );
-    api.patch(`/printers/${id}`, updatedData)
+    var updatePrinter = {
+      location: updatedData.name,
+      status: updatedData.status,
+      numOfPaper: updatedData.paperUsage,
+      amountOfInk: updatedData.inkUsage
+    }
+    console.log(updatePrinter);
+    api.patch(`/printers/${id}`, updatePrinter)
   };
 
-  const handleDeletePrinter = useCallback((id) => {
+  const handleDeletePrinter =useCallback( async (id) => {
     // console.log(`Deleting printer with ID: ${id}`);
     // setPrinters((prevPrinters) => prevPrinters.filter((printer) => printer.id !== id));
-    api.delete(`/printers/${id}`)
+    const resp = await api.delete(`/printers/${id}`)
+    setReload(!reload);
     // setPrinters(del.data)
   }, []);
 
@@ -465,12 +475,13 @@ export const ConfigPrint = () => {
       numOfPaper: isNaN(Number(formData.paperUsage)) ? 100 : Number(formData.paperUsage), // Nếu không hợp lệ thì mặc định là 100
       amountOfInk: isNaN(Number(formData.inkUsage)) ? 100 : Number(formData.inkUsage) // Nếu không hợp lệ thì mặc định là 100
     };
-    console.log(formData.status);
+    console.log(newPrinter);
     // Cập nhật danh sách máy in
     // setPrinters((prevPrinters) => [...prevPrinters, newPrinter]);
     const handleAddPrinter = async () => {
       try {
-        const response = await api.post(`/printers`, newPrinter);
+        const response = await api.post("/printers", newPrinter);
+        setReload(!reload);
         console.log("Printer added successfully:", response.data);
         // Nếu cần cập nhật danh sách máy in sau khi thêm thành công
         // setPrinters((prevPrinters) => [...prevPrinters, response.data]);
@@ -478,14 +489,15 @@ export const ConfigPrint = () => {
         console.error("Failed to add printer:", error.response?.data || error.message);
       }
     };
-    try {
-      const response = await api.get("/printers");
-      setPrinters(response.data);
-    } catch (error) {
-      console.error("Có lỗi xảy ra khi tải dữ liệu:", error);
-    }
-
+    
     handleAddPrinter();
+    // try {
+    //   const response = await api.get("/printers");
+    //   setPrinters(response.data);
+    // } catch (error) {
+    //   console.error("Có lỗi xảy ra khi tải dữ liệu:", error);
+    // }
+
 
     // setPrinters(add.data);
     // Đóng popup và reset form
@@ -564,6 +576,7 @@ export const ConfigPrint = () => {
 
               <label htmlFor="inkUsage">Số mực in (%):</label>
               <input
+              
                 className={classes.printerInput}
                 type="number"
                 name="inkUsage"
