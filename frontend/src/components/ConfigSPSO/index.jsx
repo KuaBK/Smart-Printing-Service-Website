@@ -150,28 +150,24 @@ export const ConfigSPSO = () => {
 
   const submitPromote = async (e) => {
     e.preventDefault();
-    const newPromote = {
-      semester: e.target[0].value,
-      pagesFree: e.target[1].value,
-      startDate: e.target[2].value,
-      endDate: e.target[3].value,
-      status: "Hoạt động",
-      type: e.target[4].selectedOptions[0].value
-    }
     try {
-      const response = await api.post('/spso/make-discount', {
-        semester: e.target[0].value,
-        pagesFree: e.target[1].value,
+      console.log('phonh', {semester: e.target[0].value,
+        pagesFree: ParseInt(e.target[1].value),
         startDate: e.target[2].value,
         expirationDate: e.target[3].value,
-        // status: "Hoạt động",
-        isAll: e.target[4].selectedOptions[0].value == 'All' ? false : true
+        all: e.target[4].selectedOptions[0].value == 'All' ? true : false});
+      const response = await api.post('/spso/make-discount', {
+        semester: e.target[0].value,
+        pagesFree: ParseInt(e.target[1].value),
+        startDate: e.target[2].value,
+        expirationDate: e.target[3].value,
+        all: e.target[4].selectedOptions[0].value == 'All' ? false : true
       });
 
       console.log(response.data);
       Swal.fire({
         icon: "success",
-        title: "Tạo khuyến mãi thành công",
+        title: `${e.target[4].selectedOptions[0].value}`,
         showConfirmButton: false,
         timer: 3000
       });
