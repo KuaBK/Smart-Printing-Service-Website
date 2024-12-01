@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @Builder
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PrintJobResponse {
     private Long logId;
-    private LocalDateTime printTime;
+    private String printTime;
     private FileConfigResponse fileConfig;
     private String statusPrint;
     private String printerBrand;
@@ -23,9 +24,10 @@ public class PrintJobResponse {
     private int numberPagePrint;
 
     public static PrintJobResponse toPrintJobResponse(PrintJob printJob) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm - dd/MM/yyyy");
         return PrintJobResponse.builder()
                 .logId(printJob.getJobId())
-                .printTime(printJob.getJobStartTime())
+                .printTime(printJob.getJobStartTime().format(formatter))
                 .statusPrint(printJob.getStatusPrint().name())
                 .fileConfig(FileConfigResponse.toFileConfigResponse(printJob.getFileConfig()))
                 .printerBrand(printJob.getPrinter().getBrand())
