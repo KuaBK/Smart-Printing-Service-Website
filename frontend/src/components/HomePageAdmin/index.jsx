@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import classes from './style.module.css';
 import deletePromote from '../../assets/deletePromote.svg'
 // import filterimage from '../../assets/filterimage.svg'
@@ -6,6 +6,7 @@ import deletePromote from '../../assets/deletePromote.svg'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import 'sweetalert2/src/sweetalert2.scss'
 import api from '../../Services/api';
+import { GlobalContext } from '../../Context';
 /*Duy done */
 // const listUsers = [
 //   {
@@ -86,12 +87,12 @@ import api from '../../Services/api';
 
 
 export const HomePageAdmin = () => {
-  const nameUser = "Nguyen Van A";
   const [typeUser, setTypeUser] = useState("");                 //Duy done
   const [selectUserType, setSelectUserType] = useState("All");  //Duy done  
   const [listUsers, setListUser] = useState([]);
   const [reload, setReload] = useState(false);
   const inputRefs = useRef([]);
+  const {profile} = useContext(GlobalContext);
   // const refDD = useRef(null);
   useEffect(() => {
     const fetchPrinter = async () => {
@@ -232,7 +233,7 @@ export const HomePageAdmin = () => {
   return (
     <div className={classes.container}>
       <div className={classes.info}>
-        <div className={classes.info_h}> Hi, {nameUser}</div>
+        <div className={classes.info_h}> Hi, {profile?.name}</div>
         <p className={classes.info_p}>Hope you have a good day</p>
       </div>
       <div className={classes.search}>
@@ -241,7 +242,7 @@ export const HomePageAdmin = () => {
           <select value={selectUserType} onChange={handleFilter} className={classes.filter_HK}>
             <option value="All">All</option>
             <option value="SPSO">SPSO</option>
-            <option value="User">User</option>
+            <option value="STUDENT">STUDENT</option>
           </select>
         </div>
         <input className={classes.search__search} placeholder='Search for Library...' />
@@ -258,7 +259,7 @@ export const HomePageAdmin = () => {
           </thead>
           <tbody style={{ height: "240px", overflowY: "auto" }}>
             {listUsers?.map((item) => {
-              if (selectUserType === "All" || item.usertype === selectUserType) {
+              if (selectUserType === "All" || item.role === selectUserType) {
                 return (
                   <tr key={item.id}>
                     <td>{item.name}</td>

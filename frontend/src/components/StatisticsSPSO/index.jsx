@@ -1,12 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import classes from './style.module.css';
 import api from '../../Services/api';
 import { DataGrid } from '@mui/x-data-grid';
+import { GlobalContext } from '../../Context';
 
 export const StatisticsSPSO = () => {
   const [reportData, setReportData] = useState(null);
-  const nameUser = "Tran Loc ec dok";
 
   useEffect(() => {
     api.get('/spso/daily-report')
@@ -19,6 +19,8 @@ export const StatisticsSPSO = () => {
         console.error('There was an error fetching the report data!', error);
       });
   }, []);
+
+  const {profile} =useContext(GlobalContext);
 
   const columns = [
     { field: 'date', headerName: 'Date', width: 150 },
@@ -44,8 +46,8 @@ export const StatisticsSPSO = () => {
   return (
     <div className={classes.container}>
       <div className={classes.info}>
-        <div className={classes.info_h}>Hi, {nameUser}</div>
-        <p className={classes.info_p}>Hope you have a great day</p>
+        <div className={classes.info_h}>Hi, {profile?.name}</div>
+        <p className={classes.info_p}>Hope you have a good day</p>
       </div>
       <div className={classes.body}>
         <div className={classes.header_}>

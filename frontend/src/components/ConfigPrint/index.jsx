@@ -1,7 +1,8 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useContext } from 'react';
 import ProgressBar from "@ramonak/react-progress-bar";
 import classes from './style.module.css';
 import api from '../../Services/api';
+import { GlobalContext } from '../../Context';
 
 /////////////////////////////////// GENERAL /////////////////////////////////////////////////////////////////////////////////////////
 //----------Filter----------------------------------------------------
@@ -202,7 +203,7 @@ const PrinterCard = ({ title, onDelete, processingPages, pageProgress, inkProgre
         </svg>
 
         <div className={`${classes.printerProcessing} font-bold`}>
-          <div  className='font-bold'>Thông tin máy in</div>
+          <div className='font-bold'>Thông tin máy in</div>
           <div className='pt-[5px]'>{processingPages}</div>
         </div>
 
@@ -345,7 +346,7 @@ export const ConfigPrint = () => {
     // { id: 14, title: 'H5-154', processingPages: 76, pageProgress: 52, inkProgress: 78, status: 'ENABLE' },
   ]);
 
-  const [reload,setReload] = useState(false);
+  const [reload, setReload] = useState(false);
   useEffect(() => {
     const fetchPrinter = async () => {
       try {
@@ -359,6 +360,8 @@ export const ConfigPrint = () => {
     fetchPrinter();
     console.log(67898767890);
   }, [reload]);
+
+  const {profile} = useContext(GlobalContext);
 
   const [filters, setFilters] = useState({
     inkRange: { min: '', max: '' },
@@ -414,7 +417,7 @@ export const ConfigPrint = () => {
     api.patch(`/printers/${id}`, updatePrinter)
   };
 
-  const handleDeletePrinter =useCallback( async (id) => {
+  const handleDeletePrinter = useCallback(async (id) => {
     // console.log(`Deleting printer with ID: ${id}`);
     // setPrinters((prevPrinters) => prevPrinters.filter((printer) => printer.id !== id));
     const resp = await api.delete(`/printers/${id}`)
@@ -503,7 +506,7 @@ export const ConfigPrint = () => {
         console.error("Failed to add printer:", error.response?.data || error.message);
       }
     };
-    
+
     handleAddPrinter();
     // try {
     //   const response = await api.get("/printers");
@@ -526,7 +529,7 @@ export const ConfigPrint = () => {
     <div className={classes.configPrint}>
       {/* Header section */}
       <header className={classes.header}>
-        <h1 className={classes.headerTitle}>Hi, Nguyen Van A</h1>
+        <h1 className={classes.headerTitle}>Hi, {profile?.name}</h1>
         <p className={classes.headerSubtitle}>Hope you have a good day</p>
         <div className={classes.filterAndSearch}>
           {/* Filter button */}
@@ -551,103 +554,103 @@ export const ConfigPrint = () => {
         </div>
       </header>
 
-        {showAddPrinterPopup && (
-          <div className={classes.overlay1}>
-            <div className={classes.overlayContent1}>
-          <form className={classes.printerForm} onSubmit={handleSave}>
-            <label htmlFor="name">Tên:</label>
-            <input
-              className={classes.printerInput}
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-            />
+      {showAddPrinterPopup && (
+        <div className={classes.overlay1}>
+          <div className={classes.overlayContent1}>
+            <form className={classes.printerForm} onSubmit={handleSave}>
+              <label htmlFor="name">Tên:</label>
+              <input
+                className={classes.printerInput}
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+              />
 
-            <label htmlFor="brand">Thương hiệu:</label>
-            <input
-              className={classes.printerInput}
-              type="text"
-              name="brand"
-              value={formData.brand}
-              onChange={handleInputChange}
-              required
-            />
+              <label htmlFor="brand">Thương hiệu:</label>
+              <input
+                className={classes.printerInput}
+                type="text"
+                name="brand"
+                value={formData.brand}
+                onChange={handleInputChange}
+                required
+              />
 
-            <label htmlFor="model">Mẫu:</label>
-            <input
-              className={classes.printerInput}
-              type="text"
-              name="model"
-              value={formData.model}
-              onChange={handleInputChange}
-              required
-            />
+              <label htmlFor="model">Mẫu:</label>
+              <input
+                className={classes.printerInput}
+                type="text"
+                name="model"
+                value={formData.model}
+                onChange={handleInputChange}
+                required
+              />
 
-            <label htmlFor="description">Mô tả:</label>
-            <textarea
-              className={classes.printerInput}
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              required
-            />
+              <label htmlFor="description">Mô tả:</label>
+              <textarea
+                className={classes.printerInput}
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                required
+              />
 
-            <label htmlFor="status">Trạng thái:</label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleInputChange}
-              className={classes.printerInput}
-            >
-              <option value="ENABLE">Hoạt động</option>
-              <option value="DISABLE">Không hoạt động</option>
-            </select>
-
-            <label htmlFor="paperUsage">Số giấy in:</label>
-            <input
-              className={classes.printerInput}
-              type="number"
-              name="paperUsage"
-              value={formData.paperUsage}
-              onChange={handleInputChange}
-              min="0" // Giá trị tối thiểu là 0
-              required
-            />
-
-            <label htmlFor="inkUsage">Số mực in (%):</label>
-            <input
-              className={classes.printerInput}
-              type="number"
-              name="inkUsage"
-              value={formData.inkUsage}
-              onChange={handleInputChange}
-              min="0" // Giá trị tối thiểu là 0
-              max="100"
-              required
-            />
-
-            <div className={classes.popupButtons}>
-              <button
-            type="button"
-            className={classes.cancelButton}
-            onClick={handleClosePopup}
+              <label htmlFor="status">Trạng thái:</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+                className={classes.printerInput}
               >
-            Cancel
-              </button>
-              <button type="submit" className={classes.printerSubmit1}>
-            Save
-              </button>
-            </div>
-          </form>
-            </div>
+                <option value="ENABLE">Hoạt động</option>
+                <option value="DISABLE">Không hoạt động</option>
+              </select>
+
+              <label htmlFor="paperUsage">Số giấy in:</label>
+              <input
+                className={classes.printerInput}
+                type="number"
+                name="paperUsage"
+                value={formData.paperUsage}
+                onChange={handleInputChange}
+                min="0" // Giá trị tối thiểu là 0
+                required
+              />
+
+              <label htmlFor="inkUsage">Số mực in (%):</label>
+              <input
+                className={classes.printerInput}
+                type="number"
+                name="inkUsage"
+                value={formData.inkUsage}
+                onChange={handleInputChange}
+                min="0" // Giá trị tối thiểu là 0
+                max="100"
+                required
+              />
+
+              <div className={classes.popupButtons}>
+                <button
+                  type="button"
+                  className={classes.cancelButton}
+                  onClick={handleClosePopup}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className={classes.printerSubmit1}>
+                  Save
+                </button>
+              </div>
+            </form>
           </div>
-        )}
+        </div>
+      )}
 
 
 
-        {/* Main content section (grid of printer cards) */}
+      {/* Main content section (grid of printer cards) */}
       <main className={classes.printerDashboard}>
         <div className={classes.printerGrid}>
           {(printers

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import classes from './style.module.css';
 import deletePromote from '../../assets/deletePromote.svg'
 import calendar from '../../assets/calendar.svg'
@@ -9,6 +9,8 @@ import arrowup from '../../assets/arrowup.svg'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import 'sweetalert2/src/sweetalert2.scss'
 import api from '../../Services/api';
+import { GlobalContext } from '../../Context';
+
 const listPromotes = [
   {
     id: 1,
@@ -119,7 +121,6 @@ const dbTypeFile = [
   "PDF", "WORD", "JFIF"
 ];
 export const ConfigSPSO = () => {
-  const nameUser = "Nguyen Van A";
   const [typePromote, setTypePromote] = useState("");
   const [selectHK, setSelectHK] = useState("All");
   const [upLoad, setupLoad] = useState(100);
@@ -127,6 +128,7 @@ export const ConfigSPSO = () => {
   const [checkDD, setCheckDD] = useState(false);
   const [arroww, setArroww] = useState(arrow);
   const [listPromote, setListPromote] = useState(listPromotes);
+  const {profile} = useContext(GlobalContext);
   // const [reload, setReload] = useState(false);
   const inputRefs = useRef([]);
   // const refDD = useRef(null);
@@ -304,7 +306,7 @@ export const ConfigSPSO = () => {
   return (
     <div className={classes.container}>
       <div className={classes.info}>
-        <div className={classes.info_h}> Hi, {nameUser}</div>
+        <div className={classes.info_h}> Hi, {profile?.name}</div>
         <p className={classes.info_p}>Hope you have a good day</p>
       </div>
       <div className={classes.search}>

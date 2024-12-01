@@ -11,7 +11,7 @@ export const Profile = () => {
       <div>
         <div className='flex flex-row justify-center items-center'>
           <div className='flex flex-col justify-center items-center'>
-            <img src='https://www.w3schools.com/howto/img_avatar.png' className='rounded-[50%] w-[200px] h-[200px] mt-[50px]'/>
+            <img src={profile?.avtUrl} className='rounded-[50%] w-[200px] h-[200px] mt-[50px]'/>
             <h1 className='font-bold text-[24px] mt-[20px]'>{profile?.name}</h1>
             <p className='font-normal text-[16px] text-[#787486]'>{profile?.role.charAt(0).toUpperCase() + profile?.role.slice(1).toLowerCase()}</p>
           </div>

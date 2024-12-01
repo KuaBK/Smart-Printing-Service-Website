@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './stylemodule.css';
 import momo from './img/momo.png';
 import bk from './img/bk.jpg';
 import api from '../../Services/api';
+import { GlobalContext } from '../../Context';
+
 export const BuyPrintingPages = () => {
   const [soTrang, setSoTrang] = useState(100); // Default to 100 pages
   const [tongTienGiay, setTongTienGiay] = useState(0);
@@ -10,6 +12,7 @@ export const BuyPrintingPages = () => {
   const [tongThanhToan, setTongThanhToan] = useState(0);
   const [showPaymentModal, setShowPaymentModal] = useState(false); // Control modal visibility
   const [valueDiscount, setValueDiscount] = useState('');
+  const {profile} =useContext(GlobalContext);
 
   // Calculate total price when `soTrang` changes
   useEffect(() => {
@@ -81,7 +84,7 @@ export const BuyPrintingPages = () => {
     <div>
       {/* Main Content */}
       <div className="hello">
-        <div className="name">Hi, Nguyen Van A</div>
+        <div className="name">Hi, {profile?.name}</div>
         <p className="text">Hope you have a good day</p>
       </div>
 

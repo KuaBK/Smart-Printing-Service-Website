@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Bar, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import classes from './style.module.css';
 import api from '../../Services/api';
+import { GlobalContext } from '../../Context';
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
@@ -21,6 +22,9 @@ export const HomePageSPSO = () => {
   
     fetchAPI();
   }, []);
+
+  const {profile} =useContext(GlobalContext);
+
   const barData = {
     labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
     datasets: [
@@ -114,7 +118,7 @@ export const HomePageSPSO = () => {
   return (
     <div className={classes.HomePageSPSO}>
       <header className={classes.header}>
-        <h1 className={classes.headerTitle}>Hi, Nguyen Van A</h1>
+        <h1 className={classes.headerTitle}>Hi, {profile?.name}</h1>
         <p className={classes.headerSubtitle}>Hope you have a good day</p>
       </header>
 

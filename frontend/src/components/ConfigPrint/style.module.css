@@ -17,6 +17,7 @@
 .headerTitle {
         font-size: 24px;
         font-weight: bold;
+        text-transform: capitalize;
 }
 
 .headerSubtitle {
