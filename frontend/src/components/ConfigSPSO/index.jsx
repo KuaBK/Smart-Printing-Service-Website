@@ -151,23 +151,19 @@ export const ConfigSPSO = () => {
   const submitPromote = async (e) => {
     e.preventDefault();
     try {
-      console.log('phonh', {semester: e.target[0].value,
-        pagesFree: ParseInt(e.target[1].value),
-        startDate: e.target[2].value,
-        expirationDate: e.target[3].value,
-        all: e.target[4].selectedOptions[0].value == 'All' ? true : false});
+      
       const response = await api.post('/spso/make-discount', {
         semester: e.target[0].value,
-        pagesFree: ParseInt(e.target[1].value),
+        pagesFree: parseInt(e.target[1].value),
         startDate: e.target[2].value,
         expirationDate: e.target[3].value,
-        all: e.target[4].selectedOptions[0].value == 'All' ? false : true
+        all: e.target[4].selectedOptions[0].value == 'All' ? true : false,
       });
 
       console.log(response.data);
       Swal.fire({
         icon: "success",
-        title: `${e.target[4].selectedOptions[0].value}`,
+        title: `Tạo khuyến mãi thành công`,
         showConfirmButton: false,
         timer: 3000
       });
@@ -368,7 +364,7 @@ export const ConfigSPSO = () => {
         </div>
         <div className={`${classes.fP__block} ${classes.fp__block2}`}>
           <div className={classes.block_item}>
-            <label className={classes.label_date} htmlFor="endDate"><img src={calendar} />Thời gian kết thúc</label>
+            <label className={classes.label_date} htmlFor="expirationDate"><img src={calendar} />Thời gian kết thúc</label>
             <input ref={(el) => inputRefs.current[3] = el} className={`${classes.item_box} ${classes.input_date}`} type="date" required />
           </div>
           <div className={classes.block_2}>

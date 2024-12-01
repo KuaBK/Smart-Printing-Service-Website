@@ -302,6 +302,8 @@ tbody tr {
     /* margin-left: 2px; */
     padding: 5px;
     /* height: ; */
+    color: #fff;
+    font-weight: 500;
 }
 
 .cf_item {
@@ -321,10 +323,14 @@ tbody tr {
 
 .cf_item+.cf_item {
     margin-left: 5px;
+    color: #fff;
+    font-weight: 500;
 }
 
 .item_content {
     padding-left: 2px;
+    color: #fff;
+    font-weight: 500;
 }
 
 .item_close {
@@ -332,6 +338,8 @@ tbody tr {
     top: 0;
     right: 0;
     transform: translateX(-10%) translateY(25%);
+    color: #fff;
+    font-weight: 500;
 
 }
 
@@ -341,6 +349,8 @@ tbody tr {
     right: 0;
     transform: translateX(-50%) translateY(50%);
     cursor: pointer;
+    color: #fff;
+    font-weight: 500;
 
 }
 
@@ -358,6 +368,8 @@ tbody tr {
 .cf_arrow>img {
     color: #000;
     font-weight: 700;
+    color: #fff;
+    font-weight: 500;
 }
 
 /*  */
@@ -378,12 +390,16 @@ tbody tr {
     box-shadow: 0px 1px 48px 0px rgba(25, 39, 89, 0.06);
     display: flex !important;
     min-height: 37px;
+    color: #fff;
+    font-weight: 500;
 }
 
 .appear { 
     opacity: 1;
     transform: translateY(0);
     /* animation: dropdown 0.4s ease-in-out forwards; */
+    color: #fff;
+    font-weight: 500;
 }
 
 .disappear {

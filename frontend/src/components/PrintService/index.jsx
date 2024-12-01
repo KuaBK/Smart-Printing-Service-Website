@@ -188,7 +188,7 @@ export const PrintService = () => {
             <iframe src={fileChoice?.url} className={classes.pdfViewer} title="pdf-viewer"></iframe>
           </div>
           <button className={classes.printConfigButton} onClick={() => {setShowConfig(false)}}>Cấu hình in</button>
-          <ManagePrint isHidden={showConfig} setIsHidden={setShowConfig} file={fileChoice}/>
+          <ManagePrint isHidden={showConfig} setIsHidden={setShowConfig} file={fileChoice} printservice = {true}/>
         </div>
       </div>
 

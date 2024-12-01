@@ -89,9 +89,9 @@ export const ManagePrint = (props) => {
         : pageOption === "Custom"
         ? customRange
         : "ALL";
-    const nb = props.file ? props.file.numberOfPages * sbi : 0;
+    const nb = props.file ? props.file.numOfPage * sbi : 0;
     if (!props.guess && nb > profile.numOfPrintingPages) {
-      toast.error("Số trang in vượt quá số trang còn lại");
+      toast.error("Số trang in vượt quá số trang còn lại ");
       return;
     }
     if (applyPrinter) {
@@ -99,13 +99,13 @@ export const ManagePrint = (props) => {
       if (props.guess) {
         const nbp = applyPrinter.numOfPaper ? applyPrinter.numOfPaper : 0;
         if (nbp < props.config.numberOfCopies * props.file.numOfPage) {
-          toast.error("Số trang in vượt quá số trang còn lại của máy in");
+          toast.error(`Số trang in vượt quá số trang còn lại của máy in`);
           return;
         }
       } else {
       const nbp = applyPrinter.numOfPaper ? applyPrinter.numOfPaper : 0;
       if (nbp < nb) {
-        toast.error("Số trang in vượt quá số trang còn lại của máy in");
+        toast.error(`Số trang in vượt quá số trang còn lại của máy in`);
         return;
       }}
 
@@ -132,7 +132,7 @@ export const ManagePrint = (props) => {
         toast.error("In thành công");
       }) 
     } else {
-    api.post(`/file-configs/post?fileId=${props.file.id}`, {
+    api.post(`/file-configs/post?fileId=${props.printservice ? props.file.id : props.file.documentId}`, {
       "paperSize": paper_size == "Letter" ? "LETTER" : paper_size == "A4" ? "A4" : "A3",
       "paperRange": pageRange,
       "sides": nopageprint == "Single sided" ? "SINGLE" : "DOUBLE",
@@ -355,7 +355,7 @@ export const ManagePrint = (props) => {
         <div className={`${classes.rightside} ${classes.rightsize}`}>
           {props.guess ? <div></div>:<div className={`${classes.page_remain} flex flex-row items-center justify-between`}>
             <p className={classes.page_rm}><div className='px-[20px] bg-[#0f6cbf] rounded-[15px] text-[12px] font-bold text-[#fff] align-center items-center text-center h-fit py-[3px]'>Số trang hiện có: </div>  <b className={classes.numberpage}>{profile?.numOfPrintingPages}</b></p>
-            {<p className="text-[13px] text-red-500 font-bold"> Số trang in: {props.file ? props.file.numberOfPages * sbi: 0} </p>}
+            {<p className="text-[13px] text-red-500 font-bold"> Số trang in: {props.file ? props.file.numOfPage * sbi: 0} </p>}
           </div>}
           <iframe
             src={props.file?.url}
