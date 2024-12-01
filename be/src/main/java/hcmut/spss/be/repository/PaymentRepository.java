@@ -26,5 +26,13 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             "ORDER BY year DESC, month DESC", nativeQuery = true)
     List<Object[]> countTotalAmountLast6Months();
 
-    List<Payment> findAll();
+    @Query(value = "SELECT DATE(payment_date) AS payment_date, " +
+            "COUNT(*) AS num_of_payments, " +
+            "SUM(amount_paid) AS amount_paid, " +
+            "SUM(num_pages_bought) AS num_pages_bought " +
+            "FROM payment " +
+            "GROUP BY DATE(payment_date) " +
+            "ORDER BY payment_date ASC",
+            nativeQuery = true)
+    List<Object[]> countTodayPayments();
 }

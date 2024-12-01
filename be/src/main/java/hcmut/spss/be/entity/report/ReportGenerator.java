@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class ReportGenerator {
+public class    ReportGenerator {
     private final PaymentRepository paymentRepository;
     private final File reportDirectory;
 

@@ -55,6 +55,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/print-jobs/public/**").permitAll()
                         .requestMatchers("/api/file-configs/public/**").permitAll()
                         .requestMatchers("/api/payment/vnpay-callback/**").permitAll()
+                        .requestMatchers("/api/reports/**").permitAll()
                         .requestMatchers("/api/spso/**").hasAuthority("SPSO")
                         .anyRequest().authenticated());
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));

@@ -29,4 +29,15 @@ public interface PrintJobRepository extends JpaRepository<PrintJob, Long> {
             "WHERE job_start_time >= :startOfDay AND job_start_time < :endOfDay", nativeQuery = true)
     Integer countPrintPageInDay(@Param("startOfDay") String startOfDay, @Param("endOfDay") String endOfDay);
 
+    @Query(value = "SELECT DATE(job_start_time) AS print_date, SUM(number_page_print) AS total_pages " +
+            "FROM print_job " +
+            "GROUP BY DATE(job_start_time) " +
+            "ORDER BY print_date ASC", nativeQuery = true)
+    List<Object[]> countPrintPagesByDay();
+
+    @Query(value = "SELECT DATE(job_start_time) AS print_date, SUM(number_page_print) AS total_pages, COUNT(*) AS total_print " +
+            "FROM print_job " +
+            "GROUP BY DATE(job_start_time) " +
+            "ORDER BY print_date ASC", nativeQuery = true)
+    List<Object[]> countPrintJobByDay();
 }

@@ -1,10 +1,7 @@
 package hcmut.spss.be.controller;
 
 import hcmut.spss.be.dtos.request.DiscountRequest;
-import hcmut.spss.be.service.DiscountService;
-import hcmut.spss.be.service.PaymentService;
-import hcmut.spss.be.service.PrintJobService;
-import hcmut.spss.be.service.StatisticService;
+import hcmut.spss.be.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +21,9 @@ public class SpsoController {
 
     @Autowired
     private StatisticService statisticService;
+
+    @Autowired
+    private ReportService reportService;
 
     @GetMapping("/transactions")
     public ResponseEntity<?> getTransactions() {
@@ -68,6 +68,15 @@ public class SpsoController {
     public ResponseEntity<?> getStatistic() {
         try {
             return ResponseEntity.ok(statisticService.getStatistic());
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/daily-report")
+    public ResponseEntity<?> getDailyReport(){
+        try {
+            return ResponseEntity.ok(reportService.getReport());
         }catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

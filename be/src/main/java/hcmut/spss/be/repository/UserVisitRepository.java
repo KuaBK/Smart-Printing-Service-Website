@@ -14,4 +14,10 @@ public interface UserVisitRepository extends JpaRepository<UserVisit, Long> {
             "WHERE creation_date >= :startOfDay AND creation_date < :endOfDay", nativeQuery = true)
     Integer countVisitsInDay(@Param("startOfDay") String startOfDay, @Param("endOfDay") String endOfDay);
 
+    @Query(value = "SELECT DATE(creation_date) AS visit_date, COUNT(*) AS visit_count " +
+            "FROM user_visit " +
+            "GROUP BY DATE(creation_date) " +
+            "ORDER BY visit_date ASC", nativeQuery = true)
+    List<Object[]> countVisitsByDay();
+
 }
