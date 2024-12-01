@@ -128,7 +128,7 @@ export const ConfigSPSO = () => {
   const [checkDD, setCheckDD] = useState(false);
   const [arroww, setArroww] = useState(arrow);
   const [listPromote, setListPromote] = useState(listPromotes);
-  const {profile} = useContext(GlobalContext);
+  const { profile } = useContext(GlobalContext);
   // const [reload, setReload] = useState(false);
   const inputRefs = useRef([]);
   // const refDD = useRef(null);
@@ -153,7 +153,7 @@ export const ConfigSPSO = () => {
   const submitPromote = async (e) => {
     e.preventDefault();
     try {
-      
+
       const response = await api.post('/spso/make-discount', {
         semester: e.target[0].value,
         pagesFree: parseInt(e.target[1].value),
@@ -177,7 +177,7 @@ export const ConfigSPSO = () => {
         text: "Vui lòng kiểm tra lại thông tin hoặc thử lại sau.",
         showConfirmButton: true,
         timer: 3000
-      });    
+      });
     }
     // fetch("http://localhost:3000/listPromote", {
     //   method: "POST",
@@ -199,10 +199,10 @@ export const ConfigSPSO = () => {
     //       timer: 3000
     //     });
     //   })
-  
+
     const response = await api.get('/spso/discounts');
     setListPromote(response.data);
-    
+
     inputRefs.current.forEach(ref => ref.value = '');
     // console.log(listPromote);
   };
@@ -264,6 +264,13 @@ export const ConfigSPSO = () => {
     //       timer: 3000
     //     });
     //   })
+    Swal.fire({
+      // position: "top-end",
+      icon: "success",
+      title: "Chỉnh cấu hình thành công",
+      showConfirmButton: false,
+      timer: 3000
+    });
   };
   const handleFilter = (e) => {
     setSelectHK(e.target.selectedOptions[0].value);
@@ -303,6 +310,14 @@ export const ConfigSPSO = () => {
 
     fetchdiscounts();
   }, []);
+  function formatDateToDDMMYYYY(dateStr) {
+    if (dateStr){
+      const [year, month, day] = dateStr.split("-");
+    return `${day}-${month}-${year}`;
+    }else{
+      return "1-1-1900";
+    }
+  }
   return (
     <div className={classes.container}>
       <div className={classes.info}>
@@ -331,13 +346,13 @@ export const ConfigSPSO = () => {
             <th>Mã</th>
           </thead>
           <tbody style={{ height: "240px", overflowY: "auto" }}>
-            {listPromote.map((item) => {
+            {listPromote?.map((item) => {
               if (selectHK === "All" || item.semester === selectHK) {
                 return (
                   <tr key={item.id}>
                     <td>{item.semester}</td>
-                    <td>{item.startDate}</td>
-                    <td>{item.expirationDate}</td>
+                    <td>{formatDateToDDMMYYYY(item?.startDate)}</td>
+                    <td>{formatDateToDDMMYYYY(item?.expirationDate)}</td>
                     <td>{item.pagesFree}</td>
                     <td>{item.discountCode}</td>
                   </tr>)
@@ -392,7 +407,7 @@ export const ConfigSPSO = () => {
         </div>
         <div className={classes.block_item}>
           <label htmlFor="">Loại file được upload</label>
-          <div className={classes.configFile} onMouseLeave={() => {setArroww(arrow);setCheckDD(false);}}>
+          <div className={classes.configFile} onMouseLeave={() => { setArroww(arrow); setCheckDD(false); }}>
             <div className={classes.cf_dislay}>
               <div className={classes.cf_content}>
                 {typeFiles.map((item, index) => (
@@ -401,7 +416,7 @@ export const ConfigSPSO = () => {
                   </div>
                 ))}
               </div>
-              <div className={`${classes.cf_arrow} `} onClick={handledd}><img  src={arroww} /></div>
+              <div className={`${classes.cf_arrow} `} onClick={handledd}><img src={arroww} /></div>
             </div>
             <div className={`${classes.cf_dd} ${checkDD ? classes.appear : classes.disappear}`}>
               <div className={classes.cf_contenthd}>

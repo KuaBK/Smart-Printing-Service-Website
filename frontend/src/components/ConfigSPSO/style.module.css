@@ -308,7 +308,7 @@ tbody tr {
 
 .cf_item {
     cursor: pointer;
-    background-color: #274C6B;
+    background-color: #59acd1;
     border-radius: 6px;
     display: flex;
     flex-direction: row;
@@ -449,7 +449,7 @@ tbody tr {
 
 .cf_itemhd {
     cursor: pointer;
-    background-color: #274C6B;
+    background-color: #59acd1;
     border-radius: 6px;
     display: flex;
     flex-direction: row;

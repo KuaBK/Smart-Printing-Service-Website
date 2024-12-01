@@ -262,6 +262,7 @@ const PrinterCard = ({ title, onDelete, processingPages, pageProgress, inkProgre
                 name="paperUsage"
                 value={formData.paperUsage}
                 onChange={handleInputChange}
+                max="100"
                 min="0" // Giá trị tối thiểu là 0
               />
 
@@ -615,6 +616,7 @@ export const ConfigPrint = () => {
                 name="paperUsage"
                 value={formData.paperUsage}
                 onChange={handleInputChange}
+                max="100"
                 min="0" // Giá trị tối thiểu là 0
                 required
               />

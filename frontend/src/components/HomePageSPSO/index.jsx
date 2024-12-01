@@ -30,13 +30,13 @@ export const HomePageSPSO = () => {
     datasets: [
       {
         label: 'Tổng số lượt in trong tuần',
-        data: [APIdata?.printing[0].totalPagesPrinted,
-              APIdata?.printing[1].totalPagesPrinted,
+        data: [APIdata?.printing[1].totalPagesPrinted,
               APIdata?.printing[2].totalPagesPrinted,
               APIdata?.printing[3].totalPagesPrinted, 
               APIdata?.printing[4].totalPagesPrinted, 
               APIdata?.printing[5].totalPagesPrinted, 
-              APIdata?.printing[6].totalPagesPrinted],
+              APIdata?.printing[6].totalPagesPrinted,
+              APIdata?.printing[0].totalPagesPrinted,],
         backgroundColor: 'rgba(250, 190, 125, 0.7)',
         hoverBackgroundColor: 'rgba(250, 190, 122, 1)',
         borderColor: 'rgba(200, 150, 120, 1)',
@@ -50,12 +50,12 @@ export const HomePageSPSO = () => {
   };
 
   const lineData = {
-    labels: [APIdata?.revenues[0].month+' '+APIdata?.revenues[0].year, 
-              APIdata?.revenues[1].month+' '+APIdata?.revenues[1].year, 
-              APIdata?.revenues[2].month+' '+APIdata?.revenues[2].year, 
-              APIdata?.revenues[3].month+' '+APIdata?.revenues[3].year, 
-              APIdata?.revenues[4].month+' '+APIdata?.revenues[4].year, 
-              APIdata?.revenues[5].month+' '+APIdata?.revenues[5].year],
+    labels: [APIdata?.revenues[0].month+'-'+APIdata?.revenues[0].year, 
+              APIdata?.revenues[1].month+'-'+APIdata?.revenues[1].year, 
+              APIdata?.revenues[2].month+'-'+APIdata?.revenues[2].year, 
+              APIdata?.revenues[3].month+'-'+APIdata?.revenues[3].year, 
+              APIdata?.revenues[4].month+'-'+APIdata?.revenues[4].year, 
+              APIdata?.revenues[5].month+'-'+APIdata?.revenues[5].year],
     datasets: [
       {
         label: 'Doanh thu (triệu VND)',

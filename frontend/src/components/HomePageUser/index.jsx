@@ -12,8 +12,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { ManagePrint } from '../ManagePrint'
 export const HomePageUser = () => {
   const [animationClass, setAnimationClass] = useState('');
-  const numberHPage = 200;
-  const numberPPage = 1000;
+  // const numberHPage = 200;
+  // const numberPPage = 1000;
   const {profile} = useContext(GlobalContext);
 
   const [selectHK, setSelectHK] = useState("All");
@@ -26,7 +26,7 @@ export const HomePageUser = () => {
     setSelectHK(e.target.selectedOptions[0].value);
   };
   const [showConfig, setShowConfig] = useState(true);
-  const [allFiles, setAllFiles] = useState([]);
+  // const [allFiles, setAllFiles] = useState([]);
   const handleClosePreview=()=>{
     setPreview(!preview);
   }
@@ -59,7 +59,6 @@ export const HomePageUser = () => {
       try {
         const resfile = await api.get('/print-jobs/current-user');
         setDocument(resfile.data);
-        console.log(resfile.data);
       } catch (error) {
         console.error('Error fetching files:', error);
       }
