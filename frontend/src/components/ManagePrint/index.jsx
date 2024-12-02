@@ -41,11 +41,11 @@ export const ManagePrint = (props) => {
       "semester": namhoc
     }
     try {
-      const response = await api.patch(`/files/${props.file?.id}`, value);
+      const response = await api.patch(`/files/${props.printservice ? props.file.id : props.file.documentId}`, value);
       console.log(response.data);
       try {
         const response1 = await api.post(`/library/share`, {
-          "documentId": props.file?.id,
+          "documentId": props.printservice ? props.file.id : props.file.documentId,
         })
         console.log(response1.data);
         toast.success("Chia sẻ file thành công");
