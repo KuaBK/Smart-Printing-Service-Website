@@ -1,10 +1,13 @@
 package hcmut.spss.be.service;
 
-import hcmut.spss.be.entity.document.Document;
+import hcmut.spss.be.dtos.response.document.DocumentResponse;
+import hcmut.spss.be.dtos.request.UpdateDocumentRequest;
 
 import java.util.List;
 
 public interface DocumentService {
-    List<Document> getAllDocuments();
-    Document getDocument(Long documentId);
+    List<DocumentResponse> getAllDocuments();
+    List<DocumentResponse> getDocsByCurrentUser();
+    DocumentResponse getDocument(Long documentId);
+    DocumentResponse updateDocument(Long documentId, UpdateDocumentRequest request);
 }

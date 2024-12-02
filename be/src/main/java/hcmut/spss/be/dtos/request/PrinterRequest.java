@@ -11,4 +11,6 @@ public class PrinterRequest {
     private String status;
     private String description;
     private String location;
+    private Integer numOfPaper;
+    private Integer amountOfInk;
 }

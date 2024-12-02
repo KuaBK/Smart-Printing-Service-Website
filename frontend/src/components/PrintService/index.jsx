@@ -77,7 +77,7 @@ export const PrintService = () => {
         "Authorization": `Bearer ${token}`,
         "X-XSRF-TOKEN": crsfToken
       }};
-      const response = await api.post('/files/upload', formData, config);
+      const response = await api.post('http://localhost:8080/api/files/upload', formData, config);
 
       console.log('Upload successful:', response.data);
     //   {

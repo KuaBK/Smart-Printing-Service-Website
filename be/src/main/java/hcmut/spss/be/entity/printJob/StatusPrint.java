@@ -4,5 +4,6 @@ public enum StatusPrint {
     WAITING,
     PRINTING,
     COMPLETED,
-    FAILED
+    FAILED,
+    CANCELLED,
 }

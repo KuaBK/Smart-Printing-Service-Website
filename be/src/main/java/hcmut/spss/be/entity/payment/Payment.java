@@ -1,5 +1,6 @@
 package hcmut.spss.be.entity.payment;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import hcmut.spss.be.entity.discount.Discount;
 import hcmut.spss.be.entity.user.User;
 import jakarta.persistence.*;
@@ -38,11 +39,12 @@ public class Payment {
     @Column(name = "payment_date", updatable = false)
     LocalDateTime paymentDate;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "discount_id")
     Discount discount;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "student_id", referencedColumnName = "user_id")
     User student;
 }

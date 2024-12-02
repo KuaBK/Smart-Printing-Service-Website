@@ -30,6 +30,8 @@ public class PrinterServiceImpl implements PrinterService {
                 .statusPrinter(Status.valueOf(request.getStatus()))
                 .description(request.getDescription())
                 .location(request.getLocation())
+                .numOfPaper(request.getNumOfPaper())
+                .amountOfInk(request.getAmountOfInk())
                 .build();
         printerRepository.save(printer);
         return new MessageResponse("Printer created successfully");
@@ -52,13 +54,31 @@ public class PrinterServiceImpl implements PrinterService {
     public MessageResponse updatePrinter(Long id, PrinterRequest request) {
         Printer printer = printerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Printer not found"));
-        printer.setBrand(request.getBrand());
-        printer.setModel(request.getModel());
-        printer.setStatusPrinter(Status.valueOf(request.getStatus()));
-        printer.setDescription(request.getDescription());
-        printer.setLocation(request.getLocation());
+
+        if (request.getBrand() != null) {
+            printer.setBrand(request.getBrand());
+        }
+        if (request.getModel() != null) {
+            printer.setModel(request.getModel());
+        }
+        if (request.getStatus() != null) {
+            printer.setStatusPrinter(Status.valueOf(request.getStatus()));
+        }
+        if (request.getDescription() != null) {
+            printer.setDescription(request.getDescription());
+        }
+        if (request.getLocation() != null) {
+            printer.setLocation(request.getLocation());
+        }
+        if (request.getNumOfPaper() != null) {
+            printer.setNumOfPaper(request.getNumOfPaper());
+        }
+        if (request.getAmountOfInk() != null) {
+            printer.setAmountOfInk(request.getAmountOfInk());
+        }
         printerRepository.save(printer);
-        return new MessageResponse("Printer updated successfully");
+
+        return new MessageResponse("Printer updated successfully (PATCH)");
     }
 
     @Override
@@ -76,5 +96,10 @@ public class PrinterServiceImpl implements PrinterService {
         printer.setStatusPrinter(printer.getStatusPrinter() == Status.ENABLE ? Status.DISABLE : Status.ENABLE);
         printerRepository.save(printer);
         return new MessageResponse("Printer status toggled successfully");
+    }
+
+    @Override
+    public List<PrinterResponse> getPrintersEnable() {
+        return printerRepository.findAllByStatusPrinter(Status.ENABLE).stream().map(PrinterResponse::toPrinterResponse).toList();
     }
 }

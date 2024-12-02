@@ -22,7 +22,7 @@ public class FileConfigController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<?> createFileConfig(@RequestParam Long fileId, @RequestBody FileConfigRequest request) {
+    public ResponseEntity<?> createFileConfig(@RequestBody FileConfigRequest request, @RequestParam Long fileId) {
         try {
             return ResponseEntity.ok(fileConfigService.createFileConfig(request, fileId));
         }catch (Exception e) {
@@ -57,6 +57,15 @@ public class FileConfigController {
     public ResponseEntity<?> deleteFileConfig(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(fileConfigService.deleteFileConfig(id));
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/public/code")
+    public ResponseEntity<?> getAllPublicFileConfigs(@RequestParam String code) {
+        try {
+            return ResponseEntity.ok(fileConfigService.getFileConfigByCode(code));
         }catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }

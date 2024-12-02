@@ -3,8 +3,8 @@ package hcmut.spss.be.service.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import hcmut.spss.be.dtos.response.document.DocumentResponse;
 import hcmut.spss.be.entity.document.Document;
-import hcmut.spss.be.entity.user.User;
 import hcmut.spss.be.repository.DocumentRepository;
 import hcmut.spss.be.repository.UserRepository;
 import hcmut.spss.be.service.CloudinaryService;
@@ -38,7 +38,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     private AuthUtil authUtil;
 
     @Override
-    public Document uploadFile(MultipartFile file) throws IOException {
+    public DocumentResponse uploadFile(MultipartFile file) throws IOException {
 
         String fileType = file.getContentType();
         String resourceType;
@@ -78,7 +78,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
         document.setStudent(authUtil.loggedInUser());
         document.setNumOfPage(countPages(file));
-        return documentRepository.save(document);
+        return DocumentResponse.toDocumentResponse(documentRepository.save(document));
     }
 
     private boolean isSupportedContentType(String contentType) {

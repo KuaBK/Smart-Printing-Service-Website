@@ -13,4 +13,5 @@ public interface PrinterService {
     MessageResponse updatePrinter(Long id, PrinterRequest request);
     MessageResponse deletePrinter(Long id);
     MessageResponse togglePrinterStatus(Long id);
+    List<PrinterResponse> getPrintersEnable();
 }

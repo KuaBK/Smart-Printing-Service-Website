@@ -5,11 +5,18 @@ import hcmut.spss.be.dtos.request.SignupRequest;
 import hcmut.spss.be.dtos.response.LoginResponse;
 import hcmut.spss.be.dtos.response.MessageResponse;
 import hcmut.spss.be.dtos.response.UserInfoResponse;
+import hcmut.spss.be.entity.discount.Discount;
+import hcmut.spss.be.entity.printJob.PrintJob;
 import hcmut.spss.be.entity.user.Role;
 import hcmut.spss.be.entity.user.User;
+import hcmut.spss.be.entity.user.UserVisit;
+import hcmut.spss.be.repository.DiscountRepository;
+import hcmut.spss.be.repository.PrintJobRepository;
 import hcmut.spss.be.repository.UserRepository;
+import hcmut.spss.be.repository.UserVisitRepository;
 import hcmut.spss.be.security.jwt.JwtUtils;
 import hcmut.spss.be.service.AuthService;
+import hcmut.spss.be.service.DiscountService;
 import hcmut.spss.be.utils.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +52,16 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
 
     @Autowired
+    private PrintJobRepository printJobRepository;
+
+    @Autowired
     private AuthUtil authUtil;
+
+    @Autowired
+    private UserVisitRepository userVisitRepository;
+
+    @Autowired
+    private DiscountRepository discountRepository;
 
     @Override
     public ResponseEntity<?> login(LoginRequest request) {
@@ -71,6 +88,20 @@ public class AuthServiceImpl implements AuthService {
 
         // prepare the response body, now including the jwt token directly in the body
         LoginResponse response = new LoginResponse(userDetails.getUsername(), jwtToken, roles);
+         // login success => save log
+        UserVisit userVisit = UserVisit.builder().userId(userDetails.getId()).build();
+        userVisitRepository.save(userVisit);
+        User user = userRepository.findById(userDetails.getId()).orElse(null);
+        // check discount
+        List<Discount> discounts = discountRepository.findActiveDiscountsForToday(LocalDate.now());
+        for (Discount discount : discounts) {
+            assert user != null;
+            if(user.getDiscounts().contains(discount)) {continue;}
+            user.setNumOfPrintingPages(user.getNumOfPrintingPages() + discount.getPagesFree());
+            user.getDiscounts().add(discount);
+        }
+        assert user != null;
+        userRepository.save(user);
         return ResponseEntity.ok(response);
     }
 
@@ -104,6 +135,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserInfoResponse getUserInfo() {
         User user = authUtil.loggedInUser();
-        return UserInfoResponse.fromUser(user);
+        List<PrintJob> printJobs = printJobRepository.findAllByStudent_UserIdAndJobStartTimeMonth(user.getUserId(), LocalDate.now().getMonthValue());
+        int numberPage = 0;
+        for(PrintJob printJob : printJobs){
+            numberPage+=printJob.getNumberPagePrint();
+        }
+        UserInfoResponse response = UserInfoResponse.fromUser(user);
+        response.setNumberPageUsed(numberPage);
+        return response;
     }
 }

@@ -12,7 +12,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Builder
 @Data
@@ -47,22 +51,43 @@ public class Document {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "upload_time", updatable = false)
-    private Date uploadTime;
+    private LocalDateTime uploadTime;
+
+    @Column(name = "headline")
+    private String headline;
+
+    @Column(name = "faculty_name")
+    private String facultyName;
+
+    @Column(name = "subject")
+    private String subject;
+
+    @Column(name = "semester")
+    private String semester;
 
     @Column(name = "category")
     private String category;
+
 
     @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "user_id")
     @JsonBackReference
     private User student;
 
-    @OneToOne(mappedBy = "document")
-    @JsonManagedReference
-    private FileConfig fileConfig;
+    @OneToMany(mappedBy = "document")
+    @JsonBackReference
+    private Set<FileConfig> fileConfigs = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "share_library")
+    @JoinColumn(name = "library_id")
     @JsonBackReference
     private SharedLibrary sharedLibrary;
+
+    public void shareWithLibrary(SharedLibrary library) {
+        this.sharedLibrary = library;
+    }
+
+    public void unshareFromLibrary() {
+        this.sharedLibrary = null;
+    }
 }

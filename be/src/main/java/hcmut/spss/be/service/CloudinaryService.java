@@ -1,10 +1,10 @@
 package hcmut.spss.be.service;
 
-import hcmut.spss.be.entity.document.Document;
+import hcmut.spss.be.dtos.response.document.DocumentResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 public interface CloudinaryService {
-    Document uploadFile(MultipartFile file) throws IOException;
+    DocumentResponse uploadFile(MultipartFile file) throws IOException;
 }

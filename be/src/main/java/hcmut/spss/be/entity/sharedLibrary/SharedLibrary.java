@@ -26,21 +26,17 @@ public class SharedLibrary {
     @Column(name = "library_id")
     Long libraryId;
 
+    @Column(name = "library_name", unique = true, nullable = false)
+    String libraryName;
+
+    @Column(name = "default_library", nullable = false)
+    private Boolean defaultLibrary;
+
     @CreationTimestamp
-    @Column(name = "shared_date", updatable = false)
-    LocalDateTime sharedDate;
+    @Column(name = "created_date", updatable = false)
+    LocalDateTime createdDate;
 
-    @Column(name = "is_shared")
-    boolean isShared = false;
-
-    @Column(name = "doc_name")
-    String docName;
-
-    @OneToOne
-    @JoinColumn(name = "studen_id", referencedColumnName = "user_id")
-    User student;
-
-    @OneToMany(mappedBy = "sharedLibrary")
+    @OneToMany(mappedBy = "sharedLibrary", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     List<Document> documents;
 }

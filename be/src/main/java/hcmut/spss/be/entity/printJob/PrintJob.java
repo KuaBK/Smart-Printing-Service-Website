@@ -3,7 +3,6 @@ package hcmut.spss.be.entity.printJob;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import hcmut.spss.be.entity.document.Document;
 import hcmut.spss.be.entity.fileConfig.FileConfig;
-import hcmut.spss.be.entity.printLog.PrintLog;
 import hcmut.spss.be.entity.printer.Printer;
 import hcmut.spss.be.entity.user.User;
 import jakarta.persistence.*;
@@ -31,15 +30,15 @@ public class PrintJob {
     @Column(name = "job_start_time", updatable = false)
     LocalDateTime jobStartTime;
 
-    @Column(name = "job_end_time")
-    LocalDateTime jobEndTime;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status_print")
     StatusPrint statusPrint;
 
+    int numberPagePrint;
+
     @ManyToOne
     @JoinColumn(name = "printer_id")
+    @JsonBackReference
     Printer printer;
 
     @ManyToOne
@@ -49,14 +48,6 @@ public class PrintJob {
 
     @ManyToOne
     @JoinColumn(name = "file_id")
-    FileConfig fileConfig;
-
-    @ManyToOne
-    @JoinColumn(name = "document_id")
-    Document document;
-
-    @ManyToOne
-    @JoinColumn(name = "log_id")
     @JsonBackReference
-    PrintLog printLog;
+    FileConfig fileConfig;
 }
