@@ -19,7 +19,7 @@ api.interceptors.request.use(
         if (!token){
             try{
                 const {data} = await axios.get(
-                    `http://localhost:8080/api/csrf-token`,{
+                    `http://localhost:8080/api`,{
                         withCredentials: true
                     });
                 csrfToken = data.token;
