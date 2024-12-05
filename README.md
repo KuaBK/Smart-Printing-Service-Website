@@ -7,7 +7,7 @@
   </a>
 
 <h3 align="center">Student Smart Printing Service</h3>
-
+  
   <p align="center">
     Ứng dụng cung cấp dịch vụ in ấn tiện lợi dành cho sinh viên Trường Đại học bách khoa, ĐHQG TPHCM.
     <br />
@@ -22,10 +22,13 @@
   </p>
 </div>
 
+
 <!-- ABOUT THE PROJECT -->
 <a id="about-the-project"></a>
 
 ## Về dự án này
+
+![Main page](/image/Homepage.png)
 
 Ứng dụng này được hiện thực để phục vụ cho môn học Công nghệ phần mềm, thuộc về Trường Đại học Bách khoa, ĐHQG TP.HCM. Dự án hướng đến mục tiêu xây dựng nên một trang web cung cấp dịch vụ in ấn tiện lợi cho sinh viên của trường.
 
@@ -69,7 +72,7 @@ Trước khi sử dụng ứng dụng, bạn cần cài đặt trước một s�
 - [Node.js](https://nodejs.org/en)
 - [Java](https://www.oracle.com/java/technologies/downloads/)
 - [Docker](https://dev.mysql.com/downloads/installer/)
-- [Dbeaver](https://dbeaver.io/))
+- [Dbeaver](https://dbeaver.io/)
 
 <a id="installation"></a>
 ### Cài đặt
@@ -145,15 +148,51 @@ Các tài khoản có sẵn trong dữ liệu mẫu:
     - Username: user3
     - Password: touiuhcmut
 
-Tài khoản sinh viên có sẵn số dư page balance là 2000.
+- Các tài khoản được đăng nhập tại:
+
+![Main page](/image/Login.png)
+  
 
 ### Nhóm chức năng của sinh viên
 
 __Chú ý__: Đăng nhập với username `user1` và password `touiuhcmut` để sử dụng nhóm chức năng này
 
+- Giao diện chính của trang sinh viên nơi lưu lại lịch sử cấu hình in của sinh viên.
+  
+![Main page](/image/homepageuser.png)
+
+- Cấu hình in và in file
+  
+![Main page](/image/Upload1.png)
+![Main page](/image/upload2.png)
+![Main page](/image/upload3.png)
+![Main page](/image/config1.png)
+
+- Mua trang in
+  
+![Main page](/image/buyprintpage.png)
+![Main page](/image/buyprintpage1.png)
+
+__Lưu ý__: Ngoài ra còn một vài chức năng khác
+
 ### Nhóm chức năng của SPSO
 
 __Chú ý__: Đăng nhập với username `user2` và password `touiuhcmut` để sử dụng nhóm chức năng này
+
+- Trang chính của SPSO
+  
+![Main page](/image/hompageSPSO.png)
+
+- Cấu hình máy in
+
+![Main page](/image/configprinter.png)
+![Main page](/image/configprinter2.png)
+
+- Cấu hình số mã giảm giá và coupon:
+
+![Main page](/image/Configupload.png)
+![Main page](/image/configcounpon.png)
+
 
 #### Nhóm chức năng của Admin
 
@@ -167,6 +206,7 @@ __Chú ý__: Đăng nhập với username `user3` và password `touiuhcmut` đ�
 Mọi thắc mắc, báo lỗi, đề xuất tính năng cho ứng dụng xin hay liên hệ qua địa chỉ email:
 
 - Trần Văn Lộc - loc.tran04@hcmut.edu.vn
+- Trần Duy Phuong - phuong.tranduy@hcmut.edu.vn
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
