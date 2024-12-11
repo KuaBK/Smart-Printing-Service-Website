@@ -48,3 +48,6 @@ logging:
       type.descriptor.sql.BasicBinder: OFF
       orm.deprecation: ERROR
       engine.transaction.jta.platform.internal.JtaPlatformInitiator: ERROR
+
+server:
+  port: 8080
