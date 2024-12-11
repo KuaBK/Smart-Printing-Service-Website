@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@ComponentScan(basePackages = {"*"})
+@ComponentScan(basePackages = {"hcmut"})
 public class BeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BeApplication.class, args);
