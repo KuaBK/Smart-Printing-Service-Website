@@ -67,8 +67,9 @@ public class SecurityConfig {
 //    }
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .ignoringRequestMatchers("/api/auth/public/**"));
+//        http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                .ignoringRequestMatchers("/api/auth/public/**"));
+        http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests(requests -> requests
                 .anyRequest().permitAll());
@@ -80,6 +81,8 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
 
 
 //    @Bean
