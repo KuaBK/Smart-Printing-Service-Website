@@ -1,16 +1,23 @@
-FROM maven:3-openjdk-17 AS build
+# Start from a Maven base image
+FROM maven:3.8.7-openjdk-17 AS build
 WORKDIR /app
 
-COPY . .
+# Copy the pom.xml and source code into the container
+COPY pom.xml /app/
+COPY src /app/src/
+
+# Build the project
 RUN mvn clean package -DskipTests
 
-
-# Run stage
-
+# Start a new image for running the application
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 
-COPY --from=build /app/target/*.war app.war
+# Copy the JAR file from the previous build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose the application's port
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","app.war"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
