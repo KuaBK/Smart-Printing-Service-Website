@@ -70,19 +70,8 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .ignoringRequestMatchers("/api/auth/public/**"));
 
-        http.authorizeHttpRequests((requests)
-                -> requests
-                .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/api/csrf-token/**").permitAll()
-                .requestMatchers("/api/auth/public/**").permitAll()
-                .requestMatchers("/swagger-ui/**").permitAll()
-                .requestMatchers("/v3/**").permitAll()
-                .requestMatchers("/api/print-jobs/public/**").permitAll()
-                .requestMatchers("/api/file-configs/public/**").permitAll()
-                .requestMatchers("/api/payment/vnpay-callback/**").permitAll()
-                .requestMatchers("/api/reports/**").permitAll()
-                .requestMatchers("/api/spso/**").hasAuthority("SPSO")
-                .anyRequest().authenticated());
+        http.authorizeHttpRequests(requests -> requests
+                .anyRequest().permitAll());
 
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
