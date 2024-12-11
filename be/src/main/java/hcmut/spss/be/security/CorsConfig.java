@@ -13,7 +13,7 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 public class CorsConfig {
-    List<String> feUrls = Arrays.asList("https://cc91-171-250-164-194.ngrok-free.app","http://localhost:5173/login", "http://localhost:5173");
+    List<String> feUrls = Arrays.asList("*");
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
