@@ -4,9 +4,9 @@ spring:
       name: user
       password: 123456
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:mysql://avnadmin:AVNS_A_O7w7nCodTsZ5Iiql0@mysql-cuabachkhoa-tuanphong.i.aivencloud.com:23988/defaultdb?ssl-mode=REQUIRED
+    username: avnadmin
+    password: AVNS_A_O7w7nCodTsZ5Iiql0
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
