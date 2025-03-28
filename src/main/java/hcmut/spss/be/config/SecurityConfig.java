@@ -42,15 +42,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_ENDPOINTS)
-                .permitAll()
-                .anyRequest()
-                .authenticated());
-
-        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
-                        .decoder(customJwtDecoder)
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                .authenticationEntryPoint(new JwtAuthenEntryPoint()));
+        httpSecurity
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll() // ✅ Mở tất cả API, không cần liệt kê
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.disable()) // ❌ Không cần OAuth2
+                .formLogin(login -> login.disable()) // ❌ Tắt form login (nếu có)
+                .httpBasic(basic -> basic.disable()); // ❌ Tắt HTTP Basic Auth (nếu có)
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();
