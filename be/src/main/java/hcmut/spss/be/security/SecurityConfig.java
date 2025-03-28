@@ -43,27 +43,17 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .ignoringRequestMatchers("/api/auth/public/**"));
-        http.authorizeHttpRequests((requests)
-                        -> requests
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/csrf-token/**").permitAll()
-                        .requestMatchers("/api/auth/public/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/v3/**").permitAll()
-                        .requestMatchers("/api/print-jobs/public/**").permitAll()
-                        .requestMatchers("/api/file-configs/public/**").permitAll()
-                        .requestMatchers("/api/payment/vnpay-callback/**").permitAll()
-                        .requestMatchers("/api/reports/**").permitAll()
-                        .requestMatchers("/api/spso/**").hasAuthority("SPSO")
-                        .anyRequest().authenticated());
-        http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.formLogin(Customizer.withDefaults());
-        http.httpBasic(Customizer.withDefaults());
-        return http.build();
+    http.csrf(csrf -> csrf.disable()) // Vô hiệu hóa CSRF nếu không cần thiết
+        .authorizeHttpRequests(authorize -> authorize
+            .anyRequest().permitAll() // Cho phép tất cả các request
+        )
+        .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+        .formLogin(Customizer.withDefaults())
+        .httpBasic(Customizer.withDefaults());
+
+    return http.build();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
