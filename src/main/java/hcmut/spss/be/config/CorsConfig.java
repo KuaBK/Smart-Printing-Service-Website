@@ -1,4 +1,4 @@
-package hcmut.spss.be.security;
+package hcmut.spss.be.config;
 
 import java.util.Arrays;
 import java.util.List;

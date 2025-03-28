@@ -1,8 +1,6 @@
+server:
+  port: 8080
 spring:
-  security:
-    user:
-      name: user
-      password: 123456
   datasource:
     url: jdbc:mysql://avnadmin:AVNS_A_O7w7nCodTsZ5Iiql0@mysql-cuabachkhoa-tuanphong.i.aivencloud.com:23988/defaultdb?ssl-mode=REQUIRED
     username: avnadmin
@@ -48,3 +46,7 @@ logging:
       type.descriptor.sql.BasicBinder: OFF
       orm.deprecation: ERROR
       engine.transaction.jta.platform.internal.JtaPlatformInitiator: ERROR
+jwt:
+  signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
+  valid-duration: 3600 #seconds
+  refreshable-duration: 36000 #seconds
